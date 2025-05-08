@@ -1,3 +1,4 @@
+
 import numpy as np
 import pandas as pd
 import os
@@ -13,8 +14,7 @@ import urllib.request
 import matplotlib.font_manager as fm
 from matplotlib.patches import Patch
 
-
-
+'c:/Users/labmp/AppData/Local/Programs/Python/Python38/python.exe -m pip install ipykernel -U --user --force-reinstall'print('lol')
 
 data_dir = 'c:\\Users\\mplab\\Desktop\\RD_2024\\data'
 # Find participants
