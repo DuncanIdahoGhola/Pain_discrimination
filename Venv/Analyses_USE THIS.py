@@ -15,7 +15,8 @@ import matplotlib.font_manager as fm
 from matplotlib.patches import Patch
   
 # Find participants
-bidsroot = "C:\\Users\\labmp\\Documents\\GitHub\\Pain_discrimination\\Venv\\Data"
+
+bidsroot = "C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\Venv\\Data"  
 participants = [p for p in os.listdir(bidsroot) if "sub-" in p]
 participants.sort()
 if not os.path.exists("derivatives"):
@@ -999,15 +1000,26 @@ ax.axhline(10, color="k", linestyle="--")
 # Get sociodemo
 ##########################################################
 
-wide_dat["part_id"], _ = wide_dat["participant"].str.split("_", 2).str
 
 wide_dat["part_id"] = wide_dat["participant"].str.split("_", n=1).str[0]
 
 
 wide_dat.index = wide_dat["part_id"]
-socio = pd.read_csv("C:\\Users\\labmp\\Desktop\\sociodemo1.csv")
+socio = pd.read_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\sociodemo.csv")
 
 
+# I want to add a new column to the data frame (excluded row)
+
+socio["excluded for placebo"] = None
+
+for index, row in socio.iterrows():
+    if row['  # Participant  '] in exclude_custom:
+        socio.loc[index, "excluded for placebo"] = 'yes'
+    else:
+        socio.loc[index, "excluded for placebo"] = 'no'
+
+
+socio.to_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\sociodemo.csv")
 
 socio.index = socio[socio.columns[1]]
 
