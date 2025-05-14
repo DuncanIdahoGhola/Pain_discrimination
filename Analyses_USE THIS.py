@@ -23,6 +23,17 @@ if not os.path.exists("derivatives"):
     os.mkdir("derivatives")
 
 
+
+pilot_participants = [
+    "sub-001",
+    "sub-002",
+    "sub-003",
+    "sub-004",
+    "sub-005",
+    "sub-006",
+    "sub-008",
+    "sub-009",
+]
 # Exclude participants with perfect discrimination
 exclude_perfect = 0
 
@@ -1008,9 +1019,18 @@ wide_dat.index = wide_dat["part_id"]
 socio = pd.read_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\sociodemo.csv")
 
 
+
+
+# Drop any rows with pilot participants 
+for index, row in socio.iterrows():
+    if row["  # Participant  "] in pilot_participants:
+        socio.drop(index, inplace=True)
+
+
 # I want to add a new column to the data frame (excluded row)
 
 socio["excluded for placebo"] = None
+
 
 for index, row in socio.iterrows():
     if row['  # Participant  '] in exclude_custom:
@@ -1018,6 +1038,8 @@ for index, row in socio.iterrows():
     else:
         socio.loc[index, "excluded for placebo"] = 'no'
 
+
+print(socio)
 
 socio.to_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\sociodemo.csv")
 
@@ -1034,10 +1056,39 @@ for row in socio.iterrows():
             row[1]["4. Quel est votre genre? "] == "Féminin"
         )
 
+##########################################################
+# Get IASTA 1
+##########################################################
 
+iasta1 = pd.read_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\Questionnaire d'évaluation personnelle IASTA (partie 1) (RD_Analgésie) (réponses) - Réponses au formulaire 1.csv")
+# Drop any rows with pilot participants 
+for index, row in iasta1.iterrows():
+    if row["#Participant"] in pilot_participants:
+        iasta1.drop(index, inplace=True)
+
+iasta1.to_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\Questionnaire d'évaluation personnelle IASTA (partie 1) (RD_Analgésie) (réponses) - Réponses au formulaire 1.csv")
 ##########################################################
-# Statistics
+# Get IASTA 2
 ##########################################################
+
+iasta2 = pd.read_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\Questionnaire d'évaluation personnelle IASTA (partie 2) (RD_Analgésie) (réponses) - Réponses au formulaire 1.csv")
+# Drop any rows with pilot participants 
+for index, row in iasta2.iterrows():
+    if row["Numéro participant"] in pilot_participants:
+        iasta2.drop(index, inplace=True)
+
+iasta2.to_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\Questionnaire d'évaluation personnelle IASTA (partie 2) (RD_Analgésie) (réponses) - Réponses au formulaire 1.csv")
+##########################################################
+# Get PCS
+##########################################################
+
+pcs = pd.read_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\Questionnaire PCS (RD_Analgésie) (réponses) - Réponses au formulaire 1.csv")
+
+# Drop any rows with pilot participants 
+for index, row in pcs.iterrows():
+    if row["# du participant:"] in pilot_participants:
+        pcs.drop(index, inplace=True)
+pcs.to_csv("C:\\Users\\labmp\\Desktop\\Pain_discrimination-main\\Pain_discrimination-main\\Questionnaire PCS (RD_Analgésie) (réponses) - Réponses au formulaire 1.csv")
 
 
 wide_dat.to_csv("derivatives/summary_allpart_wide.csv")
@@ -1337,9 +1388,82 @@ wide_dat.to_csv("derivatives/summary_wide.csv")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Plottng mosaices plots for article publication
 
-
+# %% 
 from matplotlib.lines import Line2D
 
 axd = plt.figure(layout="constrained", figsize=(10,10),).subplot_mosaic(
