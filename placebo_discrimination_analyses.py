@@ -1034,7 +1034,7 @@ wide_dat["inactive_acc_all"] = wide_dat["inactive_acc_all"].astype(float)
 
 # Descriptives 
 # TODO add questionnaires
-desc_stats = wide_dat[["age"]].describe()
+desc_stats = wide_dat[["age", "temp_pic", "temp_plateau", 'temp_placebo']].describe()
 desc_stats['n_male'] = wide_dat["ismale"].sum()
 desc_stats['n_female'] = wide_dat["isfemale"].sum()
 desc_stats.to_csv("derivatives/stats/descriptives.csv")
