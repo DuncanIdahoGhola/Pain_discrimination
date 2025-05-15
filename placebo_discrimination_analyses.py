@@ -12,6 +12,7 @@ import pingouin as pg
 import urllib.request
 import matplotlib.font_manager as fm
 from matplotlib.patches import Patch
+from tqdm import tqdm
 
 ############# Setup #############
 
@@ -83,14 +84,13 @@ wide_dat = pd.DataFrame(
 )
 
 # Loop participants
-for p in participants:
+for p in tqdm(participants, desc="Processing individual participants"):
 
     # Get participant folder and create derivatives folder
     par_fold = [c for c in os.listdir(bidsroot) if p in c]
     assert len(par_fold) == 1
     par_fold = opj(bidsroot, par_fold[0])
     deriv_path = opj("derivatives", p)
-    print(p)
     if not os.path.exists(deriv_path):
         os.mkdir(deriv_path)
     
@@ -104,7 +104,6 @@ for p in participants:
         quest_file = [quest_file[-1]]
     # Make sure there is just one
     for idx, f in enumerate(quest_file):
-        print(p + f)
         quest = pd.read_csv(os.path.join(par_fold, "QUEST", quest_file[idx]))
         plateau = quest["temp_plateau"].values[0]
         quest = quest[quest["pic_response"] != 'None']  
@@ -966,6 +965,7 @@ all_eval_frame_placeb.index = all_eval_frame_placeb["participant"]
 sns.boxplot(
     x="condition",
     y="ratings",
+    hue="condition",
     data=all_eval_frame_placeb,
     showfliers=False,
     showmeans=True,
@@ -982,6 +982,7 @@ sns.boxplot(
 sns.stripplot(
     x="condition",
     y="ratings",
+    hue="condition",
     data=all_eval_frame_placeb,
     alpha=0.5,
     size=12,
@@ -1173,6 +1174,7 @@ fig, ax = plt.subplots(figsize=(4, 4))
 sns.boxplot(
     x="variable",
     y="value",
+    hue="variable",
     data=anova_dat,
     showfliers=False,
     showmeans=True,
