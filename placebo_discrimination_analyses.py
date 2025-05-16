@@ -13,6 +13,8 @@ import urllib.request
 import matplotlib.font_manager as fm
 from matplotlib.patches import Patch
 from tqdm import tqdm
+from scipy.stats import norm
+import math
 
 ############# Setup #############
 
@@ -510,19 +512,90 @@ for p in tqdm(participants, desc="Processing individual participants"):
     discrim_task.reset_index(drop=True, inplace=True)
 
     accurate = []
+    detection_type = []
     for presence, response in zip(
         discrim_task["pic_presence"].values, discrim_task["pic_response"].values
     ):
         if presence == "pic-present" and response == 1:
             accurate.append(1)
+            detection_type.append("hit")
         elif presence == "pic-absent" and response == 0:
             accurate.append(1)
+            detection_type.append("correct rejection")
         elif presence == "pic-present" and response == 0:
             accurate.append(0)
+            detection_type.append("miss")
         elif presence == "pic-absent" and response == 1:
             accurate.append(0)
+            detection_type.append("false alarm")
+        
+
 
     discrim_task["accuracy"] = accurate
+    discrim_task["detection_type"] = detection_type
+
+    # Signal detection theory measures
+    hits = len(discrim_task[discrim_task["detection_type"] == "hit"])
+    misses = len(discrim_task[discrim_task["detection_type"] == "miss"])
+    fas = len(discrim_task[discrim_task["detection_type"] == "false alarm"])
+    crs = len(discrim_task[discrim_task["detection_type"] == "correct rejection"])
+
+    Z = norm.ppf
+    # Calculate d prime for this participant
+    def SDT(hits, misses, fas, crs):
+        """ returns a dict with d-prime measures given hits, misses, false alarms, and correct rejections"""
+        # Floors an ceilings are replaced by half hits and half FA's
+        half_hit = 0.5 / (hits + misses)
+        half_fa = 0.5 / (fas + crs)
+    
+        # Calculate hit_rate and avoid d' infinity
+        hit_rate = hits / (hits + misses)
+        if hit_rate == 1: 
+            hit_rate = 1 - half_hit
+        if hit_rate == 0: 
+            hit_rate = half_hit
+    
+        # Calculate false alarm rate and avoid d' infinity
+        fa_rate = fas / (fas + crs)
+        if fa_rate == 1: 
+            fa_rate = 1 - half_fa
+        if fa_rate == 0: 
+            fa_rate = half_fa
+    
+        # Return d', beta, c and Ad'
+        out = {}
+        out['d'] = Z(hit_rate) - Z(fa_rate)
+        out['beta'] = math.exp((Z(fa_rate)**2 - Z(hit_rate)**2) / 2)
+        out['c'] = -(Z(hit_rate) + Z(fa_rate)) / 2
+        out['Ad'] = norm.cdf(out['d'] / math.sqrt(2))
+        
+        return(out)
+    out = SDT(hits, misses, fas, crs)
+
+    # Add d prime to wide_dat
+    wide_dat.loc[p, "d_prime_all"] = out["d"]
+    wide_dat.loc[p, "beta_all"] = out["beta"]
+    wide_dat.loc[p, "c_all"] = out["c"]
+
+    # signal detection in active and inactive conditions
+    hits_active = np.sum(discrim_task[discrim_task["condition"] == "active"]["detection_type"] == "hit")
+    misses_active = np.sum(discrim_task[discrim_task["condition"] == "active"]["detection_type"] == "miss")
+    fas_active = np.sum(discrim_task[discrim_task["condition"] == "active"]["detection_type"] == "false alarm")
+    crs_active = np.sum(discrim_task[discrim_task["condition"] == "active"]["detection_type"] == "correct rejection")
+    hits_inactive = np.sum(discrim_task[discrim_task["condition"] == "inactive"]["detection_type"] == "hit")
+    misses_inactive = np.sum(discrim_task[discrim_task["condition"] == "inactive"]["detection_type"] == "miss")
+    fas_inactive = np.sum(discrim_task[discrim_task["condition"] == "inactive"]["detection_type"] == "false alarm")
+    crs_inactive = np.sum(discrim_task[discrim_task["condition"] == "inactive"]["detection_type"] == "correct rejection")
+    
+    out_active = SDT(hits_active, misses_active, fas_active, crs_active)
+    out_inactive = SDT(hits_inactive, misses_inactive, fas_inactive, crs_inactive)
+    # Add d prime to wide_dat
+    wide_dat.loc[p, "d_prime_active"] = out_active["d"]
+    wide_dat.loc[p, "d_prime_inactive"] = out_inactive["d"]
+    wide_dat.loc[p, "beta_active"] = out_active["beta"]
+    wide_dat.loc[p, "beta_inactive"] = out_inactive["beta"]
+    wide_dat.loc[p, "c_active"] = out_active["c"]
+    wide_dat.loc[p, "c_inactive"] = out_inactive["c"]
 
     wide_dat.loc[p, "acc_all"] = np.mean(discrim_task["accuracy"].values)
 
@@ -1051,6 +1124,7 @@ out = pg.ttest(
 )
 out.to_csv("derivatives/stats/t_test_placebo_eval.csv")
 
+
 # Do ANOVA with block
 # Check if difference beween active and inactive x block
 all_eval_frame_placeb = all_eval_frame[
@@ -1072,7 +1146,7 @@ out.to_csv("derivatives/stats/rm_anova_cond-block_eval.csv")
 
 
 # Discrimination
-# T-test for placebo effect across all participants
+# T-test for placebo effect across all participants on accuracy
 t_test_paired = pg.ttest(
     wide_dat["inactive_acc_all"].astype(float),
     wide_dat["active_acc_all"].astype(float),
@@ -1080,7 +1154,29 @@ t_test_paired = pg.ttest(
 )
 t_test_paired.to_csv("derivatives/stats/t_test_accuracy.csv")
 
+# T-test for placebo effect across all participants on d prime
+t_test_paired_d = pg.ttest(
+    wide_dat["d_prime_inactive"].astype(float),
+    wide_dat["d_prime_active"].astype(float),
+    paired=True,
+)
+t_test_paired_d.to_csv("derivatives/stats/t_test_dprime.csv")
 
+# T-test for placebo effect across all participants on beta
+t_test_paired_beta = pg.ttest(
+    wide_dat["beta_inactive"].astype(float),
+    wide_dat["beta_active"].astype(float),
+    paired=True,
+)
+t_test_paired_beta.to_csv("derivatives/stats/t_test_beta.csv")
+
+# T-test for placebo effect across all participants on c
+t_test_paired_c = pg.ttest(
+    wide_dat["c_inactive"].astype(float),
+    wide_dat["c_active"].astype(float),
+    paired=True,
+)
+t_test_paired_c.to_csv("derivatives/stats/t_test_c.csv")
 
 # TOST for placebo on discrimination
 cohen_dz_bounds = 0.4
@@ -1241,8 +1337,245 @@ plt.title(
 )
 ax.legend().remove()
 plt.tight_layout()
-plt.savefig("derivatives/figures/acc_cond_block.png", dpi=800, bbox_inches="tight")
+plt.savefig("derivatives/figures/discrim_acc_cond.png", dpi=800, bbox_inches="tight")
 
+
+# Plot d prime by condition
+anova_dat = wide_dat.melt(
+    id_vars="participant", value_vars=["d_prime_active", "d_prime_inactive"]
+)
+color = sns.color_palette("Set2")[2:]
+fig, ax = plt.subplots(figsize=(4, 4))
+sns.boxplot(
+    x="variable",
+    y="value",
+    hue="variable",
+    data=anova_dat,
+    showfliers=False,
+    showmeans=True,
+    meanprops={
+        "marker": "^",
+        "markerfacecolor": "white",
+        "markeredgecolor": "black",
+        "markersize": "15",
+        "zorder": 999,
+    },
+    showcaps=False,
+    palette=pal,
+)
+
+
+anova_dat["jitter"] = np.random.normal(0, 0.05, size=len(anova_dat))
+anova_dat["condition_jitter"] = np.where(
+    anova_dat["variable"] == "d_prime_active",
+    0 + anova_dat["jitter"],
+    1 + anova_dat["jitter"],
+)
+
+sns.stripplot(
+    x="condition_jitter",
+    y="value",
+    data=anova_dat,
+    alpha=0.5,
+    size=12,
+    jitter=False,
+    edgecolor="black",
+    linewidth=1,
+    palette=pal,
+    native_scale=True,
+    hue="variable",
+)
+anova_dat.index = anova_dat["participant"]
+ax.set_xlim([-1, 2])
+
+anova_jitter_active = anova_dat[anova_dat["variable"] == "d_prime_active"]
+anova_jitter_inactive = anova_dat[anova_dat["variable"] == "d_prime_inactive"]
+
+for p in list(anova_dat.index):
+    plt.plot(
+        [
+            0 + anova_jitter_active.loc[p, "jitter"],
+            1 + anova_jitter_inactive.loc[p, "jitter"],
+        ],
+        [
+            anova_dat[anova_dat["variable"] == "d_prime_active"].loc[p, "value"],
+            anova_dat[anova_dat["variable"] == "d_prime_inactive"].loc[p, "value"],
+        ],
+        color="gray",
+        alpha=0.5,
+    )
+# extract the existing handles and labels
+# slice the appropriate section of l and h to include in the legend
+# Delete third legend
+plt.xticks([0, 1], ["Placebo on", "Placebo off"], fontsize=12)
+plt.ylabel("d-prime", fontsize=18)
+plt.xlabel("", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Sensitivity\nduring the placebo phase", fontdict={"fontsize": 18}
+)
+ax.legend().remove()
+plt.tight_layout()
+plt.savefig("derivatives/figures/discrim_dprime_cond.png", dpi=800, bbox_inches="tight")
+
+
+# Plot bias by condition
+anova_dat = wide_dat.melt(
+    id_vars="participant", value_vars=["beta_active", "beta_inactive"]
+)
+color = sns.color_palette("Set2")[2:]
+fig, ax = plt.subplots(figsize=(4, 4))
+sns.boxplot(
+    x="variable",
+    y="value",
+    hue="variable",
+    data=anova_dat,
+    showfliers=False,
+    showmeans=True,
+    meanprops={
+        "marker": "^",
+        "markerfacecolor": "white",
+        "markeredgecolor": "black",
+        "markersize": "15",
+        "zorder": 999,
+    },
+    showcaps=False,
+    palette=pal,
+)
+
+
+anova_dat["jitter"] = np.random.normal(0, 0.05, size=len(anova_dat))
+anova_dat["condition_jitter"] = np.where(
+    anova_dat["variable"] == "beta_active",
+    0 + anova_dat["jitter"],
+    1 + anova_dat["jitter"],
+)
+
+sns.stripplot(
+    x="condition_jitter",
+    y="value",
+    data=anova_dat,
+    alpha=0.5,
+    size=12,
+    jitter=False,
+    edgecolor="black",
+    linewidth=1,
+    palette=pal,
+    native_scale=True,
+    hue="variable",
+)
+anova_dat.index = anova_dat["participant"]
+ax.set_xlim([-1, 2])
+
+anova_jitter_active = anova_dat[anova_dat["variable"] == "beta_active"]
+anova_jitter_inactive = anova_dat[anova_dat["variable"] == "beta_inactive"]
+
+for p in list(anova_dat.index):
+    plt.plot(
+        [
+            0 + anova_jitter_active.loc[p, "jitter"],
+            1 + anova_jitter_inactive.loc[p, "jitter"],
+        ],
+        [
+            anova_dat[anova_dat["variable"] == "beta_active"].loc[p, "value"],
+            anova_dat[anova_dat["variable"] == "beta_inactive"].loc[p, "value"],
+        ],
+        color="gray",
+        alpha=0.5,
+    )
+# extract the existing handles and labels
+# slice the appropriate section of l and h to include in the legend
+# Delete third legend
+plt.xticks([0, 1], ["Placebo on", "Placebo off"], fontsize=12)
+plt.ylabel("Bias", fontsize=18)
+plt.xlabel("", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Bias\nduring the placebo phase", fontdict={"fontsize": 18}
+)
+ax.legend().remove()
+plt.tight_layout()
+plt.savefig("derivatives/figures/discrim_beta_cond.png", dpi=800, bbox_inches="tight")
+
+
+
+# Plot c by condition
+anova_dat = wide_dat.melt(
+    id_vars="participant", value_vars=["c_active", "c_inactive"]
+)
+color = sns.color_palette("Set2")[2:]
+fig, ax = plt.subplots(figsize=(4, 4))
+sns.boxplot(
+    x="variable",
+    y="value",
+    hue="variable",
+    data=anova_dat,
+    showfliers=False,
+    showmeans=True,
+    meanprops={
+        "marker": "^",
+        "markerfacecolor": "white",
+        "markeredgecolor": "black",
+        "markersize": "15",
+        "zorder": 999,
+    },
+    showcaps=False,
+    palette=pal,
+)
+
+
+anova_dat["jitter"] = np.random.normal(0, 0.05, size=len(anova_dat))
+anova_dat["condition_jitter"] = np.where(
+    anova_dat["variable"] == "c_active",
+    0 + anova_dat["jitter"],
+    1 + anova_dat["jitter"],
+)
+
+sns.stripplot(
+    x="condition_jitter",
+    y="value",
+    data=anova_dat,
+    alpha=0.5,
+    size=12,
+    jitter=False,
+    edgecolor="black",
+    linewidth=1,
+    palette=pal,
+    native_scale=True,
+    hue="variable",
+)
+anova_dat.index = anova_dat["participant"]
+ax.set_xlim([-1, 2])
+
+anova_jitter_active = anova_dat[anova_dat["variable"] == "c_active"]
+anova_jitter_inactive = anova_dat[anova_dat["variable"] == "c_inactive"]
+
+for p in list(anova_dat.index):
+    plt.plot(
+        [
+            0 + anova_jitter_active.loc[p, "jitter"],
+            1 + anova_jitter_inactive.loc[p, "jitter"],
+        ],
+        [
+            anova_dat[anova_dat["variable"] == 'c_active'].loc[p, "value"],
+            anova_dat[anova_dat["variable"] == "c_inactive"].loc[p, "value"],
+        ],
+        color="gray",
+        alpha=0.5,
+    )
+# extract the existing handles and labels
+# slice the appropriate section of l and h to include in the legend
+# Delete third legend
+plt.xticks([0, 1], ["Placebo on", "Placebo off"], fontsize=12)
+plt.ylabel("Criterion", fontsize=18)
+plt.xlabel("", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Discrimination performance\nduring the placebo phase", fontdict={"fontsize": 18}
+)
+ax.legend().remove()
+plt.tight_layout()
+plt.savefig("derivatives/figures/discrim_c_cond.png", dpi=800, bbox_inches="tight")
 
 # Plot extinction placebo effect
 anova_dat = wide_dat.melt(
