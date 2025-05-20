@@ -677,7 +677,7 @@ results_df = pd.DataFrame(index=iastay1.index)
 for p in iastay1.index:
     # IASTA Y2
     all_iasta2 = []
-    for c in range(5, len(iastay2.columns)):
+    for c in range(2, len(iastay2.columns)):
         try:
             results_df.loc[p, "qiastay2_" + list(iastay2.columns)[c]] = int(
                 str(iastay2.loc[p, list(iastay2.columns)[c]])[0]
@@ -700,7 +700,7 @@ for p in iastay1.index:
 
     # IASTA Y1
     all_iasta1 = []
-    for c in range(5, len(iastay1.columns)):
+    for c in range(2, len(iastay1.columns)):
         try:
             results_df.loc[p, "qiastay1_" + list(iastay1.columns)[c]] = int(
                 str(iastay1.loc[p, list(iastay1.columns)[c]])[0]
@@ -723,7 +723,7 @@ for p in iastay1.index:
 
     # PCS
     all_pcs = []
-    for c in range(5, len(pcs.columns)):
+    for c in range(2, len(pcs.columns)):
         try:
             results_df.loc[p, "qpcs_" + list(pcs.columns)[c]] = int(
                 str(pcs.loc[p, list(pcs.columns)[c]])[0]
