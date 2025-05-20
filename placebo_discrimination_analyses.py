@@ -745,7 +745,9 @@ socio['iastay2_total'] = results_df["iastay2_total"].reset_index(drop=True)
 #resave socio to csv
 socio.to_csv(opj(bidsroot, "sociodemo.csv"), index=False)
 
-# Add sociodemo to wide_dat
+#we can add the iasta and pcs scores to the wide_dat dataframe if needed
+
+# Add sociodemo to wide_dats
 
 socio = pd.read_csv(opj(bidsroot, "sociodemo.csv"))
 socio.index = socio[socio.columns[1]]
@@ -760,11 +762,14 @@ for row in socio.iterrows():
         wide_dat.loc[row[0], "isfemale"] = (
             row[1]["4. Quel est votre genre? "] == "Féminin"
         )
+        wide_dat.loc[row[0], "pcs_total"] = row[1]["pcs_total"]
+        wide_dat.loc[row[0], "iastay1_total"] = row[1]["iastay1_total"]
+        wide_dat.loc[row[0], "iastay2_total"] = row[1]["iastay2_total"]
+
+
 # Convert to int
 wide_dat["ismale"] = wide_dat["ismale"].astype(int)
 wide_dat["isfemale"] = wide_dat["isfemale"].astype(int)
-
-
 
 # Create a new column for the exclude flag
 wide_dat['exclude'] = 0
@@ -824,7 +829,6 @@ wide_dat.to_csv(opj("derivatives", "data_wide_dat_withexcl.csv"), index=False)
 all_eval_frame.to_csv(opj("derivatives", "data_all_eval_frame_withexcl.csv"), index=False)
 all_discrim_task.to_csv(opj("derivatives", "data_all_discrim_task_withexcl.csv"), index=False)
 all_discrim_task_long.to_csv(opj("derivatives", "data_all_discrim_task_long_withexcl.csv"), index=False)
-
 
 # Make plots
 
