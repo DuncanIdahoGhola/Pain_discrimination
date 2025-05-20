@@ -661,6 +661,90 @@ all_discrim_task_long = pd.concat(all_discrim_task_long)
 wide_dat["participant"] = list(wide_dat.index)
 
 
+# TODO ADD QUESTIONNAIRES SUMMARY HERE
+
+
+#add questionnaires 
+#iastay1
+iastay1 = pd.read_csv(opj(bidsroot, "iasta_y1.csv"))
+#iastay2
+iastay2 = pd.read_csv(opj(bidsroot, "iasta_y2.csv"))
+#pcs
+pcs = pd.read_csv(opj(bidsroot, "pcs.csv"))
+#results
+results_df = pd.DataFrame(index=iastay1.index)
+# Add BDI, IASTA, and PCS scores for each participant
+for p in iastay1.index:
+    # IASTA Y2
+    all_iasta2 = []
+    for c in range(5, len(iastay2.columns)):
+        try:
+            results_df.loc[p, "qiastay2_" + list(iastay2.columns)[c]] = int(
+                str(iastay2.loc[p, list(iastay2.columns)[c]])[0]
+            )
+        except:
+            results_df.loc[p, "qiastay2_" + list(iastay2.columns)[c]] = "nan"
+        try:
+            all_iasta2.append(int(str(iastay2.loc[p, list(iastay2.columns)[c]])[0]))
+        except:
+            all_iasta2.append(np.nan)
+    assert len(all_iasta2) == 20
+
+    # Invert scores for some columns [0, 2, 5, 6, 9, 12, 13, 15, 18]
+    all_iasta2 = np.asarray(all_iasta2)
+    all_iasta2[[0, 2, 5, 6, 9, 12, 13, 15, 18]] = (
+        5 - all_iasta2[[0, 2, 5, 6, 9, 12, 13, 15, 18]]
+    )
+    # Add total
+    results_df.loc[p, "iastay2_total"] = np.nansum(all_iasta2)
+
+    # IASTA Y1
+    all_iasta1 = []
+    for c in range(5, len(iastay1.columns)):
+        try:
+            results_df.loc[p, "qiastay1_" + list(iastay1.columns)[c]] = int(
+                str(iastay1.loc[p, list(iastay1.columns)[c]])[0]
+            )
+        except:
+            results_df.loc[p, "qiastay1_" + list(iastay1.columns)[c]] = "nan"
+        try:
+            all_iasta1.append(int(str(iastay1.loc[p, list(iastay1.columns)[c]])[0]))
+        except:
+            all_iasta1.append(np.nan)
+    assert len(all_iasta1) == 20
+
+    # Invert scores for some columns [0,  1,  4,  7,  9, 10, 14, 15, 18, 19]
+    all_iasta1 = np.asarray(all_iasta1)
+    all_iasta1[[0, 1, 4, 7, 9, 10, 14, 15, 18, 19]] = (
+        5 - all_iasta1[[0, 1, 4, 7, 9, 10, 14, 15, 18, 19]]
+    )
+    # Add total
+    results_df.loc[p, "iastay1_total"] = np.nansum(all_iasta1)
+
+    # PCS
+    all_pcs = []
+    for c in range(5, len(pcs.columns)):
+        try:
+            results_df.loc[p, "qpcs_" + list(pcs.columns)[c]] = int(
+                str(pcs.loc[p, list(pcs.columns)[c]])[0]
+            )
+            all_pcs.append(int(str(pcs.loc[p, list(pcs.columns)[c]])[0]))
+        except:
+            results_df.loc[p, "qpcs_" + list(pcs.columns)[c]] = "nan"
+    if len(all_pcs) == 13:
+        # Add total
+        results_df.loc[p, "pcs_total"] = np.nansum(all_pcs)
+    else:
+        results_df.loc[p, "pcs_total"] = "nan"
+
+# Add IASTA and PCS scores to sociodemo
+socio = pd.read_csv(opj(bidsroot, "sociodemo.csv"))
+socio['pcs_total'] = results_df["pcs_total"].reset_index(drop=True)
+socio['iastay1_total'] = results_df["iastay1_total"].reset_index(drop=True)
+socio['iastay2_total'] = results_df["iastay2_total"].reset_index(drop=True)
+#resave socio to csv
+socio.to_csv(opj(bidsroot, "sociodemo.csv"), index=False)
+
 # Add sociodemo to wide_dat
 
 socio = pd.read_csv(opj(bidsroot, "sociodemo.csv"))
@@ -681,14 +765,12 @@ wide_dat["ismale"] = wide_dat["ismale"].astype(int)
 wide_dat["isfemale"] = wide_dat["isfemale"].astype(int)
 
 
-# TODO ADD QUESTIONNAIRES SUMMARY HERE
 
 # Create a new column for the exclude flag
 wide_dat['exclude'] = 0
 all_eval_frame["exclude"] = 0
 all_discrim_task["exclude"] = 0
 all_discrim_task_long["exclude"] = 0
-
 
 if exclude_perfect:
     wide_dat_perf = (
