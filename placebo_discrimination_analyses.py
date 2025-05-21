@@ -205,9 +205,7 @@ for p in tqdm(participants, desc="Processing individual participants"):
     ]
 
     assert len(main_file) == 1  # Make sure there is just one
-
     main = pd.read_csv(os.path.join(par_fold, main_file[0]))
-
     # Some files are saved with a different delimiter
     if len(main.columns) == 1:
         main = pd.read_csv(os.path.join(par_fold, main_file[0]), sep=";")
@@ -534,6 +532,26 @@ for p in tqdm(participants, desc="Processing individual participants"):
     discrim_task["accuracy"] = accurate
     discrim_task["detection_type"] = detection_type
 
+    #Calculate average respone time using responser.started and responser.stopped
+    reaction_time = []
+    reaction_time_good_a = []
+    reaction_time_bad_a = []
+    for _, row in main.iterrows():
+        if pd.notnull(row['responser.started']):
+            rt = float(row["responser.stopped"]) - float(row["responser.started"])
+            reaction_time.append(rt)
+
+            if row["pic_response"] == 1 and row["pic_presence"] == "pic-present":
+                reaction_time_good_a.append(rt)
+            elif row["pic_response"] == 0 and row["pic_presence"] == "pic-absent":
+                reaction_time_good_a.append(rt)
+            else:
+                reaction_time_bad_a.append(rt)
+
+    #add all reaction times to discrim_task
+    discrim_task.loc[p, "reaction_time"] = np.mean(reaction_time) if reaction_time else np.nan
+    discrim_task.loc[p, "reaction_time_good_a"] = np.mean(reaction_time_good_a) if reaction_time_good_a else np.nan
+    discrim_task.loc[p, "reaction_time_bad_a"] = np.mean(reaction_time_bad_a) if reaction_time_bad_a else np.nan
     # Signal detection theory measures
     hits = len(discrim_task[discrim_task["detection_type"] == "hit"])
     misses = len(discrim_task[discrim_task["detection_type"] == "miss"])
@@ -1709,3 +1727,17 @@ plt.tick_params(labelsize=14)
 plt.ylabel("Placebo effect (TENS on - TENS off)", fontsize=18)
 plt.savefig("derivatives/figures/extinction_placebo.png")
 
+
+#open data_wide_dat_withexcl
+wide_dat = pd.read_csv(opj("derivatives", "data_wide_dat_withexcl.csv"))
+#find avg, min, max perc_placebo_all
+
+placebo_under_10 = wide_dat["perc_placebo_all"] < 10
+placebo_under_10.sum()
+avg_perc_placebo = wide_dat["perc_placebo_all"].mean()
+min_perc_placebo = wide_dat["perc_placebo_all"].min()
+max_perc_placebo = wide_dat["perc_placebo_all"].max()
+# Print results for exluded
+print("Average placebo effect: " + str(avg_perc_placebo))
+print("Minimum placebo effect: " + str(min_perc_placebo))
+print("Maximum placebo effect: " + str(max_perc_placebo))
