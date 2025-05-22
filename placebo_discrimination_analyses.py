@@ -205,7 +205,9 @@ for p in tqdm(participants, desc="Processing individual participants"):
     ]
 
     assert len(main_file) == 1  # Make sure there is just one
+
     main = pd.read_csv(os.path.join(par_fold, main_file[0]))
+
     # Some files are saved with a different delimiter
     if len(main.columns) == 1:
         main = pd.read_csv(os.path.join(par_fold, main_file[0]), sep=";")
@@ -532,26 +534,6 @@ for p in tqdm(participants, desc="Processing individual participants"):
     discrim_task["accuracy"] = accurate
     discrim_task["detection_type"] = detection_type
 
-    #Calculate average respone time using responser.started and responser.stopped
-    reaction_time = []
-    reaction_time_good_a = []
-    reaction_time_bad_a = []
-    for _, row in main.iterrows():
-        if pd.notnull(row['responser.started']):
-            rt = float(row["responser.stopped"]) - float(row["responser.started"])
-            reaction_time.append(rt)
-
-            if row["pic_response"] == 1 and row["pic_presence"] == "pic-present":
-                reaction_time_good_a.append(rt)
-            elif row["pic_response"] == 0 and row["pic_presence"] == "pic-absent":
-                reaction_time_good_a.append(rt)
-            else:
-                reaction_time_bad_a.append(rt)
-
-    #add all reaction times to discrim_task
-    discrim_task.loc[p, "reaction_time"] = np.mean(reaction_time) if reaction_time else np.nan
-    discrim_task.loc[p, "reaction_time_good_a"] = np.mean(reaction_time_good_a) if reaction_time_good_a else np.nan
-    discrim_task.loc[p, "reaction_time_bad_a"] = np.mean(reaction_time_bad_a) if reaction_time_bad_a else np.nan
     # Signal detection theory measures
     hits = len(discrim_task[discrim_task["detection_type"] == "hit"])
     misses = len(discrim_task[discrim_task["detection_type"] == "miss"])
@@ -640,8 +622,31 @@ for p in tqdm(participants, desc="Processing individual participants"):
         discrim_task_b2[discrim_task_b2["condition"] == "inactive"]["accuracy"].values
     )
 
+
+    #Calculate average respone time using responser.started and responser.stopped
+    reaction_time = []
+    reaction_time_good_a = []
+    reaction_time_bad_a = []
+    for _, row in main.iterrows():
+        if pd.notnull(row['discrimin_resp.rt']):
+            rt = float(row["discrimin_resp.rt"])
+            reaction_time.append(rt)
+
+            if row["pic_response"] == 1 and row["pic_presence"] == "pic-present":
+                reaction_time_good_a.append(rt)
+            elif row["pic_response"] == 0 and row["pic_presence"] == "pic-absent":
+                reaction_time_good_a.append(rt)
+            else:
+                reaction_time_bad_a.append(rt)
+
+    #add all reaction times to discrim_task
+    discrim_task.loc[p, "reaction_time"] = np.mean(reaction_time) if reaction_time else np.nan
+    discrim_task.loc[p, "reaction_time_good_a"] = np.mean(reaction_time_good_a) if reaction_time_good_a else np.nan
+    discrim_task.loc[p, "reaction_time_bad_a"] = np.mean(reaction_time_bad_a) if reaction_time_bad_a else np.nan
+
     discrim_task_avg = discrim_task.groupby(["condition"]).mean(numeric_only=True).reset_index()
     discrim_task_avg["participant"] = p
+
     all_discrim_task.append(discrim_task_avg)
     all_discrim_task_long.append(discrim_task)
     plt.figure()
@@ -670,6 +675,8 @@ for p in tqdm(participants, desc="Processing individual participants"):
     plt.legend()
     plt.savefig(opj(deriv_path, p + "_task_temp_pic.png"))
     plt.close("all")
+
+    
 
 # Cocncatenate all dataframes from all participants
 
@@ -707,7 +714,6 @@ for p in iastay1.index:
         except:
             all_iasta2.append(np.nan)
     assert len(all_iasta2) == 20
-
     # Invert scores for some columns [0, 2, 5, 6, 9, 12, 13, 15, 18]
     all_iasta2 = np.asarray(all_iasta2)
     all_iasta2[[0, 2, 5, 6, 9, 12, 13, 15, 18]] = (
@@ -1098,7 +1104,7 @@ host.legend().remove()
 plt.setp(ax.collections, alpha=0.6)  # for the markers
 plt.setp(ax.lines, alpha=0.6)
 plt.tight_layout()
-plt.savefig(opj("derivatives/figures", "group_discrim_task.png"), dpi=800, bbox_inches="tight")
+plt.savefig(opj("derivatives/figures", "group_discrim_task.svg"), transparent=True, dpi=800, bbox_inches="tight")
 
 
 plt.ylim([0, 80])
@@ -1186,9 +1192,9 @@ plt.xticks([0, 1], ["TENS on", "TENS off"], fontsize=12)
 plt.ylabel("Pain rating", fontsize=18)
 plt.xlabel("", fontsize=18)
 plt.tick_params(labelsize=14)
-plt.title("Pain ratings during placebo phase", fontdict={"fontsize": 18})
+#plt.title("Pain ratings during placebo phase", fontdict={"fontsize": 18})
 plt.tight_layout()
-plt.savefig(opj("derivatives/figures", "mean_placebo_effect.png"), dpi=800)
+plt.savefig(opj("derivatives/figures", "mean_placebo_effect.svg"), transparent=True,bbox_inches="tight")
 
 # Plot placebo effect distribution
 plt.figure()
@@ -1318,15 +1324,201 @@ tost_df = pd.DataFrame(
 )
 tost_df.to_csv("derivatives/stats/tost_accuracy.csv")
 
+#correlation placebo effect and accuracy
+#find placebo effect
+placebo = pd.read_csv("derivatives/data_wide_dat_full.csv")
+placebo_effect_exclude = []
+for _, row in placebo.iterrows():
+    if row['exclude'] == 0:
+        placebo_effect_exclude.append(row["perc_placebo_all"])
+#find accuracy for active and inactive
+accuracy = pd.read_csv("derivatives/data_all_discrim_task_full.csv")
+accuracy = accuracy[accuracy['exclude'] != 1]
+accuracy_active = []
+accuracy_inactive = []
+for _, row in accuracy.iterrows():
+    if row['condition'] == 'active':
+        accuracy_active.append(row["accuracy"])
+    elif row['condition'] == 'inactive':
+        accuracy_inactive.append(row["accuracy"])
+
+#combine both in a new dataframe
+
+correlation_df = pd.DataFrame(
+    {
+        "placebo_effect": placebo_effect_exclude,
+        "accuracy_active": accuracy_active,
+        "accuracy_inactive": accuracy_inactive,
+    }
+)
+
+#find correlation using pingouin between placebo effect and accuracy (accuracy = active - inactive)
+correlation_1 =pg.corr(
+    x=correlation_df["placebo_effect"],
+    y=correlation_df["accuracy_active"] - correlation_df["accuracy_inactive"],
+)
+correlation_1.to_csv("derivatives/stats/corr_placebo_accuracy.csv")
+
+#plot correlation
+plt.figure(figsize=(6, 6))
+plt.scatter(
+    correlation_df["placebo_effect"],
+    correlation_df["accuracy_active"] - correlation_df["accuracy_inactive"],
+    s=90,
+    color="black",
+)
+plt.xlabel("Placebo effect (%)", fontsize=18)
+plt.ylabel("Discrimination accuracy (active - inactive)", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Correlation between placebo effect and discrimination accuracy",
+    fontdict={"fontsize": 18},
+)
+plt.axhline(0, color="k", linestyle="--")
+plt.axvline(0, color="k", linestyle="--")
+#add best fit line
+sns.regplot(
+    x=correlation_df["placebo_effect"],
+    y=correlation_df["accuracy_active"] - correlation_df["accuracy_inactive"],
+    scatter=False,
+    color="black",
+    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    ci=None,
+    marker="o",
+)
+plt.savefig("derivatives/figures/correlation_placebo_accuracy.png")
+
+#Get scores for questionnaires, placebo effect and discrim performance in a single dataframe
+score_pcs = []
+score_iasta1 = []
+score_iasta2 = []
+for _, row in placebo.iterrows():
+    if row['exclude'] == 0:
+        score_pcs.append(row["pcs_total"])
+        score_iasta1.append(row["iastay1_total"])
+        score_iasta2.append(row["iastay2_total"])
+
+correlation_2 = pd.DataFrame(
+    {
+        "placebo_effect": placebo_effect_exclude,
+        "accuracy_active": accuracy_active,
+        "accuracy_inactive": accuracy_inactive,
+        "pcs_total": score_pcs,
+        "iastay1_total": score_iasta1,
+        "iastay2_total": score_iasta2,
+    }
+)
+
+#correlation between placebo effect and pcs
+correlation_2_pcs = pg.corr(
+    x=correlation_2["placebo_effect"],
+    y=correlation_2["pcs_total"],
+)
+correlation_2_pcs.to_csv("derivatives/stats/corr_2_pcs.csv")
+#plot correlation placebo and pcs
+
+plt.figure(figsize=(6, 6))
+plt.scatter(
+    correlation_2["placebo_effect"],
+    correlation_2["pcs_total"],
+    s=90,
+    color="black",
+)
+plt.xlabel("Placebo effect (%)", fontsize=18)
+plt.ylabel("PCS score", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Correlation between placebo effect and PCS score",
+    fontdict={"fontsize": 18},
+)
+#add best fit line
+sns.regplot(
+    x=correlation_2["placebo_effect"],
+    y=correlation_2["pcs_total"],
+    scatter=False,
+    color="black",
+    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    ci=None,
+    marker="o",
+)
+plt.savefig("derivatives/figures/correlation_placebo_pcs.png")
+
+#correlation between placebo effect and iasta1
+correlation_2_iasta1 = pg.corr(
+    x=correlation_2["placebo_effect"],
+    y=correlation_2["iastay1_total"],
+)
+correlation_2_iasta1.to_csv("derivatives/stats/corr_2_iasta1.csv")
+#plot correlation placebo and iasta1
+plt.figure(figsize=(6, 6))
+plt.scatter(
+    correlation_2["placebo_effect"],
+    correlation_2["iastay1_total"],
+    s=90,
+    color="black",
+)
+plt.xlabel("Placebo effect (%)", fontsize=18)
+plt.ylabel("IASTA1 score", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Correlation between placebo effect and IASTA1 score",
+    fontdict={"fontsize": 18},
+)
+#add best fit line
+sns.regplot(
+    x=correlation_2["placebo_effect"],
+    y=correlation_2["iastay1_total"],
+    scatter=False,
+    color="black",
+    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    ci=None,
+    marker="o",
+)
+plt.savefig("derivatives/figures/correlation_placebo_iasta1.png")
+
+#correlation between placebo effect and iasta2
+correlation_2_iasta2 = pg.corr(
+    x=correlation_2["placebo_effect"],
+    y=correlation_2["iastay2_total"],
+)
+correlation_2_iasta2.to_csv("derivatives/stats/corr_2_iasta2.csv")
+#plot correlation placebo and iasta2
+plt.figure(figsize=(6, 6))
+plt.scatter(
+    correlation_2["placebo_effect"],
+    correlation_2["iastay2_total"],
+    s=90,
+    color="black",
+)
+plt.xlabel("Placebo effect (%)", fontsize=18)
+plt.ylabel("IASTA2 score", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Correlation between placebo effect and IASTA2 score",
+    fontdict={"fontsize": 18},
+)
+#add best fit line
+sns.regplot(
+    x=correlation_2["placebo_effect"],
+    y=correlation_2["iastay2_total"],
+    scatter=False,
+    color="black",
+    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    ci=None,
+    marker="o",
+)
+plt.savefig("derivatives/figures/correlation_placebo_iasta2.png")
+
+
 # Calcuate the 90% confidence interval
 m, se = np.mean(diff + raw_diff), scipy.stats.sem(diff + raw_diff)
 h = se * scipy.stats.t.ppf((1 + 0.90) / 2.0, len(wide_dat) - 1)
 
-plt.figure(figsize=(5, 5))
-plt.title(
-    "Equivalence bounds and standardized mean difference\nfor the discrimination task",
-    fontsize=18,
-)
+plt.figure(figsize=(4, 4))
+#plt.title(
+#    "Equivalence bounds and standardized mean difference\nfor the discrimination task",
+#    fontsize=18,
+#)
 plt.scatter(diff.mean() / sd_diff_acc, 1, s=90)
 plt.plot(
     [
@@ -1342,9 +1534,106 @@ plt.yticks([])
 plt.tick_params(labelsize=14)
 plt.xticks([-0.5, 0, 0.5], ["-0.5", "0", "0.5"])
 plt.xlabel("Cohen's dz", fontsize=18)
-plt.savefig("derivatives/figures/tost_discrim.png", dpi=800, bbox_inches="tight")
+plt.savefig("derivatives/figures/tost_discrim.svg", transparent=True, bbox_inches="tight")
 
+#correlation between accuracy and pcs scores
+correlation_3_pcs = pg.corr(
+    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    y=correlation_2["pcs_total"],
+)
+correlation_3_pcs.to_csv("derivatives/stats/corr_3_pcs.csv")
+#plot correlation accuracy and pcs
+plt.figure(figsize=(6, 6))
+plt.scatter(
+    correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    correlation_2["pcs_total"],
+    s=90,
+    color="black",
+)
+plt.xlabel("Discrimination accuracy (active - inactive)", fontsize=18)
+plt.ylabel("PCS score", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Correlation between discrimination accuracy and PCS score",
+    fontdict={"fontsize": 18},
+)
+#add best fit line
+sns.regplot(
+    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    y=correlation_2["pcs_total"],
+    scatter=False,
+    color="black",
+    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    ci=None,
+    marker="o",
+)
+plt.savefig("derivatives/figures/correlation_accuracy_pcs.png")
 
+#correlation between accuracy and iasta1 scores
+correlation_3_iasta1 = pg.corr(
+    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    y=correlation_2["iastay1_total"],
+)
+correlation_3_iasta1.to_csv("derivatives/stats/corr_3_iasta1.csv")
+#plot correlation accuracy and iasta1
+plt.figure(figsize=(6, 6))
+plt.scatter(
+    correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    correlation_2["iastay1_total"],
+    s=90,
+    color="black",
+)
+plt.xlabel("Discrimination accuracy (active - inactive)", fontsize=18)
+plt.ylabel("IASTA1 score", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Correlation between discrimination accuracy and IASTA1 score",
+    fontdict={"fontsize": 18},
+)
+#add best fit line
+sns.regplot(
+    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    y=correlation_2["iastay1_total"],
+    scatter=False,
+    color="black",
+    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    ci=None,
+    marker="o",
+)
+plt.savefig("derivatives/figures/correlation_accuracy_iasta1.png")
+
+#correlation between accuracy and iasta2 scores
+correlation_3_iasta2 = pg.corr(
+    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    y=correlation_2["iastay2_total"],
+)
+correlation_3_iasta2.to_csv("derivatives/stats/corr_3_iasta2.csv")
+#plot correlation accuracy and iasta2
+plt.figure(figsize=(6, 6))
+plt.scatter(
+    correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    correlation_2["iastay2_total"],
+    s=90,
+    color="black",
+)
+plt.xlabel("Discrimination accuracy (active - inactive)", fontsize=18)
+plt.ylabel("IASTA2 score", fontsize=18)
+plt.tick_params(labelsize=14)
+plt.title(
+    "Correlation between discrimination accuracy and IASTA2 score",
+    fontdict={"fontsize": 18},
+)
+#add best fit line
+sns.regplot(
+    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    y=correlation_2["iastay2_total"],
+    scatter=False,
+    color="black",
+    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    ci=None,
+    marker="o",
+)
+plt.savefig("derivatives/figures/correlation_accuracy_iasta2.png")
 
 # Check if difference beween active and inactive x block
 anova_dat = wide_dat.melt(
@@ -1436,12 +1725,12 @@ plt.xticks([0, 1], ["Placebo on", "Placebo off"], fontsize=12)
 plt.ylabel("Proporition correct", fontsize=18)
 plt.xlabel("", fontsize=18)
 plt.tick_params(labelsize=14)
-plt.title(
-    "Discrimination performance\nduring the placebo phase", fontdict={"fontsize": 18}
-)
+#plt.title(
+#    "Discrimination performance\nduring the placebo phase", fontdict={"fontsize": 18}
+#)
 ax.legend().remove()
 plt.tight_layout()
-plt.savefig("derivatives/figures/discrim_acc_cond.png", dpi=800, bbox_inches="tight")
+plt.savefig("derivatives/figures/discrim_acc_cond.svg",transparent=True, bbox_inches="tight")
 
 
 # Plot d prime by condition
@@ -1727,17 +2016,3 @@ plt.tick_params(labelsize=14)
 plt.ylabel("Placebo effect (TENS on - TENS off)", fontsize=18)
 plt.savefig("derivatives/figures/extinction_placebo.png")
 
-
-#open data_wide_dat_withexcl
-wide_dat = pd.read_csv(opj("derivatives", "data_wide_dat_withexcl.csv"))
-#find avg, min, max perc_placebo_all
-
-placebo_under_10 = wide_dat["perc_placebo_all"] < 10
-placebo_under_10.sum()
-avg_perc_placebo = wide_dat["perc_placebo_all"].mean()
-min_perc_placebo = wide_dat["perc_placebo_all"].min()
-max_perc_placebo = wide_dat["perc_placebo_all"].max()
-# Print results for exluded
-print("Average placebo effect: " + str(avg_perc_placebo))
-print("Minimum placebo effect: " + str(min_perc_placebo))
-print("Maximum placebo effect: " + str(max_perc_placebo))
