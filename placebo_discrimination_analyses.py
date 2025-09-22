@@ -790,7 +790,11 @@ for row in socio.iterrows():
         wide_dat.loc[row[0], "iastay2_total"] = row[1]["iastay2_total"]
 
 
+
+
+
 # Convert to int
+
 wide_dat["ismale"] = wide_dat["ismale"].astype(int)
 wide_dat["isfemale"] = wide_dat["isfemale"].astype(int)
 
