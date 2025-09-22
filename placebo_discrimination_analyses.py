@@ -15,7 +15,6 @@ from matplotlib.patches import Patch
 from tqdm import tqdm
 from scipy.stats import norm
 import math
-
 ############# Setup #############
 
 
