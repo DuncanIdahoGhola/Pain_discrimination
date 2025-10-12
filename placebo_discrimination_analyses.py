@@ -44,7 +44,7 @@ plt.rcParams["font.sans-serif"] = prop.get_name()
 exclude_perfect = True
 
 # Exclude participants with less than X% placebo effect (0 = negative placebo, -100 keep everyone) None = Ignore this flag and keep all
-exclude_placebo = 0
+exclude_placebo = 10 
 
 # Add participant to list to exclude based on other criteria
 exclude_custom = []
@@ -2019,3 +2019,104 @@ plt.tick_params(labelsize=14)
 plt.ylabel("Placebo effect (TENS on - TENS off)", fontsize=18)
 plt.savefig("derivatives/figures/extinction_placebo.png")
 
+
+
+
+#Last but not least, we must find values for calibration, placebo effect, temps etc
+#We will go and load data_wide_dat_withexcl.csv to get these values
+#these are the values for participant that were filtered
+
+last_values = pd.read_csv("derivatives/data_wide_dat_withexcl.csv")
+
+#find mean, max and min of temp_pic, temp_plateau and temp_pic
+#temp pic = pic a utiliser
+temp_pic_mean = last_values['temp_pic'].mean()
+temp_pic_max = last_values['temp_pic'].max()
+temp_pic_min = last_values['temp_pic'].min()
+#temp plateau = higher temp / temp flat
+temp_plateau_mean = last_values['temp_plateau'].mean()
+temp_plateau_max = last_values['temp_plateau'].max()
+temp_plateau_min = last_values['temp_plateau'].min()
+#temp placebo = temp pain active - used in placebo phase
+temp_placebo_mean = last_values['temp_placebo'].mean()
+temp_placebo_max = last_values['temp_placebo'].max()
+temp_placebo_min = last_values['temp_placebo'].min()
+
+
+#add placebo effect mean, max and min
+placebo_effect_mean = last_values['perc_placebo_all'].mean()
+placebo_effect_max = last_values['perc_placebo_all'].max()
+placebo_effect_min = last_values['perc_placebo_all'].min()
+
+#add accuracy all, accuracy active and accuracy inactive
+accuracy_all_mean = last_values['active_acc_all'].mean()
+accuracy_all_max = last_values['active_acc_all'].max()
+accuracy_all_min = last_values['active_acc_all'].min()
+
+accuracy_active_mean = last_values['active_acc_all'].mean()
+accuracy_active_max = last_values['active_acc_all'].max()
+accuracy_active_min = last_values['active_acc_all'].min()
+
+accuracy_inactive_mean = last_values['inactive_acc_all'].mean()
+accuracy_inactive_max = last_values['inactive_acc_all'].max()
+accuracy_inactive_min = last_values['inactive_acc_all'].min()
+
+
+#add these values to a csv file called temp_values.csv
+temp_values = pd.DataFrame(
+    {
+        "temp_pic_mean": [temp_pic_mean],
+        "temp_pic_max": [temp_pic_max],
+        "temp_pic_min": [temp_pic_min],
+        "temp_plateau_mean": [temp_plateau_mean],
+        "temp_plateau_max": [temp_plateau_max],
+        "temp_plateau_min": [temp_plateau_min],
+        "temp_placebo_mean": [temp_placebo_mean],
+        "temp_placebo_max": [temp_placebo_max],
+        "temp_placebo_min": [temp_placebo_min],
+        "placebo_effect_mean": [placebo_effect_mean],
+        "placebo_effect_max": [placebo_effect_max],
+        "placebo_effect_min": [placebo_effect_min],
+        "accuracy_all_mean": [accuracy_all_mean],
+        "accuracy_all_max": [accuracy_all_max],
+        "accuracy_all_min": [accuracy_all_min],
+        "accuracy_active_mean": [accuracy_active_mean],
+        "accuracy_active_max": [accuracy_active_max],
+        "accuracy_active_min": [accuracy_active_min],
+        "accuracy_inactive_mean": [accuracy_inactive_mean],
+        "accuracy_inactive_max": [accuracy_inactive_max],
+        "accuracy_inactive_min": [accuracy_inactive_min],
+    }
+)
+temp_values.to_csv("derivatives/stats/temp_values_filtered.csv") 
+
+#we will get the same values but for all participants (including excluded ones)
+last_values_all = pd.read_csv("derivatives/data_wide_dat_full.csv")
+#find mean, max and min of temp_pic, temp_plateau and temp_pic
+#temp pic = pic a utiliser
+temp_pic_mean_all = last_values_all['temp_pic'].mean()
+temp_pic_max_all = last_values_all['temp_pic'].max()
+temp_pic_min_all = last_values_all['temp_pic'].min()
+#temp plateau = higher temp / temp flat
+temp_plateau_mean_all = last_values_all['temp_plateau'].mean()
+temp_plateau_max_all = last_values_all['temp_plateau'].max()
+temp_plateau_min_all = last_values_all['temp_plateau'].min()
+#temp placebo = temp pain active - used in placebo phase
+temp_placebo_mean_all = last_values_all['temp_placebo'].mean()
+temp_placebo_max_all = last_values_all['temp_placebo'].max()
+temp_placebo_min_all = last_values_all['temp_placebo'].min()
+#add these values to a csv file called temp_values_all.csv
+temp_values_all = pd.DataFrame(
+    {
+        "temp_pic_mean_all": [temp_pic_mean_all],
+        "temp_pic_max_all": [temp_pic_max_all],
+        "temp_pic_min_all": [temp_pic_min_all],
+        "temp_plateau_mean_all": [temp_plateau_mean_all],
+        "temp_plateau_max_all": [temp_plateau_max_all],
+        "temp_plateau_min_all": [temp_plateau_min_all],
+        "temp_placebo_mean_all": [temp_placebo_mean_all],
+        "temp_placebo_max_all": [temp_placebo_max_all],
+        "temp_placebo_min_all": [temp_placebo_min_all],
+    }
+)
+temp_values_all.to_csv("derivatives/stats/temp_values_all.csv")
