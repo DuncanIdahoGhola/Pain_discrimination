@@ -1378,3 +1378,498 @@ sub-051,active,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,0
 sub-051,inactive,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,0
 sub-051,active,pic-present,0.0,1.0,3.0,3.0,24.0,0.0,miss,,,,0
 ,,,,,,,,,,0.8370504999948025,0.9386058210465739,0.6886234923037521,0
+sub-053,inactive,pic-absent,0.0,0.0,0.0,0.0,9.0,1.0,correct rejection,,,,0
+sub-053,inactive,pic-absent,0.0,0.0,0.0,1.0,9.0,1.0,correct rejection,,,,0
+sub-053,active,pic-present,0.0,0.0,0.0,2.0,9.0,0.0,miss,,,,0
+sub-053,inactive,pic-absent,1.0,0.0,0.0,3.0,9.0,0.0,false alarm,,,,0
+sub-053,inactive,pic-present,0.0,0.0,1.0,0.0,10.0,0.0,miss,,,,0
+sub-053,active,pic-present,0.0,0.0,1.0,1.0,10.0,0.0,miss,,,,0
+sub-053,active,pic-absent,0.0,0.0,1.0,2.0,10.0,1.0,correct rejection,,,,0
+sub-053,inactive,pic-present,1.0,0.0,1.0,3.0,10.0,1.0,hit,,,,0
+sub-053,active,pic-present,1.0,0.0,2.0,0.0,11.0,1.0,hit,,,,0
+sub-053,active,pic-absent,0.0,0.0,2.0,1.0,11.0,1.0,correct rejection,,,,0
+sub-053,inactive,pic-absent,0.0,0.0,2.0,2.0,11.0,1.0,correct rejection,,,,0
+sub-053,active,pic-present,0.0,0.0,2.0,3.0,11.0,0.0,miss,,,,0
+sub-053,active,pic-absent,0.0,0.0,3.0,0.0,12.0,1.0,correct rejection,,,,0
+sub-053,inactive,pic-present,0.0,0.0,3.0,1.0,12.0,0.0,miss,,,,0
+sub-053,inactive,pic-present,1.0,0.0,3.0,2.0,12.0,1.0,hit,,,,0
+sub-053,active,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,0
+sub-053,inactive,pic-absent,0.0,1.0,0.0,0.0,21.0,1.0,correct rejection,,,,0
+sub-053,active,pic-present,1.0,1.0,0.0,1.0,21.0,1.0,hit,,,,0
+sub-053,inactive,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,0
+sub-053,active,pic-present,0.0,1.0,0.0,3.0,21.0,0.0,miss,,,,0
+sub-053,inactive,pic-present,0.0,1.0,1.0,0.0,22.0,0.0,miss,,,,0
+sub-053,active,pic-absent,0.0,1.0,1.0,1.0,22.0,1.0,correct rejection,,,,0
+sub-053,active,pic-absent,0.0,1.0,1.0,2.0,22.0,1.0,correct rejection,,,,0
+sub-053,inactive,pic-present,1.0,1.0,1.0,3.0,22.0,1.0,hit,,,,0
+sub-053,active,pic-absent,0.0,1.0,2.0,0.0,23.0,1.0,correct rejection,,,,0
+sub-053,inactive,pic-present,0.0,1.0,2.0,1.0,23.0,0.0,miss,,,,0
+sub-053,active,pic-present,0.0,1.0,2.0,2.0,23.0,0.0,miss,,,,0
+sub-053,inactive,pic-absent,0.0,1.0,2.0,3.0,23.0,1.0,correct rejection,,,,0
+sub-053,active,pic-present,0.0,1.0,3.0,0.0,24.0,0.0,miss,,,,0
+sub-053,inactive,pic-absent,0.0,1.0,3.0,1.0,24.0,1.0,correct rejection,,,,0
+sub-053,inactive,pic-present,1.0,1.0,3.0,2.0,24.0,1.0,hit,,,,0
+sub-053,active,pic-absent,0.0,1.0,3.0,3.0,24.0,1.0,correct rejection,,,,0
+,,,,,,,,,,0.9213564468736877,0.9097883333230302,0.9434410272885791,0
+sub-054,active,pic-present,0.0,0.0,0.0,0.0,9.0,0.0,miss,,,,0
+sub-054,active,pic-absent,1.0,0.0,0.0,1.0,9.0,0.0,false alarm,,,,0
+sub-054,inactive,pic-present,1.0,0.0,0.0,2.0,9.0,1.0,hit,,,,0
+sub-054,active,pic-absent,1.0,0.0,0.0,3.0,9.0,0.0,false alarm,,,,0
+sub-054,inactive,pic-absent,1.0,0.0,1.0,0.0,10.0,0.0,false alarm,,,,0
+sub-054,inactive,pic-present,0.0,0.0,1.0,1.0,10.0,0.0,miss,,,,0
+sub-054,active,pic-present,0.0,0.0,1.0,2.0,10.0,0.0,miss,,,,0
+sub-054,inactive,pic-absent,1.0,0.0,1.0,3.0,10.0,0.0,false alarm,,,,0
+sub-054,active,pic-absent,0.0,0.0,2.0,0.0,11.0,1.0,correct rejection,,,,0
+sub-054,active,pic-present,0.0,0.0,2.0,1.0,11.0,0.0,miss,,,,0
+sub-054,inactive,pic-absent,1.0,0.0,2.0,2.0,11.0,0.0,false alarm,,,,0
+sub-054,active,pic-present,1.0,0.0,2.0,3.0,11.0,1.0,hit,,,,0
+sub-054,inactive,pic-present,1.0,0.0,3.0,0.0,12.0,1.0,hit,,,,0
+sub-054,inactive,pic-absent,0.0,0.0,3.0,1.0,12.0,1.0,correct rejection,,,,0
+sub-054,active,pic-absent,1.0,0.0,3.0,2.0,12.0,0.0,false alarm,,,,0
+sub-054,inactive,pic-present,1.0,0.0,3.0,3.0,12.0,1.0,hit,,,,0
+sub-054,active,pic-absent,0.0,1.0,0.0,0.0,21.0,1.0,correct rejection,,,,0
+sub-054,inactive,pic-present,1.0,1.0,0.0,1.0,21.0,1.0,hit,,,,0
+sub-054,active,pic-absent,1.0,1.0,0.0,2.0,21.0,0.0,false alarm,,,,0
+sub-054,inactive,pic-present,1.0,1.0,0.0,3.0,21.0,1.0,hit,,,,0
+sub-054,inactive,pic-absent,0.0,1.0,1.0,0.0,22.0,1.0,correct rejection,,,,0
+sub-054,active,pic-present,0.0,1.0,1.0,1.0,22.0,0.0,miss,,,,0
+sub-054,inactive,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-054,inactive,pic-absent,1.0,1.0,1.0,3.0,22.0,0.0,false alarm,,,,0
+sub-054,active,pic-present,1.0,1.0,2.0,0.0,23.0,1.0,hit,,,,0
+sub-054,inactive,pic-absent,1.0,1.0,2.0,1.0,23.0,0.0,false alarm,,,,0
+sub-054,inactive,pic-absent,1.0,1.0,2.0,2.0,23.0,0.0,false alarm,,,,0
+sub-054,active,pic-present,0.0,1.0,2.0,3.0,23.0,0.0,miss,,,,0
+sub-054,inactive,pic-present,1.0,1.0,3.0,0.0,24.0,1.0,hit,,,,0
+sub-054,active,pic-absent,0.0,1.0,3.0,1.0,24.0,1.0,correct rejection,,,,0
+sub-054,active,pic-present,0.0,1.0,3.0,2.0,24.0,0.0,miss,,,,0
+sub-054,active,pic-absent,1.0,1.0,3.0,3.0,24.0,0.0,false alarm,,,,0
+,,,,,,,,,,0.5470233343767177,0.628343921429145,0.4837739888914964,0
+sub-055,active,pic-present,1.0,0.0,0.0,0.0,9.0,1.0,hit,,,,0
+sub-055,inactive,pic-absent,0.0,0.0,0.0,1.0,9.0,1.0,correct rejection,,,,0
+sub-055,active,pic-present,0.0,0.0,0.0,2.0,9.0,0.0,miss,,,,0
+sub-055,inactive,pic-absent,0.0,0.0,0.0,3.0,9.0,1.0,correct rejection,,,,0
+sub-055,inactive,pic-absent,0.0,0.0,1.0,0.0,10.0,1.0,correct rejection,,,,0
+sub-055,active,pic-present,0.0,0.0,1.0,1.0,10.0,0.0,miss,,,,0
+sub-055,inactive,pic-absent,0.0,0.0,1.0,2.0,10.0,1.0,correct rejection,,,,0
+sub-055,inactive,pic-present,1.0,0.0,1.0,3.0,10.0,1.0,hit,,,,0
+sub-055,active,pic-absent,0.0,0.0,2.0,0.0,11.0,1.0,correct rejection,,,,0
+sub-055,inactive,pic-present,1.0,0.0,2.0,1.0,11.0,1.0,hit,,,,0
+sub-055,active,pic-absent,0.0,0.0,2.0,2.0,11.0,1.0,correct rejection,,,,0
+sub-055,active,pic-absent,0.0,0.0,2.0,3.0,11.0,1.0,correct rejection,,,,0
+sub-055,inactive,pic-present,1.0,0.0,3.0,0.0,12.0,1.0,hit,,,,0
+sub-055,active,pic-absent,1.0,0.0,3.0,1.0,12.0,0.0,false alarm,,,,0
+sub-055,inactive,pic-present,1.0,0.0,3.0,2.0,12.0,1.0,hit,,,,0
+sub-055,active,pic-present,1.0,0.0,3.0,3.0,12.0,1.0,hit,,,,0
+sub-055,active,pic-absent,0.0,1.0,0.0,0.0,21.0,1.0,correct rejection,,,,0
+sub-055,inactive,pic-present,1.0,1.0,0.0,1.0,21.0,1.0,hit,,,,0
+sub-055,inactive,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,0
+sub-055,active,pic-absent,0.0,1.0,0.0,3.0,21.0,1.0,correct rejection,,,,0
+sub-055,inactive,pic-present,1.0,1.0,1.0,0.0,22.0,1.0,hit,,,,0
+sub-055,active,pic-absent,0.0,1.0,1.0,1.0,22.0,1.0,correct rejection,,,,0
+sub-055,active,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-055,inactive,pic-absent,0.0,1.0,1.0,3.0,22.0,1.0,correct rejection,,,,0
+sub-055,active,pic-present,1.0,1.0,2.0,0.0,23.0,1.0,hit,,,,0
+sub-055,inactive,pic-absent,0.0,1.0,2.0,1.0,23.0,1.0,correct rejection,,,,0
+sub-055,inactive,pic-present,1.0,1.0,2.0,2.0,23.0,1.0,hit,,,,0
+sub-055,active,pic-present,1.0,1.0,2.0,3.0,23.0,1.0,hit,,,,0
+sub-055,inactive,pic-absent,0.0,1.0,3.0,0.0,24.0,1.0,correct rejection,,,,0
+sub-055,active,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,0
+sub-055,active,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,0
+sub-055,inactive,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,0
+,,,,,,,,,,0.48465872811721056,0.4835763482641878,0.4951217333630969,0
+sub-056,inactive,pic-present,1.0,0.0,0.0,0.0,9.0,1.0,hit,,,,1
+sub-056,active,pic-absent,0.0,0.0,0.0,1.0,9.0,1.0,correct rejection,,,,1
+sub-056,active,pic-present,1.0,0.0,0.0,2.0,9.0,1.0,hit,,,,1
+sub-056,inactive,pic-present,0.0,0.0,0.0,3.0,9.0,0.0,miss,,,,1
+sub-056,active,pic-absent,0.0,0.0,1.0,0.0,10.0,1.0,correct rejection,,,,1
+sub-056,active,pic-present,0.0,0.0,1.0,1.0,10.0,0.0,miss,,,,1
+sub-056,inactive,pic-present,0.0,0.0,1.0,2.0,10.0,0.0,miss,,,,1
+sub-056,inactive,pic-absent,0.0,0.0,1.0,3.0,10.0,1.0,correct rejection,,,,1
+sub-056,active,pic-present,0.0,0.0,2.0,0.0,11.0,0.0,miss,,,,1
+sub-056,inactive,pic-absent,0.0,0.0,2.0,1.0,11.0,1.0,correct rejection,,,,1
+sub-056,inactive,pic-absent,0.0,0.0,2.0,2.0,11.0,1.0,correct rejection,,,,1
+sub-056,active,pic-present,1.0,0.0,2.0,3.0,11.0,1.0,hit,,,,1
+sub-056,inactive,pic-absent,0.0,0.0,3.0,0.0,12.0,1.0,correct rejection,,,,1
+sub-056,inactive,pic-present,0.0,0.0,3.0,1.0,12.0,0.0,miss,,,,1
+sub-056,active,pic-absent,0.0,0.0,3.0,2.0,12.0,1.0,correct rejection,,,,1
+sub-056,active,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,1
+sub-056,inactive,pic-absent,0.0,1.0,0.0,0.0,21.0,1.0,correct rejection,,,,1
+sub-056,active,pic-present,0.0,1.0,0.0,1.0,21.0,0.0,miss,,,,1
+sub-056,active,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,1
+sub-056,inactive,pic-present,1.0,1.0,0.0,3.0,21.0,1.0,hit,,,,1
+sub-056,active,pic-absent,0.0,1.0,1.0,0.0,22.0,1.0,correct rejection,,,,1
+sub-056,inactive,pic-present,1.0,1.0,1.0,1.0,22.0,1.0,hit,,,,1
+sub-056,active,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,1
+sub-056,inactive,pic-absent,0.0,1.0,1.0,3.0,22.0,1.0,correct rejection,,,,1
+sub-056,active,pic-present,0.0,1.0,2.0,0.0,23.0,0.0,miss,,,,1
+sub-056,inactive,pic-absent,0.0,1.0,2.0,1.0,23.0,1.0,correct rejection,,,,1
+sub-056,inactive,pic-present,1.0,1.0,2.0,2.0,23.0,1.0,hit,,,,1
+sub-056,active,pic-absent,0.0,1.0,2.0,3.0,23.0,1.0,correct rejection,,,,1
+sub-056,inactive,pic-present,0.0,1.0,3.0,0.0,24.0,0.0,miss,,,,1
+sub-056,active,pic-absent,1.0,1.0,3.0,1.0,24.0,0.0,false alarm,,,,1
+sub-056,inactive,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,1
+sub-056,active,pic-present,0.0,1.0,3.0,3.0,24.0,0.0,miss,,,,1
+,,,,,,,,,,1.2270806062515476,1.1626069272778379,1.3689226999937092,0
+sub-057,active,pic-present,0.0,0.0,0.0,0.0,9.0,0.0,miss,,,,1
+sub-057,inactive,pic-present,0.0,0.0,0.0,1.0,9.0,0.0,miss,,,,1
+sub-057,inactive,pic-absent,1.0,0.0,0.0,2.0,9.0,0.0,false alarm,,,,1
+sub-057,active,pic-present,1.0,0.0,0.0,3.0,9.0,1.0,hit,,,,1
+sub-057,inactive,pic-absent,0.0,0.0,1.0,0.0,10.0,1.0,correct rejection,,,,1
+sub-057,active,pic-present,0.0,0.0,1.0,1.0,10.0,0.0,miss,,,,1
+sub-057,active,pic-absent,1.0,0.0,1.0,2.0,10.0,0.0,false alarm,,,,1
+sub-057,inactive,pic-present,0.0,0.0,1.0,3.0,10.0,0.0,miss,,,,1
+sub-057,active,pic-absent,1.0,0.0,2.0,0.0,11.0,0.0,false alarm,,,,1
+sub-057,inactive,pic-absent,1.0,0.0,2.0,1.0,11.0,0.0,false alarm,,,,1
+sub-057,active,pic-present,0.0,0.0,2.0,2.0,11.0,0.0,miss,,,,1
+sub-057,inactive,pic-absent,1.0,0.0,2.0,3.0,11.0,0.0,false alarm,,,,1
+sub-057,inactive,pic-present,0.0,0.0,3.0,0.0,12.0,0.0,miss,,,,1
+sub-057,active,pic-absent,1.0,0.0,3.0,1.0,12.0,0.0,false alarm,,,,1
+sub-057,inactive,pic-present,0.0,0.0,3.0,2.0,12.0,0.0,miss,,,,1
+sub-057,active,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,1
+sub-057,active,pic-present,0.0,1.0,0.0,0.0,21.0,0.0,miss,,,,1
+sub-057,inactive,pic-present,0.0,1.0,0.0,1.0,21.0,0.0,miss,,,,1
+sub-057,active,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,1
+sub-057,active,pic-present,1.0,1.0,0.0,3.0,21.0,1.0,hit,,,,1
+sub-057,inactive,pic-present,0.0,1.0,1.0,0.0,22.0,0.0,miss,,,,1
+sub-057,active,pic-absent,0.0,1.0,1.0,1.0,22.0,1.0,correct rejection,,,,1
+sub-057,inactive,pic-absent,1.0,1.0,1.0,2.0,22.0,0.0,false alarm,,,,1
+sub-057,inactive,pic-present,1.0,1.0,1.0,3.0,22.0,1.0,hit,,,,1
+sub-057,active,pic-absent,1.0,1.0,2.0,0.0,23.0,0.0,false alarm,,,,1
+sub-057,inactive,pic-absent,1.0,1.0,2.0,1.0,23.0,0.0,false alarm,,,,1
+sub-057,active,pic-present,0.0,1.0,2.0,2.0,23.0,0.0,miss,,,,1
+sub-057,active,pic-absent,1.0,1.0,2.0,3.0,23.0,0.0,false alarm,,,,1
+sub-057,inactive,pic-absent,0.0,1.0,3.0,0.0,24.0,1.0,correct rejection,,,,1
+sub-057,active,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,1
+sub-057,inactive,pic-present,0.0,1.0,3.0,2.0,24.0,0.0,miss,,,,1
+sub-057,inactive,pic-absent,0.0,1.0,3.0,3.0,24.0,1.0,correct rejection,,,,1
+,,,,,,,,,,0.8684092406183481,0.9063444999977947,0.8511659409004179,0
+sub-058,active,pic-absent,0.0,0.0,0.0,0.0,9.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-present,1.0,0.0,0.0,1.0,9.0,1.0,hit,,,,0
+sub-058,active,pic-absent,0.0,0.0,0.0,2.0,9.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-present,1.0,0.0,0.0,3.0,9.0,1.0,hit,,,,0
+sub-058,active,pic-present,1.0,0.0,1.0,0.0,10.0,1.0,hit,,,,0
+sub-058,inactive,pic-absent,0.0,0.0,1.0,1.0,10.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-present,1.0,0.0,1.0,2.0,10.0,1.0,hit,,,,0
+sub-058,active,pic-present,1.0,0.0,1.0,3.0,10.0,1.0,hit,,,,0
+sub-058,inactive,pic-absent,0.0,0.0,2.0,0.0,11.0,1.0,correct rejection,,,,0
+sub-058,active,pic-present,0.0,0.0,2.0,1.0,11.0,0.0,miss,,,,0
+sub-058,active,pic-present,1.0,0.0,2.0,2.0,11.0,1.0,hit,,,,0
+sub-058,inactive,pic-absent,0.0,0.0,2.0,3.0,11.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-present,1.0,0.0,3.0,0.0,12.0,1.0,hit,,,,0
+sub-058,active,pic-absent,0.0,0.0,3.0,1.0,12.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-absent,0.0,0.0,3.0,2.0,12.0,1.0,correct rejection,,,,0
+sub-058,active,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,0
+sub-058,active,pic-absent,0.0,1.0,0.0,0.0,21.0,1.0,correct rejection,,,,0
+sub-058,active,pic-present,1.0,1.0,0.0,1.0,21.0,1.0,hit,,,,0
+sub-058,inactive,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-absent,1.0,1.0,0.0,3.0,21.0,0.0,false alarm,,,,0
+sub-058,active,pic-present,1.0,1.0,1.0,0.0,22.0,1.0,hit,,,,0
+sub-058,active,pic-absent,0.0,1.0,1.0,1.0,22.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-058,active,pic-present,1.0,1.0,1.0,3.0,22.0,1.0,hit,,,,0
+sub-058,inactive,pic-absent,0.0,1.0,2.0,0.0,23.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-present,1.0,1.0,2.0,1.0,23.0,1.0,hit,,,,0
+sub-058,active,pic-absent,0.0,1.0,2.0,2.0,23.0,1.0,correct rejection,,,,0
+sub-058,active,pic-absent,0.0,1.0,2.0,3.0,23.0,1.0,correct rejection,,,,0
+sub-058,inactive,pic-present,1.0,1.0,3.0,0.0,24.0,1.0,hit,,,,0
+sub-058,inactive,pic-absent,0.0,1.0,3.0,1.0,24.0,1.0,correct rejection,,,,0
+sub-058,active,pic-present,1.0,1.0,3.0,2.0,24.0,1.0,hit,,,,0
+sub-058,inactive,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,0
+,,,,,,,,,,1.2982748781287228,1.2798841533406327,1.5741357499500737,0
+sub-059,active,pic-present,1.0,0.0,0.0,0.0,9.0,1.0,hit,,,,0
+sub-059,inactive,pic-absent,0.0,0.0,0.0,1.0,9.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-present,1.0,0.0,0.0,2.0,9.0,1.0,hit,,,,0
+sub-059,active,pic-present,0.0,0.0,0.0,3.0,9.0,0.0,miss,,,,0
+sub-059,inactive,pic-absent,0.0,0.0,1.0,0.0,10.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-present,1.0,0.0,1.0,1.0,10.0,1.0,hit,,,,0
+sub-059,active,pic-present,1.0,0.0,1.0,2.0,10.0,1.0,hit,,,,0
+sub-059,active,pic-absent,0.0,0.0,1.0,3.0,10.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-present,1.0,0.0,2.0,0.0,11.0,1.0,hit,,,,0
+sub-059,active,pic-absent,0.0,0.0,2.0,1.0,11.0,1.0,correct rejection,,,,0
+sub-059,active,pic-absent,0.0,0.0,2.0,2.0,11.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-present,0.0,0.0,2.0,3.0,11.0,0.0,miss,,,,0
+sub-059,active,pic-absent,0.0,0.0,3.0,0.0,12.0,1.0,correct rejection,,,,0
+sub-059,active,pic-present,1.0,0.0,3.0,1.0,12.0,1.0,hit,,,,0
+sub-059,inactive,pic-absent,0.0,0.0,3.0,2.0,12.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,0
+sub-059,active,pic-absent,0.0,1.0,0.0,0.0,21.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-present,1.0,1.0,0.0,1.0,21.0,1.0,hit,,,,0
+sub-059,inactive,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,0
+sub-059,active,pic-absent,0.0,1.0,0.0,3.0,21.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-present,1.0,1.0,1.0,0.0,22.0,1.0,hit,,,,0
+sub-059,inactive,pic-absent,0.0,1.0,1.0,1.0,22.0,1.0,correct rejection,,,,0
+sub-059,active,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-059,active,pic-present,1.0,1.0,1.0,3.0,22.0,1.0,hit,,,,0
+sub-059,inactive,pic-absent,0.0,1.0,2.0,0.0,23.0,1.0,correct rejection,,,,0
+sub-059,active,pic-present,1.0,1.0,2.0,1.0,23.0,1.0,hit,,,,0
+sub-059,active,pic-absent,0.0,1.0,2.0,2.0,23.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-absent,0.0,1.0,2.0,3.0,23.0,1.0,correct rejection,,,,0
+sub-059,active,pic-present,1.0,1.0,3.0,0.0,24.0,1.0,hit,,,,0
+sub-059,active,pic-absent,0.0,1.0,3.0,1.0,24.0,1.0,correct rejection,,,,0
+sub-059,inactive,pic-present,1.0,1.0,3.0,2.0,24.0,1.0,hit,,,,0
+sub-059,inactive,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,0
+,,,,,,,,,,0.8552071781014092,0.8355975066311657,1.1493522501550615,0
+sub-060,inactive,pic-absent,0.0,0.0,0.0,0.0,9.0,1.0,correct rejection,,,,0
+sub-060,active,pic-present,1.0,0.0,0.0,1.0,9.0,1.0,hit,,,,0
+sub-060,inactive,pic-absent,0.0,0.0,0.0,2.0,9.0,1.0,correct rejection,,,,0
+sub-060,inactive,pic-absent,0.0,0.0,0.0,3.0,9.0,1.0,correct rejection,,,,0
+sub-060,active,pic-present,0.0,0.0,1.0,0.0,10.0,0.0,miss,,,,0
+sub-060,inactive,pic-present,1.0,0.0,1.0,1.0,10.0,1.0,hit,,,,0
+sub-060,active,pic-absent,0.0,0.0,1.0,2.0,10.0,1.0,correct rejection,,,,0
+sub-060,inactive,pic-present,1.0,0.0,1.0,3.0,10.0,1.0,hit,,,,0
+sub-060,active,pic-absent,0.0,0.0,2.0,0.0,11.0,1.0,correct rejection,,,,0
+sub-060,active,pic-absent,1.0,0.0,2.0,1.0,11.0,0.0,false alarm,,,,0
+sub-060,inactive,pic-present,1.0,0.0,2.0,2.0,11.0,1.0,hit,,,,0
+sub-060,active,pic-absent,0.0,0.0,2.0,3.0,11.0,1.0,correct rejection,,,,0
+sub-060,inactive,pic-present,1.0,0.0,3.0,0.0,12.0,1.0,hit,,,,0
+sub-060,inactive,pic-absent,0.0,0.0,3.0,1.0,12.0,1.0,correct rejection,,,,0
+sub-060,active,pic-present,1.0,0.0,3.0,2.0,12.0,1.0,hit,,,,0
+sub-060,active,pic-present,0.0,0.0,3.0,3.0,12.0,0.0,miss,,,,0
+sub-060,inactive,pic-present,0.0,1.0,0.0,0.0,21.0,0.0,miss,,,,0
+sub-060,active,pic-absent,1.0,1.0,0.0,1.0,21.0,0.0,false alarm,,,,0
+sub-060,inactive,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,0
+sub-060,inactive,pic-present,1.0,1.0,0.0,3.0,21.0,1.0,hit,,,,0
+sub-060,active,pic-present,1.0,1.0,1.0,0.0,22.0,1.0,hit,,,,0
+sub-060,inactive,pic-absent,0.0,1.0,1.0,1.0,22.0,1.0,correct rejection,,,,0
+sub-060,active,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-060,inactive,pic-absent,1.0,1.0,1.0,3.0,22.0,0.0,false alarm,,,,0
+sub-060,active,pic-absent,0.0,1.0,2.0,0.0,23.0,1.0,correct rejection,,,,0
+sub-060,inactive,pic-present,0.0,1.0,2.0,1.0,23.0,0.0,miss,,,,0
+sub-060,inactive,pic-present,1.0,1.0,2.0,2.0,23.0,1.0,hit,,,,0
+sub-060,active,pic-absent,0.0,1.0,2.0,3.0,23.0,1.0,correct rejection,,,,0
+sub-060,inactive,pic-absent,0.0,1.0,3.0,0.0,24.0,1.0,correct rejection,,,,0
+sub-060,active,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,0
+sub-060,active,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,0
+sub-060,active,pic-present,0.0,1.0,3.0,3.0,24.0,0.0,miss,,,,0
+,,,,,,,,,,1.4150429500000712,1.3194959250000693,1.7016840250000769,0
+sub-061,active,pic-absent,0.0,0.0,0.0,0.0,9.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-absent,1.0,0.0,0.0,1.0,9.0,0.0,false alarm,,,,1
+sub-061,active,pic-present,1.0,0.0,0.0,2.0,9.0,1.0,hit,,,,1
+sub-061,inactive,pic-absent,0.0,0.0,0.0,3.0,9.0,1.0,correct rejection,,,,1
+sub-061,active,pic-present,1.0,0.0,1.0,0.0,10.0,1.0,hit,,,,1
+sub-061,active,pic-absent,0.0,0.0,1.0,1.0,10.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-absent,0.0,0.0,1.0,2.0,10.0,1.0,correct rejection,,,,1
+sub-061,active,pic-present,1.0,0.0,1.0,3.0,10.0,1.0,hit,,,,1
+sub-061,inactive,pic-absent,0.0,0.0,2.0,0.0,11.0,1.0,correct rejection,,,,1
+sub-061,active,pic-present,0.0,0.0,2.0,1.0,11.0,0.0,miss,,,,1
+sub-061,inactive,pic-present,1.0,0.0,2.0,2.0,11.0,1.0,hit,,,,1
+sub-061,active,pic-absent,0.0,0.0,2.0,3.0,11.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-present,1.0,0.0,3.0,0.0,12.0,1.0,hit,,,,1
+sub-061,inactive,pic-present,0.0,0.0,3.0,1.0,12.0,0.0,miss,,,,1
+sub-061,active,pic-absent,0.0,0.0,3.0,2.0,12.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-present,1.0,0.0,3.0,3.0,12.0,1.0,hit,,,,1
+sub-061,active,pic-absent,0.0,1.0,0.0,0.0,21.0,1.0,correct rejection,,,,1
+sub-061,active,pic-absent,0.0,1.0,0.0,1.0,21.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-present,0.0,1.0,0.0,2.0,21.0,0.0,miss,,,,1
+sub-061,active,pic-present,1.0,1.0,0.0,3.0,21.0,1.0,hit,,,,1
+sub-061,inactive,pic-absent,0.0,1.0,1.0,0.0,22.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-present,1.0,1.0,1.0,1.0,22.0,1.0,hit,,,,1
+sub-061,active,pic-absent,0.0,1.0,1.0,2.0,22.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-absent,0.0,1.0,1.0,3.0,22.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-present,0.0,1.0,2.0,0.0,23.0,0.0,miss,,,,1
+sub-061,active,pic-present,1.0,1.0,2.0,1.0,23.0,1.0,hit,,,,1
+sub-061,inactive,pic-absent,0.0,1.0,2.0,2.0,23.0,1.0,correct rejection,,,,1
+sub-061,inactive,pic-present,0.0,1.0,2.0,3.0,23.0,0.0,miss,,,,1
+sub-061,active,pic-present,1.0,1.0,3.0,0.0,24.0,1.0,hit,,,,1
+sub-061,inactive,pic-absent,0.0,1.0,3.0,1.0,24.0,1.0,correct rejection,,,,1
+sub-061,active,pic-present,0.0,1.0,3.0,2.0,24.0,0.0,miss,,,,1
+sub-061,active,pic-absent,0.0,1.0,3.0,3.0,24.0,1.0,correct rejection,,,,1
+,,,,,,,,,,1.4603099593750812,1.4729533240001547,1.4151550857141046,0
+sub-062,inactive,pic-present,1.0,0.0,0.0,0.0,9.0,1.0,hit,,,,0
+sub-062,active,pic-present,0.0,0.0,0.0,1.0,9.0,0.0,miss,,,,0
+sub-062,inactive,pic-absent,0.0,0.0,0.0,2.0,9.0,1.0,correct rejection,,,,0
+sub-062,inactive,pic-present,1.0,0.0,0.0,3.0,9.0,1.0,hit,,,,0
+sub-062,active,pic-absent,0.0,0.0,1.0,0.0,10.0,1.0,correct rejection,,,,0
+sub-062,active,pic-absent,0.0,0.0,1.0,1.0,10.0,1.0,correct rejection,,,,0
+sub-062,inactive,pic-present,0.0,0.0,1.0,2.0,10.0,0.0,miss,,,,0
+sub-062,inactive,pic-absent,0.0,0.0,1.0,3.0,10.0,1.0,correct rejection,,,,0
+sub-062,active,pic-present,1.0,0.0,2.0,0.0,11.0,1.0,hit,,,,0
+sub-062,inactive,pic-absent,0.0,0.0,2.0,1.0,11.0,1.0,correct rejection,,,,0
+sub-062,active,pic-present,0.0,0.0,2.0,2.0,11.0,0.0,miss,,,,0
+sub-062,active,pic-present,1.0,0.0,2.0,3.0,11.0,1.0,hit,,,,0
+sub-062,inactive,pic-absent,0.0,0.0,3.0,0.0,12.0,1.0,correct rejection,,,,0
+sub-062,inactive,pic-present,1.0,0.0,3.0,1.0,12.0,1.0,hit,,,,0
+sub-062,active,pic-absent,0.0,0.0,3.0,2.0,12.0,1.0,correct rejection,,,,0
+sub-062,active,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,0
+sub-062,inactive,pic-present,1.0,1.0,0.0,0.0,21.0,1.0,hit,,,,0
+sub-062,active,pic-absent,0.0,1.0,0.0,1.0,21.0,1.0,correct rejection,,,,0
+sub-062,active,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,0
+sub-062,inactive,pic-present,1.0,1.0,0.0,3.0,21.0,1.0,hit,,,,0
+sub-062,active,pic-absent,0.0,1.0,1.0,0.0,22.0,1.0,correct rejection,,,,0
+sub-062,inactive,pic-absent,0.0,1.0,1.0,1.0,22.0,1.0,correct rejection,,,,0
+sub-062,active,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-062,active,pic-absent,0.0,1.0,1.0,3.0,22.0,1.0,correct rejection,,,,0
+sub-062,inactive,pic-absent,0.0,1.0,2.0,0.0,23.0,1.0,correct rejection,,,,0
+sub-062,active,pic-present,1.0,1.0,2.0,1.0,23.0,1.0,hit,,,,0
+sub-062,inactive,pic-present,1.0,1.0,2.0,2.0,23.0,1.0,hit,,,,0
+sub-062,inactive,pic-absent,0.0,1.0,2.0,3.0,23.0,1.0,correct rejection,,,,0
+sub-062,active,pic-present,0.0,1.0,3.0,0.0,24.0,0.0,miss,,,,0
+sub-062,inactive,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,0
+sub-062,inactive,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,0
+sub-062,active,pic-present,0.0,1.0,3.0,3.0,24.0,0.0,miss,,,,0
+,,,,,,,,,,1.2661822156169364,1.2326065407294124,1.447490860009566,0
+sub-063,inactive,pic-present,1.0,0.0,0.0,0.0,9.0,1.0,hit,,,,0
+sub-063,inactive,pic-present,1.0,0.0,0.0,1.0,9.0,1.0,hit,,,,0
+sub-063,active,pic-absent,1.0,0.0,0.0,2.0,9.0,0.0,false alarm,,,,0
+sub-063,active,pic-present,1.0,0.0,0.0,3.0,9.0,1.0,hit,,,,0
+sub-063,inactive,pic-absent,0.0,0.0,1.0,0.0,10.0,1.0,correct rejection,,,,0
+sub-063,active,pic-absent,1.0,0.0,1.0,1.0,10.0,0.0,false alarm,,,,0
+sub-063,inactive,pic-present,1.0,0.0,1.0,2.0,10.0,1.0,hit,,,,0
+sub-063,inactive,pic-absent,0.0,0.0,1.0,3.0,10.0,1.0,correct rejection,,,,0
+sub-063,active,pic-absent,1.0,0.0,2.0,0.0,11.0,0.0,false alarm,,,,0
+sub-063,active,pic-present,1.0,0.0,2.0,1.0,11.0,1.0,hit,,,,0
+sub-063,inactive,pic-absent,0.0,0.0,2.0,2.0,11.0,1.0,correct rejection,,,,0
+sub-063,inactive,pic-present,1.0,0.0,2.0,3.0,11.0,1.0,hit,,,,0
+sub-063,active,pic-present,1.0,0.0,3.0,0.0,12.0,1.0,hit,,,,0
+sub-063,inactive,pic-absent,0.0,0.0,3.0,1.0,12.0,1.0,correct rejection,,,,0
+sub-063,active,pic-present,1.0,0.0,3.0,2.0,12.0,1.0,hit,,,,0
+sub-063,active,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,0
+sub-063,inactive,pic-present,1.0,1.0,0.0,0.0,21.0,1.0,hit,,,,0
+sub-063,active,pic-present,1.0,1.0,0.0,1.0,21.0,1.0,hit,,,,0
+sub-063,inactive,pic-absent,1.0,1.0,0.0,2.0,21.0,0.0,false alarm,,,,0
+sub-063,active,pic-absent,0.0,1.0,0.0,3.0,21.0,1.0,correct rejection,,,,0
+sub-063,active,pic-present,1.0,1.0,1.0,0.0,22.0,1.0,hit,,,,0
+sub-063,inactive,pic-absent,1.0,1.0,1.0,1.0,22.0,0.0,false alarm,,,,0
+sub-063,active,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-063,active,pic-present,1.0,1.0,1.0,3.0,22.0,1.0,hit,,,,0
+sub-063,inactive,pic-absent,1.0,1.0,2.0,0.0,23.0,0.0,false alarm,,,,0
+sub-063,active,pic-absent,1.0,1.0,2.0,1.0,23.0,0.0,false alarm,,,,0
+sub-063,inactive,pic-present,1.0,1.0,2.0,2.0,23.0,1.0,hit,,,,0
+sub-063,inactive,pic-absent,1.0,1.0,2.0,3.0,23.0,0.0,false alarm,,,,0
+sub-063,active,pic-absent,1.0,1.0,3.0,0.0,24.0,0.0,false alarm,,,,0
+sub-063,inactive,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,0
+sub-063,active,pic-absent,1.0,1.0,3.0,2.0,24.0,0.0,false alarm,,,,0
+sub-063,inactive,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,0
+,,,,,,,,,,0.7765798124892171,0.7070463999936526,0.929553319979459,0
+sub-064,inactive,pic-absent,0.0,0.0,0.0,0.0,9.0,1.0,correct rejection,,,,0
+sub-064,inactive,pic-present,1.0,0.0,0.0,1.0,9.0,1.0,hit,,,,0
+sub-064,active,pic-absent,1.0,0.0,0.0,2.0,9.0,0.0,false alarm,,,,0
+sub-064,inactive,pic-present,1.0,0.0,0.0,3.0,9.0,1.0,hit,,,,0
+sub-064,active,pic-present,0.0,0.0,1.0,0.0,10.0,0.0,miss,,,,0
+sub-064,active,pic-absent,0.0,0.0,1.0,1.0,10.0,1.0,correct rejection,,,,0
+sub-064,inactive,pic-present,1.0,0.0,1.0,2.0,10.0,1.0,hit,,,,0
+sub-064,active,pic-present,1.0,0.0,1.0,3.0,10.0,1.0,hit,,,,0
+sub-064,active,pic-absent,1.0,0.0,2.0,0.0,11.0,0.0,false alarm,,,,0
+sub-064,inactive,pic-absent,0.0,0.0,2.0,1.0,11.0,1.0,correct rejection,,,,0
+sub-064,active,pic-present,1.0,0.0,2.0,2.0,11.0,1.0,hit,,,,0
+sub-064,active,pic-absent,0.0,0.0,2.0,3.0,11.0,1.0,correct rejection,,,,0
+sub-064,inactive,pic-present,0.0,0.0,3.0,0.0,12.0,0.0,miss,,,,0
+sub-064,active,pic-present,1.0,0.0,3.0,1.0,12.0,1.0,hit,,,,0
+sub-064,inactive,pic-absent,0.0,0.0,3.0,2.0,12.0,1.0,correct rejection,,,,0
+sub-064,inactive,pic-absent,1.0,0.0,3.0,3.0,12.0,0.0,false alarm,,,,0
+sub-064,inactive,pic-present,1.0,1.0,0.0,0.0,21.0,1.0,hit,,,,0
+sub-064,inactive,pic-present,1.0,1.0,0.0,1.0,21.0,1.0,hit,,,,0
+sub-064,active,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,0
+sub-064,inactive,pic-absent,1.0,1.0,0.0,3.0,21.0,0.0,false alarm,,,,0
+sub-064,active,pic-present,0.0,1.0,1.0,0.0,22.0,0.0,miss,,,,0
+sub-064,active,pic-absent,1.0,1.0,1.0,1.0,22.0,0.0,false alarm,,,,0
+sub-064,inactive,pic-absent,0.0,1.0,1.0,2.0,22.0,1.0,correct rejection,,,,0
+sub-064,active,pic-present,1.0,1.0,1.0,3.0,22.0,1.0,hit,,,,0
+sub-064,active,pic-absent,0.0,1.0,2.0,0.0,23.0,1.0,correct rejection,,,,0
+sub-064,inactive,pic-absent,1.0,1.0,2.0,1.0,23.0,0.0,false alarm,,,,0
+sub-064,active,pic-present,0.0,1.0,2.0,2.0,23.0,0.0,miss,,,,0
+sub-064,active,pic-absent,0.0,1.0,2.0,3.0,23.0,1.0,correct rejection,,,,0
+sub-064,inactive,pic-absent,0.0,1.0,3.0,0.0,24.0,1.0,correct rejection,,,,0
+sub-064,active,pic-present,0.0,1.0,3.0,1.0,24.0,0.0,miss,,,,0
+sub-064,inactive,pic-present,1.0,1.0,3.0,2.0,24.0,1.0,hit,,,,0
+sub-064,inactive,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,0
+,,,,,,,,,,0.8013280187499845,0.7295561619048385,0.9383470181816268,0
+sub-066,active,pic-absent,1.0,0.0,0.0,0.0,9.0,0.0,false alarm,,,,0
+sub-066,inactive,pic-present,1.0,0.0,0.0,1.0,9.0,1.0,hit,,,,0
+sub-066,active,pic-present,1.0,0.0,0.0,2.0,9.0,1.0,hit,,,,0
+sub-066,inactive,pic-absent,0.0,0.0,0.0,3.0,9.0,1.0,correct rejection,,,,0
+sub-066,active,pic-present,1.0,0.0,1.0,0.0,10.0,1.0,hit,,,,0
+sub-066,inactive,pic-absent,1.0,0.0,1.0,1.0,10.0,0.0,false alarm,,,,0
+sub-066,inactive,pic-present,1.0,0.0,1.0,2.0,10.0,1.0,hit,,,,0
+sub-066,active,pic-absent,0.0,0.0,1.0,3.0,10.0,1.0,correct rejection,,,,0
+sub-066,inactive,pic-present,0.0,0.0,2.0,0.0,11.0,0.0,miss,,,,0
+sub-066,active,pic-absent,1.0,0.0,2.0,1.0,11.0,0.0,false alarm,,,,0
+sub-066,active,pic-absent,0.0,0.0,2.0,2.0,11.0,1.0,correct rejection,,,,0
+sub-066,inactive,pic-present,1.0,0.0,2.0,3.0,11.0,1.0,hit,,,,0
+sub-066,inactive,pic-absent,1.0,0.0,3.0,0.0,12.0,0.0,false alarm,,,,0
+sub-066,active,pic-present,1.0,0.0,3.0,1.0,12.0,1.0,hit,,,,0
+sub-066,inactive,pic-absent,0.0,0.0,3.0,2.0,12.0,1.0,correct rejection,,,,0
+sub-066,active,pic-present,1.0,0.0,3.0,3.0,12.0,1.0,hit,,,,0
+sub-066,active,pic-present,1.0,1.0,0.0,0.0,21.0,1.0,hit,,,,0
+sub-066,inactive,pic-absent,0.0,1.0,0.0,1.0,21.0,1.0,correct rejection,,,,0
+sub-066,active,pic-absent,1.0,1.0,0.0,2.0,21.0,0.0,false alarm,,,,0
+sub-066,active,pic-present,0.0,1.0,0.0,3.0,21.0,0.0,miss,,,,0
+sub-066,inactive,pic-absent,0.0,1.0,1.0,0.0,22.0,1.0,correct rejection,,,,0
+sub-066,active,pic-absent,1.0,1.0,1.0,1.0,22.0,0.0,false alarm,,,,0
+sub-066,active,pic-present,0.0,1.0,1.0,2.0,22.0,0.0,miss,,,,0
+sub-066,inactive,pic-absent,1.0,1.0,1.0,3.0,22.0,0.0,false alarm,,,,0
+sub-066,inactive,pic-present,1.0,1.0,2.0,0.0,23.0,1.0,hit,,,,0
+sub-066,active,pic-present,1.0,1.0,2.0,1.0,23.0,1.0,hit,,,,0
+sub-066,inactive,pic-absent,0.0,1.0,2.0,2.0,23.0,1.0,correct rejection,,,,0
+sub-066,inactive,pic-present,0.0,1.0,2.0,3.0,23.0,0.0,miss,,,,0
+sub-066,active,pic-absent,0.0,1.0,3.0,0.0,24.0,1.0,correct rejection,,,,0
+sub-066,inactive,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,0
+sub-066,inactive,pic-present,0.0,1.0,3.0,2.0,24.0,0.0,miss,,,,0
+sub-066,active,pic-absent,0.0,1.0,3.0,3.0,24.0,1.0,correct rejection,,,,0
+,,,,,,,,,,1.3904569968799478,1.3573088799952528,1.4457038583544393,0
+sub-067,inactive,pic-present,1.0,0.0,0.0,0.0,9.0,1.0,hit,,,,0
+sub-067,inactive,pic-present,1.0,0.0,0.0,1.0,9.0,1.0,hit,,,,0
+sub-067,active,pic-absent,1.0,0.0,0.0,2.0,9.0,0.0,false alarm,,,,0
+sub-067,active,pic-present,1.0,0.0,0.0,3.0,9.0,1.0,hit,,,,0
+sub-067,inactive,pic-absent,0.0,0.0,1.0,0.0,10.0,1.0,correct rejection,,,,0
+sub-067,active,pic-absent,1.0,0.0,1.0,1.0,10.0,0.0,false alarm,,,,0
+sub-067,active,pic-present,1.0,0.0,1.0,2.0,10.0,1.0,hit,,,,0
+sub-067,inactive,pic-present,1.0,0.0,1.0,3.0,10.0,1.0,hit,,,,0
+sub-067,active,pic-absent,0.0,0.0,2.0,0.0,11.0,1.0,correct rejection,,,,0
+sub-067,active,pic-present,1.0,0.0,2.0,1.0,11.0,1.0,hit,,,,0
+sub-067,inactive,pic-absent,0.0,0.0,2.0,2.0,11.0,1.0,correct rejection,,,,0
+sub-067,active,pic-absent,0.0,0.0,2.0,3.0,11.0,1.0,correct rejection,,,,0
+sub-067,active,pic-present,1.0,0.0,3.0,0.0,12.0,1.0,hit,,,,0
+sub-067,inactive,pic-absent,0.0,0.0,3.0,1.0,12.0,1.0,correct rejection,,,,0
+sub-067,inactive,pic-present,1.0,0.0,3.0,2.0,12.0,1.0,hit,,,,0
+sub-067,inactive,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,0
+sub-067,inactive,pic-absent,0.0,1.0,0.0,0.0,21.0,1.0,correct rejection,,,,0
+sub-067,active,pic-absent,0.0,1.0,0.0,1.0,21.0,1.0,correct rejection,,,,0
+sub-067,active,pic-present,1.0,1.0,0.0,2.0,21.0,1.0,hit,,,,0
+sub-067,inactive,pic-present,1.0,1.0,0.0,3.0,21.0,1.0,hit,,,,0
+sub-067,active,pic-absent,0.0,1.0,1.0,0.0,22.0,1.0,correct rejection,,,,0
+sub-067,inactive,pic-present,1.0,1.0,1.0,1.0,22.0,1.0,hit,,,,0
+sub-067,inactive,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-067,active,pic-absent,0.0,1.0,1.0,3.0,22.0,1.0,correct rejection,,,,0
+sub-067,inactive,pic-present,1.0,1.0,2.0,0.0,23.0,1.0,hit,,,,0
+sub-067,active,pic-present,1.0,1.0,2.0,1.0,23.0,1.0,hit,,,,0
+sub-067,active,pic-absent,1.0,1.0,2.0,2.0,23.0,0.0,false alarm,,,,0
+sub-067,inactive,pic-absent,1.0,1.0,2.0,3.0,23.0,0.0,false alarm,,,,0
+sub-067,active,pic-present,1.0,1.0,3.0,0.0,24.0,1.0,hit,,,,0
+sub-067,inactive,pic-absent,0.0,1.0,3.0,1.0,24.0,1.0,correct rejection,,,,0
+sub-067,inactive,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,0
+sub-067,active,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,0
+,,,,,,,,,,1.2599896406100015,1.2193590571280635,1.5444037249835674,0
+sub-068,active,pic-absent,0.0,0.0,0.0,0.0,9.0,1.0,correct rejection,,,,1
+sub-068,active,pic-present,1.0,0.0,0.0,1.0,9.0,1.0,hit,,,,1
+sub-068,inactive,pic-absent,0.0,0.0,0.0,2.0,9.0,1.0,correct rejection,,,,1
+sub-068,active,pic-present,1.0,0.0,0.0,3.0,9.0,1.0,hit,,,,1
+sub-068,active,pic-present,1.0,0.0,1.0,0.0,10.0,1.0,hit,,,,1
+sub-068,inactive,pic-absent,0.0,0.0,1.0,1.0,10.0,1.0,correct rejection,,,,1
+sub-068,inactive,pic-present,1.0,0.0,1.0,2.0,10.0,1.0,hit,,,,1
+sub-068,active,pic-absent,0.0,0.0,1.0,3.0,10.0,1.0,correct rejection,,,,1
+sub-068,inactive,pic-present,1.0,0.0,2.0,0.0,11.0,1.0,hit,,,,1
+sub-068,inactive,pic-present,1.0,0.0,2.0,1.0,11.0,1.0,hit,,,,1
+sub-068,active,pic-absent,0.0,0.0,2.0,2.0,11.0,1.0,correct rejection,,,,1
+sub-068,inactive,pic-present,0.0,0.0,2.0,3.0,11.0,0.0,miss,,,,1
+sub-068,inactive,pic-absent,0.0,0.0,3.0,0.0,12.0,1.0,correct rejection,,,,1
+sub-068,active,pic-absent,0.0,0.0,3.0,1.0,12.0,1.0,correct rejection,,,,1
+sub-068,active,pic-present,1.0,0.0,3.0,2.0,12.0,1.0,hit,,,,1
+sub-068,inactive,pic-absent,0.0,0.0,3.0,3.0,12.0,1.0,correct rejection,,,,1
+sub-068,inactive,pic-present,1.0,1.0,0.0,0.0,21.0,1.0,hit,,,,1
+sub-068,active,pic-absent,0.0,1.0,0.0,1.0,21.0,1.0,correct rejection,,,,1
+sub-068,inactive,pic-absent,0.0,1.0,0.0,2.0,21.0,1.0,correct rejection,,,,1
+sub-068,active,pic-present,1.0,1.0,0.0,3.0,21.0,1.0,hit,,,,1
+sub-068,active,pic-absent,0.0,1.0,1.0,0.0,22.0,1.0,correct rejection,,,,1
+sub-068,inactive,pic-absent,1.0,1.0,1.0,1.0,22.0,0.0,false alarm,,,,1
+sub-068,active,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,1
+sub-068,active,pic-absent,0.0,1.0,1.0,3.0,22.0,1.0,correct rejection,,,,1
+sub-068,inactive,pic-absent,1.0,1.0,2.0,0.0,23.0,0.0,false alarm,,,,1
+sub-068,active,pic-present,1.0,1.0,2.0,1.0,23.0,1.0,hit,,,,1
+sub-068,inactive,pic-present,1.0,1.0,2.0,2.0,23.0,1.0,hit,,,,1
+sub-068,inactive,pic-absent,0.0,1.0,2.0,3.0,23.0,1.0,correct rejection,,,,1
+sub-068,active,pic-present,1.0,1.0,3.0,0.0,24.0,1.0,hit,,,,1
+sub-068,inactive,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,1
+sub-068,active,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,1
+sub-068,inactive,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,1
+,,,,,,,,,,0.8729611249873415,0.8465279654985101,1.1284816667127113,0
