@@ -785,10 +785,10 @@ for row in socio.iterrows():
         wide_dat.loc[row[0], "isfemale"] = (
             row[1]["4. Quel est votre genre? "] == "Féminin"
         )
+        wide_dat.loc[row[0], 'Autres'] = (row[1]["4. Quel est votre genre? "] == "Autres")
         wide_dat.loc[row[0], "pcs_total"] = row[1]["pcs_total"]
         wide_dat.loc[row[0], "iastay1_total"] = row[1]["iastay1_total"]
         wide_dat.loc[row[0], "iastay2_total"] = row[1]["iastay2_total"]
-
 
 
 
@@ -797,6 +797,7 @@ for row in socio.iterrows():
 
 wide_dat["ismale"] = wide_dat["ismale"].astype(int)
 wide_dat["isfemale"] = wide_dat["isfemale"].astype(int)
+wide_dat["Autres"] = wide_dat["Autres"].astype(int)
 
 # Create a new column for the exclude flag
 wide_dat['exclude'] = 0
@@ -2091,7 +2092,7 @@ temp_values = pd.DataFrame(
 temp_values.to_csv("derivatives/stats/temp_values_filtered.csv") 
 
 #we will get the same values but for all participants (including excluded ones)
-last_values_all = pd.read_csv("derivatives/data_wide_dat_full.csv")
+last_values_all = pd.read_csv("derivatives/data_wide_dat_withexcl.csv")
 #find mean, max and min of temp_pic, temp_plateau and temp_pic
 #temp pic = pic a utiliser
 temp_pic_mean_all = last_values_all['temp_pic'].mean()
@@ -2120,3 +2121,49 @@ temp_values_all = pd.DataFrame(
     }
 )
 temp_values_all.to_csv("derivatives/stats/temp_values_all.csv")
+
+
+#lets get socio demo stats so it is easier to find them then with with_dat 
+
+socio_demo_stats = pd.read_csv('derivatives/data_wide_dat_withexcl.csv')
+
+total_participants = len(socio_demo_stats)
+total_males = sum(socio_demo_stats['ismale'])
+total_females = sum(socio_demo_stats['isfemale'])
+total_others = sum(socio_demo_stats['Autres'])
+mean_age = socio_demo_stats['age'].mean()
+min_age = socio_demo_stats['age'].min()
+max_age = socio_demo_stats['age'].max()
+
+age_males_mean = socio_demo_stats[socio_demo_stats['ismale'] == 1]['age'].mean()
+age_females_mean = socio_demo_stats[socio_demo_stats['isfemale'] == 1]['age'].mean()
+age_others_mean = socio_demo_stats[socio_demo_stats['Autres'] == 1]['age'].mean()
+age_males_min = socio_demo_stats[socio_demo_stats['ismale'] == 1]['age'].min()
+age_females_min = socio_demo_stats[socio_demo_stats['isfemale'] == 1]['age'].min()
+age_others_min = socio_demo_stats[socio_demo_stats['Autres'] == 1]['age'].min()
+age_males_max = socio_demo_stats[socio_demo_stats['ismale'] == 1]['age'].max()
+age_females_max = socio_demo_stats[socio_demo_stats['isfemale'] == 1]['age'].max()
+age_others_max = socio_demo_stats[socio_demo_stats['Autres'] == 1]['age'].max()
+
+socio_demo_summary = pd.DataFrame(
+    {
+        "total_participants": [total_participants],
+        "total_males": [total_males],
+        "total_females": [total_females],
+        "total_others": [total_others],
+        "mean_age": [mean_age],
+        "min_age": [min_age],
+        "max_age": [max_age],
+        "age_males_mean": [age_males_mean],
+        "age_females_mean": [age_females_mean],
+        "age_others_mean": [age_others_mean],
+        "age_males_min": [age_males_min],
+        "age_females_min": [age_females_min],
+        "age_others min": [age_others_min],
+        "age_males_max": [age_males_max],
+        "age_females_max": [age_females_max],
+        "age_others_max": [age_others_max],
+    }
+)
+
+socio_demo_summary.to_csv("derivatives/stats/socio_demo_summary.csv")
