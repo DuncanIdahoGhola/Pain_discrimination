@@ -1,2 +1,2 @@
-,temp_pic_mean_all,temp_pic_max_all,temp_pic_min_all,temp_plateau_mean_all,temp_plateau_max_all,temp_plateau_min_all,temp_placebo_mean_all,temp_placebo_max_all,temp_placebo_min_all
-0,0.7747727272727272,1.0,0.38,45.815909090909095,48.8,41.8,44.14318181818182,48.2,41.0
+,temp_pic_mean_all,temp_pic_max_all,temp_pic_min_all,temp_plateau_mean_all,temp_plateau_max_all,temp_plateau_min_all,temp_placebo_mean_all,temp_placebo_max_all,temp_placebo_min_all,temp_pic_sd,temp_plateau_sd,temp_placebo_sd
+0,0.7725000000000001,1.0,0.38,45.77142857142858,48.8,41.8,44.114285714285714,48.2,41.0,0.17719261333989694,1.7150439240368338,1.9374886925766643
