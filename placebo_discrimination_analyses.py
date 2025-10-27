@@ -506,6 +506,12 @@ for p in tqdm(participants, desc="Processing individual participants"):
     )
     
     discrim_task["pic_response"] = discrim_task["pic_response"].fillna("None")
+    
+    #add a missing answer counter
+    discrim_task_missed = len(discrim_task[discrim_task["pic_response"] == "None"])
+    wide_dat.loc[p, "discrim_missed_responses"] = discrim_task_missed
+
+
     discrim_task = discrim_task[discrim_task["pic_response"] != "None"]
     discrim_task["pic_response"] = discrim_task["pic_response"].astype(int)
     discrim_task.reset_index(drop=True, inplace=True)
