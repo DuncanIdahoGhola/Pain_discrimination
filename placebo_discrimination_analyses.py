@@ -512,6 +512,7 @@ for p in tqdm(participants, desc="Processing individual participants"):
     wide_dat.loc[p, "discrim_missed_responses"] = discrim_task_missed
 
 
+
     discrim_task = discrim_task[discrim_task["pic_response"] != "None"]
     discrim_task["pic_response"] = discrim_task["pic_response"].astype(int)
     discrim_task.reset_index(drop=True, inplace=True)
@@ -689,6 +690,7 @@ all_eval_frame = pd.concat(all_eval_frames)
 all_discrim_task = pd.concat(all_discrim_task)
 all_discrim_task_long = pd.concat(all_discrim_task_long)
 wide_dat["participant"] = list(wide_dat.index)
+
 
 
 # TODO ADD QUESTIONNAIRES SUMMARY HERE
@@ -2072,6 +2074,10 @@ accuracy_inactive_min = last_values['inactive_acc_all'].min()
 accuracy_inactive_sd = last_values['inactive_acc_all'].std()
 
 
+
+
+
+
 #add these values to a csv file called temp_values.csv
 temp_values = pd.DataFrame(
     {
@@ -2185,3 +2191,29 @@ socio_demo_summary = pd.DataFrame(
 )
 
 socio_demo_summary.to_csv("derivatives/stats/socio_demo_summary.csv")
+
+
+#add wide_dat[["participant", "discrim_missed_responses"]]) to a csv file
+
+#add mean, std, min, max of discrim_missed_responses
+mean_missed_responses = wide_dat['discrim_missed_responses'].mean()
+std_missed_responses = wide_dat['discrim_missed_responses'].std()
+min_missed_responses = wide_dat['discrim_missed_responses'].min()
+max_missed_responses = wide_dat['discrim_missed_responses'].max()
+
+
+#add these values to a csv file called discrim_missed_responses.csv
+discrim_missed_responses = pd.DataFrame(
+    {
+        "mean_missed_responses": [mean_missed_responses],
+        "std_missed_responses": [std_missed_responses],
+        "min_missed_responses": [min_missed_responses],
+        "max_missed_responses": [max_missed_responses],
+    }   )
+
+#save to csv in derivatives/stats/discrim_missed_responses_stats.csv
+
+discrim_missed_responses.to_csv("derivatives/stats/discrim_missed_responses_stats.csv")
+
+wide_dat[["participant", "discrim_missed_responses"]].to_csv("derivatives/stats/discrim_missed_responses.csv")
+
