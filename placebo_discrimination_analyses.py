@@ -701,6 +701,13 @@ wide_dat["participant"] = list(wide_dat.index)
 iastay1 = pd.read_csv(opj(bidsroot, "iasta_y1.csv"))
 #iastay2
 iastay2 = pd.read_csv(opj(bidsroot, "iasta_y2.csv"))
+#drop the timestamp columf from ista y1 and iastay2
+iastay2 = iastay2.drop(columns=['Timestamp'])
+iastay1 = iastay1.drop(columns=['Timestamp', '# du participant:'])
+
+
+
+
 #pcs
 pcs = pd.read_csv(opj(bidsroot, "pcs.csv"))
 #results
