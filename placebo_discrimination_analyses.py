@@ -1308,7 +1308,7 @@ t_test_paired_c = pg.ttest(
 t_test_paired_c.to_csv("derivatives/stats/t_test_c.csv")
 
 # TOST for placebo on discrimination
-cohen_dz_bounds = 0.4
+cohen_dz_bounds = 0.56
 sd_diff_acc = np.std(
     wide_dat["active_acc_all"] - wide_dat["inactive_acc_all"], ddof=1
 )  # Get STD of difference
