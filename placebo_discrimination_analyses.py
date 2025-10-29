@@ -2044,31 +2044,36 @@ plt.savefig("derivatives/figures/extinction_placebo.png")
 
 last_values = pd.read_csv("derivatives/data_wide_dat_withexcl.csv")
 
+
 #find mean, max and min of temp_pic, temp_plateau and temp_pic
 #temp pic = pic a utiliser
 temp_pic_mean = last_values['temp_pic'].mean()
 temp_pic_max = last_values['temp_pic'].max()
 temp_pic_min = last_values['temp_pic'].min()
+temp_pic_sd = last_values['temp_pic'].std()
 #temp plateau = higher temp / temp flat
 temp_plateau_mean = last_values['temp_plateau'].mean()
 temp_plateau_max = last_values['temp_plateau'].max()
 temp_plateau_min = last_values['temp_plateau'].min()
+temp_plateau_sd = last_values['temp_plateau'].std()
 #temp placebo = temp pain active - used in placebo phase
 temp_placebo_mean = last_values['temp_placebo'].mean()
 temp_placebo_max = last_values['temp_placebo'].max()
 temp_placebo_min = last_values['temp_placebo'].min()
+temp_placebo_sd = last_values['temp_placebo'].std()
 
 
 #add placebo effect mean, max and min
 placebo_effect_mean = last_values['perc_placebo_all'].mean()
 placebo_effect_max = last_values['perc_placebo_all'].max()
 placebo_effect_min = last_values['perc_placebo_all'].min()
+placebo_effect_sd = last_values['perc_placebo_all'].std()
 
 #add accuracy all, accuracy active and accuracy inactive
-accuracy_all_mean = last_values['active_acc_all'].mean()
-accuracy_all_max = last_values['active_acc_all'].max()
-accuracy_all_min = last_values['active_acc_all'].min()
-accuracy_all_sd = last_values['active_acc_all'].std()
+accuracy_all_mean = last_values['acc_all'].mean()
+accuracy_all_max = last_values['acc_all'].max()
+accuracy_all_min = last_values['acc_all'].min()
+accuracy_all_sd = last_values['acc_all'].std()
 
 accuracy_active_mean = last_values['active_acc_all'].mean()
 accuracy_active_max = last_values['active_acc_all'].max()
