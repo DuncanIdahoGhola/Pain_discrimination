@@ -1906,3 +1906,36 @@ sub-068,inactive,pic-present,1.0,1.0,3.0,1.0,24.0,1.0,hit,,,,1
 sub-068,active,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,1
 sub-068,inactive,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,1
 ,,,,,,,,,,0.8729611249873415,0.8465279654985101,1.1284816667127113,0
+sub-069,inactive,pic-present,1.0,0.0,0.0,0.0,9.0,1.0,hit,,,,0
+sub-069,active,pic-absent,1.0,0.0,0.0,1.0,9.0,0.0,false alarm,,,,0
+sub-069,active,pic-present,1.0,0.0,0.0,2.0,9.0,1.0,hit,,,,0
+sub-069,inactive,pic-present,1.0,0.0,0.0,3.0,9.0,1.0,hit,,,,0
+sub-069,active,pic-absent,1.0,0.0,1.0,0.0,10.0,0.0,false alarm,,,,0
+sub-069,inactive,pic-present,0.0,0.0,1.0,1.0,10.0,0.0,miss,,,,0
+sub-069,inactive,pic-present,0.0,0.0,1.0,2.0,10.0,0.0,miss,,,,0
+sub-069,active,pic-absent,1.0,0.0,1.0,3.0,10.0,0.0,false alarm,,,,0
+sub-069,inactive,pic-absent,0.0,0.0,2.0,0.0,11.0,1.0,correct rejection,,,,0
+sub-069,active,pic-present,0.0,0.0,2.0,1.0,11.0,0.0,miss,,,,0
+sub-069,inactive,pic-absent,1.0,0.0,2.0,2.0,11.0,0.0,false alarm,,,,0
+sub-069,inactive,pic-absent,0.0,0.0,2.0,3.0,11.0,1.0,correct rejection,,,,0
+sub-069,active,pic-present,1.0,0.0,3.0,0.0,12.0,1.0,hit,,,,0
+sub-069,inactive,pic-absent,1.0,0.0,3.0,1.0,12.0,0.0,false alarm,,,,0
+sub-069,active,pic-absent,1.0,0.0,3.0,2.0,12.0,0.0,false alarm,,,,0
+sub-069,active,pic-present,0.0,0.0,3.0,3.0,12.0,0.0,miss,,,,0
+sub-069,inactive,pic-absent,1.0,1.0,0.0,0.0,21.0,0.0,false alarm,,,,0
+sub-069,active,pic-present,1.0,1.0,0.0,1.0,21.0,1.0,hit,,,,0
+sub-069,inactive,pic-present,1.0,1.0,0.0,2.0,21.0,1.0,hit,,,,0
+sub-069,active,pic-absent,1.0,1.0,0.0,3.0,21.0,0.0,false alarm,,,,0
+sub-069,inactive,pic-present,1.0,1.0,1.0,0.0,22.0,1.0,hit,,,,0
+sub-069,inactive,pic-absent,0.0,1.0,1.0,1.0,22.0,1.0,correct rejection,,,,0
+sub-069,active,pic-present,1.0,1.0,1.0,2.0,22.0,1.0,hit,,,,0
+sub-069,inactive,pic-present,1.0,1.0,1.0,3.0,22.0,1.0,hit,,,,0
+sub-069,active,pic-absent,1.0,1.0,2.0,0.0,23.0,0.0,false alarm,,,,0
+sub-069,inactive,pic-present,1.0,1.0,2.0,1.0,23.0,1.0,hit,,,,0
+sub-069,active,pic-absent,1.0,1.0,2.0,2.0,23.0,0.0,false alarm,,,,0
+sub-069,inactive,pic-absent,1.0,1.0,2.0,3.0,23.0,0.0,false alarm,,,,0
+sub-069,active,pic-present,1.0,1.0,3.0,0.0,24.0,1.0,hit,,,,0
+sub-069,active,pic-absent,0.0,1.0,3.0,1.0,24.0,1.0,correct rejection,,,,0
+sub-069,inactive,pic-absent,0.0,1.0,3.0,2.0,24.0,1.0,correct rejection,,,,0
+sub-069,active,pic-present,1.0,1.0,3.0,3.0,24.0,1.0,hit,,,,0
+,,,,,,,,,,0.6431252499751281,0.6578801411395783,0.6264030399887512,0
