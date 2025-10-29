@@ -44,7 +44,7 @@ plt.rcParams["font.sans-serif"] = prop.get_name()
 exclude_perfect = True
 
 # Exclude participants with less than X% placebo effect (0 = negative placebo, -100 keep everyone) None = Ignore this flag and keep all
-exclude_placebo = 10
+exclude_placebo = 0
 
 # Add participant to list to exclude based on other criteria
 exclude_custom = []
