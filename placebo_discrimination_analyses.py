@@ -1347,9 +1347,12 @@ tost_df.to_csv("derivatives/stats/tost_accuracy.csv")
 #find placebo effect
 placebo = pd.read_csv("derivatives/data_wide_dat_full.csv")
 placebo_effect_exclude = []
+accuracy_all = []
 for _, row in placebo.iterrows():
     if row['exclude'] == 0:
         placebo_effect_exclude.append(row["perc_placebo_all"])
+        accuracy_all.append(row['acc_all'])
+
 #find accuracy for active and inactive
 accuracy = pd.read_csv("derivatives/data_all_discrim_task_full.csv")
 accuracy = accuracy[accuracy['exclude'] != 1]
@@ -1368,13 +1371,14 @@ correlation_df = pd.DataFrame(
         "placebo_effect": placebo_effect_exclude,
         "accuracy_active": accuracy_active,
         "accuracy_inactive": accuracy_inactive,
+        'accuracy_all': accuracy_all,
     }
 )
 
 #find correlation using pingouin between placebo effect and accuracy (accuracy = active - inactive)
 correlation_1 =pg.corr(
     x=correlation_df["placebo_effect"],
-    y=correlation_df["accuracy_active"] - correlation_df["accuracy_inactive"],
+    y=correlation_df["accuracy_all"],
 )
 correlation_1.to_csv("derivatives/stats/corr_placebo_accuracy.csv")
 
@@ -1382,29 +1386,28 @@ correlation_1.to_csv("derivatives/stats/corr_placebo_accuracy.csv")
 plt.figure(figsize=(6, 6))
 plt.scatter(
     correlation_df["placebo_effect"],
-    correlation_df["accuracy_active"] - correlation_df["accuracy_inactive"],
+    correlation_df["accuracy_all"],
     s=90,
-    color="black",
+    color="mediumblue",
 )
-plt.xlabel("Placebo effect (%)", fontsize=18)
-plt.ylabel("Discrimination accuracy (active - inactive)", fontsize=18)
 plt.tick_params(labelsize=14)
 plt.title(
     "Correlation between placebo effect and discrimination accuracy",
     fontdict={"fontsize": 18},
 )
-plt.axhline(0, color="k", linestyle="--")
-plt.axvline(0, color="k", linestyle="--")
+
 #add best fit line
 sns.regplot(
     x=correlation_df["placebo_effect"],
-    y=correlation_df["accuracy_active"] - correlation_df["accuracy_inactive"],
+    y=correlation_df["accuracy_all"],
     scatter=False,
     color="black",
-    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    line_kws={"color": "black", "alpha": 1, "lw": 2},
     ci=None,
     marker="o",
 )
+plt.xlabel("Placebo effect (%)", fontsize=18)
+plt.ylabel("Discrimination accuracy", fontsize=18)
 plt.savefig("derivatives/figures/correlation_placebo_accuracy.png")
 
 #Get scores for questionnaires, placebo effect and discrim performance in a single dataframe
@@ -1425,6 +1428,7 @@ correlation_2 = pd.DataFrame(
         "pcs_total": score_pcs,
         "iastay1_total": score_iasta1,
         "iastay2_total": score_iasta2,
+        'accuracy_all': accuracy_all,
     }
 )
 
@@ -1441,7 +1445,7 @@ plt.scatter(
     correlation_2["placebo_effect"],
     correlation_2["pcs_total"],
     s=90,
-    color="black",
+    color="mediumblue",
 )
 plt.xlabel("Placebo effect (%)", fontsize=18)
 plt.ylabel("PCS score", fontsize=18)
@@ -1456,10 +1460,12 @@ sns.regplot(
     y=correlation_2["pcs_total"],
     scatter=False,
     color="black",
-    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    line_kws={"color": "black", "alpha": 1, "lw": 2},
     ci=None,
     marker="o",
 )
+plt.xlabel("Placebo effect (%)", fontsize=18)
+plt.ylabel("PCS score", fontsize=18)
 plt.savefig("derivatives/figures/correlation_placebo_pcs.png")
 
 #correlation between placebo effect and iasta1
@@ -1474,7 +1480,7 @@ plt.scatter(
     correlation_2["placebo_effect"],
     correlation_2["iastay1_total"],
     s=90,
-    color="black",
+    color="mediumblue",
 )
 plt.xlabel("Placebo effect (%)", fontsize=18)
 plt.ylabel("IASTA1 score", fontsize=18)
@@ -1489,10 +1495,12 @@ sns.regplot(
     y=correlation_2["iastay1_total"],
     scatter=False,
     color="black",
-    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    line_kws={"color": "black", "alpha": 1, "lw": 2},
     ci=None,
     marker="o",
 )
+plt.xlabel("Placebo effect (%)", fontsize=18)
+plt.ylabel("IASTA1 score", fontsize=18)
 plt.savefig("derivatives/figures/correlation_placebo_iasta1.png")
 
 #correlation between placebo effect and iasta2
@@ -1507,7 +1515,7 @@ plt.scatter(
     correlation_2["placebo_effect"],
     correlation_2["iastay2_total"],
     s=90,
-    color="black",
+    color="mediumblue",
 )
 plt.xlabel("Placebo effect (%)", fontsize=18)
 plt.ylabel("IASTA2 score", fontsize=18)
@@ -1522,10 +1530,12 @@ sns.regplot(
     y=correlation_2["iastay2_total"],
     scatter=False,
     color="black",
-    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    line_kws={"color": "black", "alpha": 1, "lw": 2},
     ci=None,
     marker="o",
 )
+plt.xlabel("Placebo effect (%)", fontsize=18)
+plt.ylabel("IASTA2 score", fontsize=18)
 plt.savefig("derivatives/figures/correlation_placebo_iasta2.png")
 
 
@@ -1557,17 +1567,17 @@ plt.savefig("derivatives/figures/tost_discrim.svg", transparent=True, bbox_inche
 
 #correlation between accuracy and pcs scores
 correlation_3_pcs = pg.corr(
-    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    x=correlation_2["accuracy_all"],
     y=correlation_2["pcs_total"],
 )
 correlation_3_pcs.to_csv("derivatives/stats/corr_3_pcs.csv")
 #plot correlation accuracy and pcs
 plt.figure(figsize=(6, 6))
 plt.scatter(
-    correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    correlation_2["accuracy_all"],
     correlation_2["pcs_total"],
     s=90,
-    color="black",
+    color="mediumblue",
 )
 plt.xlabel("Discrimination accuracy (active - inactive)", fontsize=18)
 plt.ylabel("PCS score", fontsize=18)
@@ -1578,29 +1588,31 @@ plt.title(
 )
 #add best fit line
 sns.regplot(
-    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    x=correlation_2["accuracy_all"],
     y=correlation_2["pcs_total"],
     scatter=False,
     color="black",
-    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    line_kws={"color": "black", "alpha": 1, "lw": 2},
     ci=None,
     marker="o",
 )
+plt.xlabel("Discrimination accuracy", fontsize=18)
+plt.ylabel("PCS score", fontsize=18)
 plt.savefig("derivatives/figures/correlation_accuracy_pcs.png")
 
 #correlation between accuracy and iasta1 scores
 correlation_3_iasta1 = pg.corr(
-    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    x=correlation_2["accuracy_all"],
     y=correlation_2["iastay1_total"],
 )
 correlation_3_iasta1.to_csv("derivatives/stats/corr_3_iasta1.csv")
 #plot correlation accuracy and iasta1
 plt.figure(figsize=(6, 6))
 plt.scatter(
-    correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    correlation_2["accuracy_all"],
     correlation_2["iastay1_total"],
     s=90,
-    color="black",
+    color="mediumblue",
 )
 plt.xlabel("Discrimination accuracy (active - inactive)", fontsize=18)
 plt.ylabel("IASTA1 score", fontsize=18)
@@ -1611,29 +1623,31 @@ plt.title(
 )
 #add best fit line
 sns.regplot(
-    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    x=correlation_2["accuracy_all"],
     y=correlation_2["iastay1_total"],
     scatter=False,
     color="black",
-    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    line_kws={"color": "black", "alpha": 1, "lw": 2},
     ci=None,
     marker="o",
 )
+plt.xlabel("Discrimination accuracy", fontsize=18)
+plt.ylabel("IASTA1 score", fontsize=18)
 plt.savefig("derivatives/figures/correlation_accuracy_iasta1.png")
 
 #correlation between accuracy and iasta2 scores
 correlation_3_iasta2 = pg.corr(
-    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    x=correlation_2["accuracy_all"],
     y=correlation_2["iastay2_total"],
 )
 correlation_3_iasta2.to_csv("derivatives/stats/corr_3_iasta2.csv")
 #plot correlation accuracy and iasta2
 plt.figure(figsize=(6, 6))
 plt.scatter(
-    correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    correlation_2["accuracy_all"],
     correlation_2["iastay2_total"],
     s=90,
-    color="black",
+    color="mediumblue",
 )
 plt.xlabel("Discrimination accuracy (active - inactive)", fontsize=18)
 plt.ylabel("IASTA2 score", fontsize=18)
@@ -1644,14 +1658,16 @@ plt.title(
 )
 #add best fit line
 sns.regplot(
-    x=correlation_2["accuracy_active"] - correlation_2["accuracy_inactive"],
+    x=correlation_2["accuracy_all"],
     y=correlation_2["iastay2_total"],
     scatter=False,
     color="black",
-    line_kws={"color": "black", "alpha": 0.5, "lw": 2},
+    line_kws={"color": "black", "alpha":1, "lw": 2},
     ci=None,
     marker="o",
 )
+plt.xlabel("Discrimination accuracy", fontsize=18)
+plt.ylabel("IASTA2 score", fontsize=18)
 plt.savefig("derivatives/figures/correlation_accuracy_iasta2.png")
 
 # Check if difference beween active and inactive x block
