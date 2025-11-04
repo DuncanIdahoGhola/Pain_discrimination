@@ -49,6 +49,9 @@ exclude_placebo = 10
 # Add participant to list to exclude based on other criteria
 exclude_custom = []
 
+#add an exclusion criteria for lower than chance performance
+exclude_low_acc = True
+low_acc_threshold = 0.45
 
 # Create empty lists to store data
 all_active, all_thresholds, all_plateaus = [], [], []
@@ -854,6 +857,23 @@ if exclude_custom:
     all_discrim_task_long.loc[all_discrim_task_long["participant"].isin(exclude_custom), 'exclude'] = 1
 
     print(str(len(exclude_custom)) + " participants excluded for other reasons," + "leaving " + str(len(wide_dat) - np.sum(wide_dat['exclude'])) + " participants")
+
+if exclude_low_acc:
+    wide_dat_lowacc = list(
+        wide_dat[wide_dat["acc_all"] <= low_acc_threshold]["participant"]
+    )
+
+    # Mark participants for exclusion
+    wide_dat.loc[wide_dat["participant"].isin(wide_dat_lowacc), 'exclude'] = 1
+    all_eval_frame.loc[all_eval_frame["participant"].isin(wide_dat_lowacc), 'exclude'] = 1
+    all_discrim_task.loc[all_discrim_task["participant"].isin(wide_dat_lowacc), 'exclude'] = 1
+    all_discrim_task_long.loc[all_discrim_task_long["participant"].isin(wide_dat_lowacc), 'exclude'] = 1
+
+    print(
+        f"{len(wide_dat_lowacc)} participants with low discrimination (≤ {low_acc_threshold}) excluded, "
+        f"leaving {len(wide_dat) - np.sum(wide_dat['exclude'])} participants"
+    )
+
 
 # Save full dataframes
 wide_dat.to_csv(opj("derivatives", "data_wide_dat_full.csv"), index=False)
