@@ -2113,15 +2113,26 @@ accuracy_all_max = last_values['acc_all'].max()
 accuracy_all_min = last_values['acc_all'].min()
 accuracy_all_sd = last_values['acc_all'].std()
 
+#add confidence intervals for accuracy_all
+ci_all = stats.t.interval(0.95, len(last_values['acc_all'])-1, loc=np.mean(last_values['acc_all']), scale=stats.sem(last_values['acc_all']))
+
 accuracy_active_mean = last_values['active_acc_all'].mean()
 accuracy_active_max = last_values['active_acc_all'].max()
 accuracy_active_min = last_values['active_acc_all'].min()
 accuracy_active_sd = last_values['active_acc_all'].std()
 
+#add confidence intervals for accuracy_active
+ci_active = stats.t.interval(0.95, len(last_values['active_acc_all'])-1, loc=np.mean(last_values['active_acc_all']), scale=stats.sem(last_values['active_acc_all']))
+
+
 accuracy_inactive_mean = last_values['inactive_acc_all'].mean()
 accuracy_inactive_max = last_values['inactive_acc_all'].max()
 accuracy_inactive_min = last_values['inactive_acc_all'].min()
 accuracy_inactive_sd = last_values['inactive_acc_all'].std()
+
+#add confidence intervals for accuracy_inactive
+ci_inactive = stats.t.interval(0.95, len(last_values['inactive_acc_all'])-1, loc=np.mean(last_values['inactive_acc_all']), scale=stats.sem(last_values['inactive_acc_all']))
+
 
 
 
@@ -2143,15 +2154,22 @@ temp_values = pd.DataFrame(
         "placebo_effect_mean": [placebo_effect_mean],
         "placebo_effect_max": [placebo_effect_max],
         "placebo_effect_min": [placebo_effect_min],
+        'placebo_effect_sd': [placebo_effect_sd],
         "accuracy_all_mean": [accuracy_all_mean],
         "accuracy_all_max": [accuracy_all_max],
         "accuracy_all_min": [accuracy_all_min],
+        "accuracy_all_ci_lower": [ci_all[0]],
+        "accuracy_all_ci_upper": [ci_all[1]],
+        "accuracy_active_ci_lower": [ci_active[0]],
+        "accuracy_active_ci_upper": [ci_active[1]],
         "accuracy_active_mean": [accuracy_active_mean],
         "accuracy_active_max": [accuracy_active_max],
         "accuracy_active_min": [accuracy_active_min],
         "accuracy_inactive_mean": [accuracy_inactive_mean],
         "accuracy_inactive_max": [accuracy_inactive_max],
         "accuracy_inactive_min": [accuracy_inactive_min],
+        'accuracy_inactive_ci_lower': [ci_inactive[0]],
+        'accuracy_inactive_ci_upper': [ci_inactive[1]],
         "accuracy_all_sd": [accuracy_all_sd],
         "accuracy_active_sd": [accuracy_active_sd],
         "accuracy_inactive_sd": [accuracy_inactive_sd],
