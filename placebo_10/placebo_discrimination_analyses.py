@@ -1235,8 +1235,13 @@ plt.ylabel("Pain rating", fontsize=18)
 plt.xlabel("", fontsize=18)
 plt.tick_params(labelsize=14)
 #plt.title("Pain ratings during placebo phase", fontdict={"fontsize": 18})
-plt.tight_layout()
-plt.savefig(opj("derivatives/figures", "mean_placebo_effect.svg"), transparent=True,bbox_inches="tight")
+fig.subplots_adjust(
+    left=0.22,
+    right=0.98,
+    bottom=0.18,
+    top=0.98
+)
+plt.savefig(opj("derivatives/figures", "mean_placebo_effect.png"), transparent=True,bbox_inches="tight")
 
 # Plot placebo effect distribution
 plt.figure()
@@ -1779,16 +1784,21 @@ for p in list(anova_dat.index):
 # extract the existing handles and labels
 # slice the appropriate section of l and h to include in the legend
 # Delete third legend
-plt.xticks([0, 1], ["Placebo on", "Placebo off"], fontsize=12)
-plt.ylabel("Proporition correct", fontsize=18)
+plt.xticks([0, 1], ["TENS on", "TENS off"], fontsize=12)
+plt.ylabel("Proportion correct", fontsize=18)
 plt.xlabel("", fontsize=18)
 plt.tick_params(labelsize=14)
 #plt.title(
 #    "Discrimination performance\nduring the placebo phase", fontdict={"fontsize": 18}
 #)
 ax.legend().remove()
-plt.tight_layout()
-plt.savefig("derivatives/figures/discrim_acc_cond.svg",transparent=True, bbox_inches="tight")
+fig.subplots_adjust(
+    left=0.22,
+    right=0.98,
+    bottom=0.18,
+    top=0.98
+)
+plt.savefig("derivatives/figures/discrim_acc_cond.png",transparent=True, bbox_inches="tight")
 
 
 # Plot d prime by condition
