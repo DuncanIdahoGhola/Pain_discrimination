@@ -2,15 +2,29 @@
 """
 Pain Discrimination Analysis Script
 
-Analyzes pain discrimination during TENS placebo conditioning.
-This script processes participant data from sourcedata/ and outputs
-all results to a specified derivatives directory.
+Analyzes pain discrimination during placebo conditioning. This study investigates
+whether placebo analgesia affects the ability to discriminate painful stimuli.
+
+The analysis pipeline:
+1. Processes QUEST staircase data (pain threshold calibration)
+2. Extracts evaluation task trials (pain ratings with/without TENS)
+3. Extracts discrimination task trials (detect pain stimulus presence)
+4. Computes questionnaire scores (STAI-Y1, STAI-Y2, PCS)
+5. Calculates placebo effect metrics
+6. Applies exclusion criteria
+7. Generates figures and statistical analyses
+8. Compiles manuscript-ready results
 
 Usage:
     python scripts/analyze.py --exclude-placebo 0 --output-dir derivatives/placebo_0
     python scripts/analyze.py --exclude-placebo 10 --output-dir derivatives/placebo_10
+
+Authors: Antoine Cyr-Bouchard, MP Coll - Pain Learning Lab, Laval University
 """
 
+# =============================================================================
+# IMPORTS
+# =============================================================================
 import argparse
 import math
 import os
@@ -199,10 +213,27 @@ def SDT(hits, misses, fas, crs):
     return out
 
 
+# =============================================================================
+# MAIN ANALYSIS FUNCTION
+# =============================================================================
 def main():
+    """
+    Main analysis pipeline for pain discrimination study.
+
+    This function orchestrates the entire analysis:
+    1. Setup: Parse arguments, configure paths and output directories
+    2. Individual processing: Loop through participants to extract data
+    3. Aggregation: Combine individual data into group-level dataframes
+    4. Exclusions: Apply exclusion criteria and track excluded participants
+    5. Visualization: Generate publication-ready figures
+    6. Statistics: Run inferential tests (ANOVAs, t-tests, correlations)
+    7. Output: Save results and compile manuscript statistics
+    """
     args = parse_args()
 
-    # Determine paths
+    # -------------------------------------------------------------------------
+    # SETUP: Configure paths and directories
+    # -------------------------------------------------------------------------
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_dir = os.path.dirname(script_dir)
 
@@ -215,11 +246,13 @@ def main():
     if not os.path.isabs(output_dir):
         output_dir = opj(project_dir, output_dir)
 
-    # Setup
+    # Initialize output directories and fonts for plotting
     setup_output_dirs(output_dir)
     setup_fonts(output_dir)
 
-    # Parameters
+    # -------------------------------------------------------------------------
+    # PARAMETERS: Configure exclusion criteria
+    # -------------------------------------------------------------------------
     if args.no_exclusions:
         exclude_perfect = False
         exclude_placebo = None
@@ -234,7 +267,9 @@ def main():
     print(f"Running analysis with exclude_placebo = {exclude_placebo}")
     print(f"Output directory: {output_dir}")
 
-    # Find participants
+    # -------------------------------------------------------------------------
+    # PARTICIPANT DISCOVERY: Find all participant folders in sourcedata
+    # -------------------------------------------------------------------------
     participants = [p.split("_")[0] for p in os.listdir(bidsroot) if "sub-" in p]
     participants.sort()
 
@@ -272,7 +307,10 @@ def main():
         ],
     )
 
-    # Loop participants
+    # =========================================================================
+    # INDIVIDUAL PARTICIPANT PROCESSING
+    # Loop through each participant to extract and process their data
+    # =========================================================================
     for p in tqdm(participants, desc="Processing individual participants"):
         # Get participant folder and create derivatives folder
         par_fold = [c for c in os.listdir(bidsroot) if p in c]
@@ -282,7 +320,11 @@ def main():
         if not os.path.exists(deriv_path):
             os.mkdir(deriv_path)
 
-        # Plot staircase for peak calibration
+        # ---------------------------------------------------------------------
+        # QUEST STAIRCASE: Process pain threshold calibration data
+        # The QUEST procedure determines each participant's pain detection
+        # threshold using an adaptive staircase method
+        # ---------------------------------------------------------------------
         quest_dir = opj(par_fold, "QUEST")
         quest_file = [f for f in os.listdir(quest_dir) if ".csv" in f and "trial" not in f]
 
@@ -358,7 +400,9 @@ def main():
             plt.ylabel("Temperature")
             plt.savefig(opj(deriv_path, p + "_quest_" + str(idx).zfill(2) + "_temps_all.png"))
 
-        # Main task - Eval
+        # ---------------------------------------------------------------------
+        # MAIN TASK DATA: Load and process evaluation and discrimination tasks
+        # ---------------------------------------------------------------------
         main_file = [
             f
             for f in os.listdir(par_fold)
@@ -376,7 +420,9 @@ def main():
         wide_dat.loc[p, "temp_plateau"] = np.round(main["temp_flat"].values[0], 2)
         wide_dat.loc[p, "temp_placebo"] = np.round(main["temp_active"].values[0], 2)
 
-        # Evaluation task
+        # EVALUATION TASK: Extract pain ratings for TENS-active vs TENS-inactive
+        # Participants rate their pain on each trial, allowing us to measure
+        # the placebo effect (reduced pain ratings during TENS-active trials)
         eval_task = main[
             [
                 "ratingScale.response",
@@ -812,16 +858,23 @@ def main():
         plt.savefig(opj(deriv_path, p + "_task_temp_pic.png"))
         plt.close("all")
 
-    # Concatenate all dataframes from all participants
+    # =========================================================================
+    # DATA AGGREGATION
+    # Combine individual participant data into group-level dataframes
+    # =========================================================================
     all_eval_frame = pd.concat(all_eval_frames)
     all_discrim_task = pd.concat(all_discrim_task)
     all_discrim_task_long = pd.concat(all_discrim_task_long)
     wide_dat["participant"] = list(wide_dat.index)
 
-    # Compute questionnaire scores (in memory, without modifying sourcedata)
+    # -------------------------------------------------------------------------
+    # QUESTIONNAIRE PROCESSING
+    # Compute STAI-Y1, STAI-Y2, and PCS scores (in memory only)
+    # Note: Scores are computed fresh each run; sourcedata is never modified
+    # -------------------------------------------------------------------------
     questionnaire_scores = compute_questionnaire_scores(bidsroot)
 
-    # Load sociodemo and merge with questionnaire scores (in memory only)
+    # Load sociodemographic data and merge with questionnaire scores
     socio = pd.read_csv(opj(bidsroot, "sociodemo.csv"))
     socio["pcs_total"] = questionnaire_scores["pcs_total"].reset_index(drop=True)
     socio["iastay1_total"] = questionnaire_scores["iastay1_total"].reset_index(drop=True)
@@ -852,7 +905,14 @@ def main():
     wide_dat["isfemale"] = wide_dat["isfemale"].astype(int)
     wide_dat["Autres"] = wide_dat["Autres"].astype(int)
 
-    # Create exclusion flag
+    # =========================================================================
+    # EXCLUSION CRITERIA
+    # Apply exclusion criteria in order of priority:
+    # 1. Perfect discrimination (ceiling effect - cannot detect differences)
+    # 2. Low placebo effect (below threshold - no placebo response)
+    # 3. Custom exclusions (data quality issues)
+    # 4. Below-chance accuracy (<=50% - task not performed correctly)
+    # =========================================================================
     wide_dat["exclude"] = 0
     all_eval_frame["exclude"] = 0
     all_discrim_task["exclude"] = 0
@@ -964,8 +1024,14 @@ def main():
         opj(output_dir, "data_all_discrim_task_long_withexcl.csv"), index=False
     )
 
-    # Make plots
-    # Eval by trial plot
+    # =========================================================================
+    # VISUALIZATION: Generate publication-ready figures
+    # =========================================================================
+
+    # -------------------------------------------------------------------------
+    # Figure: Evaluation task - Pain ratings by trial and condition
+    # Shows pain ratings across all 24 trials, with TENS-active vs inactive
+    # -------------------------------------------------------------------------
     fig, ax = plt.subplots(figsize=(7, 4))
     sns.pointplot(
         x="trial",
@@ -1354,7 +1420,14 @@ def main():
     )
     out.to_csv(opj(output_dir, "stats", "t_test_placebo_eval.csv"))
 
-    # Do ANOVA with block
+    # =========================================================================
+    # STATISTICAL ANALYSES
+    # =========================================================================
+
+    # -------------------------------------------------------------------------
+    # RM ANOVA: Condition (TENS active/inactive) x Block on pain ratings
+    # Tests whether placebo effect differs between conditions and across blocks
+    # -------------------------------------------------------------------------
     all_eval_frame_placeb = all_eval_frame[
         all_eval_frame.trial.isin([8, 9, 10, 11, 20, 21, 22, 23])
     ]
@@ -1373,7 +1446,10 @@ def main():
     )
     out.to_csv(opj(output_dir, "stats", "rm_anova_cond-block_eval.csv"))
 
-    # Discrimination
+    # -------------------------------------------------------------------------
+    # DISCRIMINATION TASK STATISTICS
+    # Paired t-tests comparing TENS-active vs TENS-inactive conditions
+    # -------------------------------------------------------------------------
     # T-test for placebo effect across all participants on accuracy
     t_test_paired = pg.ttest(
         wide_dat["inactive_acc_all"].astype(float),
@@ -1406,8 +1482,12 @@ def main():
     )
     t_test_paired_c.to_csv(opj(output_dir, "stats", "t_test_c.csv"))
 
-    # TOST for placebo on discrimination
-    cohen_dz_bounds = 0.45
+    # -------------------------------------------------------------------------
+    # TOST EQUIVALENCE TEST
+    # Two One-Sided Tests to establish equivalence between conditions
+    # Tests whether the difference is practically equivalent to zero
+    # -------------------------------------------------------------------------
+    cohen_dz_bounds = 0.45  # Equivalence bounds in Cohen's dz units
     sd_diff_acc = np.std(
         wide_dat["active_acc_all"] - wide_dat["inactive_acc_all"], ddof=1
     )
@@ -1440,7 +1520,11 @@ def main():
     )
     tost_df.to_csv(opj(output_dir, "stats", "tost_accuracy.csv"))
 
-    # Correlation placebo effect and accuracy
+    # -------------------------------------------------------------------------
+    # CORRELATION ANALYSES
+    # Test relationships between placebo effect, discrimination accuracy,
+    # and psychological measures (STAI-Y1, STAI-Y2, PCS)
+    # -------------------------------------------------------------------------
     placebo = pd.read_csv(opj(output_dir, "data_wide_dat_full.csv"))
     placebo_effect_exclude = []
     accuracy_all = []
@@ -2117,7 +2201,10 @@ def main():
     plt.ylabel("Placebo effect (TENS on - TENS off)", fontsize=18)
     plt.savefig(opj(output_dir, "figures", "extinction_placebo.png"))
 
-    # Get values for calibration, placebo effect, temps etc
+    # =========================================================================
+    # DESCRIPTIVE STATISTICS
+    # Compute summary statistics for temperatures, placebo effect, and accuracy
+    # =========================================================================
     last_values = pd.read_csv(opj(output_dir, "data_wide_dat_withexcl.csv"))
 
     temp_pic_mean = last_values["temp_pic"].mean()
@@ -2249,7 +2336,10 @@ def main():
     )
     temp_values_all.to_csv(opj(output_dir, "stats", "temp_values_all.csv"))
 
-    # Socio demo stats
+    # =========================================================================
+    # SOCIODEMOGRAPHIC STATISTICS
+    # Compute sample characteristics (age, gender distribution)
+    # =========================================================================
     socio_demo_stats = pd.read_csv(opj(output_dir, "data_wide_dat_withexcl.csv"))
 
     total_participants = len(socio_demo_stats)
@@ -2316,9 +2406,11 @@ def main():
         opj(output_dir, "stats", "discrim_missed_responses.csv")
     )
 
-    # ============================================================
-    # Compile all manuscript results into a single CSV
-    # ============================================================
+    # =========================================================================
+    # MANUSCRIPT RESULTS COMPILATION
+    # Compile all key statistics into a single CSV for easy manuscript writing
+    # Each variable corresponds to a statistic reported in the paper
+    # =========================================================================
     print("\nCompiling manuscript results...")
 
     manuscript_results = {}
