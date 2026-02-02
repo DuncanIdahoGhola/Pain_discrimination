@@ -1,2 +1,7 @@
 *._
 .DS_store
+
+# Claude Code
+CLAUDE.md
+.claude/
+.claudeignore
