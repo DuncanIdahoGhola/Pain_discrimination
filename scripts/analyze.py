@@ -2585,12 +2585,19 @@ def main():
     manuscript_results["tost_p"] = p_tost
 
     # --- Correlation: Placebo effect vs Discrimination accuracy ---
+    # Includes Bayesian correlation (BF10) to quantify evidence for/against relationship
     corr_placebo_acc = pg.corr(
         x=correlation_df["placebo_effect"], y=correlation_df["accuracy_all"]
     )
     manuscript_results["corr_placebo_acc_r"] = round(corr_placebo_acc["r"].values[0], 2)
     manuscript_results["corr_placebo_acc_p"] = round(corr_placebo_acc["p-val"].values[0], 4)
     manuscript_results["corr_placebo_acc_n"] = int(corr_placebo_acc["n"].values[0])
+    # Extract Bayes Factor (BF10 < 1/3 = evidence for null, BF10 > 3 = evidence for alternative)
+    bf_corr = corr_placebo_acc["BF10"].values[0]
+    try:
+        manuscript_results["corr_placebo_acc_BF10"] = round(float(bf_corr), 3)
+    except (ValueError, TypeError):
+        manuscript_results["corr_placebo_acc_BF10"] = str(bf_corr)
 
     # --- Questionnaire correlations ---
     # STAI-Y1 vs placebo effect
