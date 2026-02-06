@@ -125,7 +125,7 @@ def compute_questionnaire_scores(bidsroot):
                     str(iastay2.loc[p, list(iastay2.columns)[c]])[0]
                 )
             except:
-                results_df.loc[p, "qiastay2_" + list(iastay2.columns)[c]] = "nan"
+                results_df.loc[p, "qiastay2_" + list(iastay2.columns)[c]] = np.nan
             try:
                 all_iasta2.append(int(str(iastay2.loc[p, list(iastay2.columns)[c]])[0]))
             except:
@@ -514,8 +514,8 @@ def main():
             & (eval_task_b2["loop_eval_discri.thisRepN"].isna())
         ].reset_index(drop=True)
 
-        wide_dat.loc[p, "average_eval_inactive"] = np.mean(
-            eval_task_inactive_noplacebo["ratingScale.response"].values
+        wide_dat.loc[p, "average_eval_active"] = np.mean(
+            eval_task_active_noplacebo["ratingScale.response"].values
         )
         wide_dat.loc[p, "average_eval_inactive"] = np.mean(
             eval_task_inactive_noplacebo["ratingScale.response"].values
@@ -679,6 +679,7 @@ def main():
                 "trials.thisN",
                 "loop_eval_discri.thisN",
                 "loop_discri.thisRepN",
+                "discrimin_resp.rt",
             ]
         ]
         discrim_task = discrim_task[discrim_task["loop_discri.thisRepN"].isna() == False]
@@ -800,30 +801,20 @@ def main():
             discrim_task_b2[discrim_task_b2["condition"] == "inactive"]["accuracy"].values
         )
 
-        # Calculate average response time
-        reaction_time = []
-        reaction_time_good_a = []
-        reaction_time_bad_a = []
-        for _, row in main.iterrows():
-            if pd.notnull(row["discrimin_resp.rt"]):
-                rt = float(row["discrimin_resp.rt"])
-                reaction_time.append(rt)
-                if row["pic_response"] == 1 and row["pic_presence"] == "pic-present":
-                    reaction_time_good_a.append(rt)
-                elif row["pic_response"] == 0 and row["pic_presence"] == "pic-absent":
-                    reaction_time_good_a.append(rt)
-                else:
-                    reaction_time_bad_a.append(rt)
+        # Trial-wise reaction time + participant-level averages (overall/good/bad)
+        discrim_task["reaction_time"] = pd.to_numeric(
+            discrim_task["discrimin_resp.rt"], errors="coerce"
+        )
+        discrim_task["reaction_time_good"] = np.where(
+            discrim_task["accuracy"] == 1, discrim_task["reaction_time"], np.nan
+        )
+        discrim_task["reaction_time_bad"] = np.where(
+            discrim_task["accuracy"] == 0, discrim_task["reaction_time"], np.nan
+        )
 
-        discrim_task.loc[p, "reaction_time"] = (
-            np.mean(reaction_time) if reaction_time else np.nan
-        )
-        discrim_task.loc[p, "reaction_time_good_a"] = (
-            np.mean(reaction_time_good_a) if reaction_time_good_a else np.nan
-        )
-        discrim_task.loc[p, "reaction_time_bad_a"] = (
-            np.mean(reaction_time_bad_a) if reaction_time_bad_a else np.nan
-        )
+        wide_dat.loc[p, "reaction_time"] = discrim_task["reaction_time"].mean()
+        wide_dat.loc[p, "reaction_time_good"] = discrim_task["reaction_time_good"].mean()
+        wide_dat.loc[p, "reaction_time_bad"] = discrim_task["reaction_time_bad"].mean()
 
         discrim_task_avg = (
             discrim_task.groupby(["condition"]).mean(numeric_only=True).reset_index()
@@ -1117,7 +1108,6 @@ def main():
     all_discrim_task_long_avg["actual_trial"] = (
         all_discrim_task_long_avg["actual_trial"].astype(int) - 0.8
     )
-    all_eval_frame["trial"].astype(int)
 
     all_eval_frame_avg = (
         all_eval_frame.groupby(["participant", "condition", "trial"])
@@ -2200,6 +2190,251 @@ def main():
     plt.tick_params(labelsize=14)
     plt.ylabel("Placebo effect (TENS on - TENS off)", fontsize=18)
     plt.savefig(opj(output_dir, "figures", "extinction_placebo.png"))
+
+    # =========================================================================
+    # COMBINED FIGURE: Main manuscript figure with all 4 panels
+    # Panel a: Pain ratings time series (top-left)
+    # Panel b: Discrimination accuracy time series (bottom-left)
+    # Panel c: Discrimination accuracy boxplot (top-right)
+    # Panel d: Pain ratings boxplot (bottom-right)
+    # =========================================================================
+    from matplotlib.gridspec import GridSpec
+
+    fig = plt.figure(figsize=(12, 8))
+    gs = GridSpec(2, 2, figure=fig, width_ratios=[1.6, 1], height_ratios=[2, 1],
+                  hspace=0.08, wspace=0.3)
+
+    ax_a = fig.add_subplot(gs[0, 0])  # Top-left: pain ratings time series
+    ax_b = fig.add_subplot(gs[1, 0], sharex=ax_a)  # Bottom-left: discrimination time series
+    ax_c = fig.add_subplot(gs[0, 1])  # Top-right: discrimination accuracy boxplot
+    ax_d = fig.add_subplot(gs[1, 1])  # Bottom-right: pain ratings boxplot
+
+    # Panel a: Pain ratings time series
+    sns.pointplot(
+        x="trial",
+        y="ratings",
+        hue="condition",
+        data=all_eval_frame_avg,
+        errorbar="se",
+        alpha=0.9,
+        palette=pal,
+        ax=ax_a,
+    )
+    ax_a.set_ylim([0, 80])
+    ax_a.fill_between(
+        np.arange(7.5, 11.5, 0.1), y1=80, facecolor=color_placebo_back, alpha=0.4, zorder=0
+    )
+    ax_a.fill_between(
+        np.arange(19.5, 24, 0.1), y1=80, facecolor=color_placebo_back, alpha=0.4, zorder=0
+    )
+    ax_a.fill_between(
+        np.arange(-1, 7.5, 0.1), y1=80, facecolor=color_conditioning_back, alpha=0.2, zorder=0
+    )
+    ax_a.fill_between(
+        np.arange(11.5, 19.5, 0.1), y1=80, facecolor=color_conditioning_back, alpha=0.2, zorder=0
+    )
+    ax_a.axvline(7.5, color="gray", linestyle="--")
+    ax_a.axvline(11.5, color="gray", linestyle="--")
+    ax_a.axvline(19.5, color="gray", linestyle="--")
+    ax_a.axvline(23.5, color="gray", linestyle="--")
+    ax_a.set_ylabel("Pain rating", fontsize=14)
+    ax_a.set_xlabel("")
+    ax_a.tick_params(labelsize=11)
+    plt.setp(ax_a.get_xticklabels(), visible=False)
+
+    # Legend for panel a
+    legend_handles = ax_a.get_legend_handles_labels()[0][:2]
+    legend_handles.append(
+        Patch(facecolor=color_placebo_back, edgecolor=color_placebo_back, label="Placebo", alpha=0.4)
+    )
+    legend_handles.append(
+        Patch(facecolor=color_conditioning_back, edgecolor=color_conditioning_back, label="Conditioning", alpha=0.2)
+    )
+    ax_a.legend(
+        legend_handles,
+        ["TENS on", "TENS off", "Placebo", "Conditioning"],
+        fontsize=10,
+        loc="lower left",
+        ncol=4,
+        columnspacing=0.5,
+    )
+
+    # Panel b: Discrimination accuracy time series
+    sns.pointplot(
+        x="actual_trial",
+        y="accuracy",
+        hue="condition",
+        errorbar="se",
+        data=all_discrim_task_long_avg_p1,
+        alpha=0.9,
+        native_scale=True,
+        palette=pal,
+        ax=ax_b,
+    )
+    sns.pointplot(
+        x="actual_trial",
+        y="accuracy",
+        hue="condition",
+        errorbar="se",
+        data=all_discrim_task_long_avg_p2,
+        alpha=0.9,
+        native_scale=True,
+        palette=pal,
+        ax=ax_b,
+    )
+    ax_b.set_ylim([0.5, 1])
+    ax_b.set_xlim([-1, 23.6])
+    ax_b.fill_between(
+        np.arange(7.5, 11.5, 0.1), y1=1, facecolor=color_placebo_back, alpha=0.4, zorder=0
+    )
+    ax_b.fill_between(
+        np.arange(19.5, 24, 0.1), y1=1, facecolor=color_placebo_back, alpha=0.4, zorder=0
+    )
+    ax_b.fill_between(
+        np.arange(-1, 7.5, 0.1), y1=1, facecolor=color_conditioning_back, alpha=0.2, zorder=0
+    )
+    ax_b.fill_between(
+        np.arange(11.5, 19.5, 0.1), y1=1, facecolor=color_conditioning_back, alpha=0.2, zorder=0
+    )
+    ax_b.axvline(7.5, color="gray", linestyle="--")
+    ax_b.axvline(11.5, color="gray", linestyle="--")
+    ax_b.axvline(19.5, color="gray", linestyle="--")
+    ax_b.axvline(23.5, color="gray", linestyle="--")
+    ax_b.set_ylabel("Proportion correct", fontsize=14)
+    ax_b.set_xlabel("Trials", fontsize=14)
+    ax_b.set_xticks(np.arange(24))
+    ax_b.set_xticklabels(np.arange(1, 25))
+    ax_b.tick_params(labelsize=11)
+    ax_b.legend().remove()
+
+    # Panel c: Discrimination accuracy boxplot
+    acc_dat = wide_dat.melt(
+        id_vars="participant", value_vars=["active_acc_all", "inactive_acc_all"]
+    )
+    sns.boxplot(
+        x="variable",
+        y="value",
+        hue="variable",
+        data=acc_dat,
+        showfliers=False,
+        showmeans=True,
+        meanprops={
+            "marker": "^",
+            "markerfacecolor": "white",
+            "markeredgecolor": "black",
+            "markersize": "12",
+            "zorder": 999,
+        },
+        showcaps=False,
+        palette=pal,
+        ax=ax_c,
+    )
+    acc_dat["jitter"] = np.random.normal(0, 0.05, size=len(acc_dat))
+    acc_dat["condition_jitter"] = np.where(
+        acc_dat["variable"] == "active_acc_all",
+        0 + acc_dat["jitter"],
+        1 + acc_dat["jitter"],
+    )
+    sns.stripplot(
+        x="condition_jitter",
+        y="value",
+        data=acc_dat,
+        alpha=0.5,
+        size=10,
+        jitter=False,
+        edgecolor="black",
+        linewidth=1,
+        palette=pal,
+        native_scale=True,
+        hue="variable",
+        ax=ax_c,
+    )
+    acc_dat.index = acc_dat["participant"]
+    acc_jitter_active = acc_dat[acc_dat["variable"] == "active_acc_all"]
+    acc_jitter_inactive = acc_dat[acc_dat["variable"] == "inactive_acc_all"]
+    for p in list(acc_dat.index):
+        ax_c.plot(
+            [0 + acc_jitter_active.loc[p, "jitter"], 1 + acc_jitter_inactive.loc[p, "jitter"]],
+            [
+                acc_dat[acc_dat["variable"] == "active_acc_all"].loc[p, "value"],
+                acc_dat[acc_dat["variable"] == "inactive_acc_all"].loc[p, "value"],
+            ],
+            color="gray",
+            alpha=0.5,
+        )
+    ax_c.set_xlim([-0.6, 1.6])
+    ax_c.set_xticks([0, 1])
+    ax_c.set_xticklabels(["TENS on", "TENS off"], fontsize=11)
+    ax_c.set_ylabel("Proportion correct", fontsize=14)
+    ax_c.set_xlabel("")
+    ax_c.tick_params(labelsize=11)
+    ax_c.legend().remove()
+
+    # Panel d: Pain ratings boxplot
+    sns.boxplot(
+        x="condition",
+        y="ratings",
+        hue="condition",
+        data=all_eval_frame_placeb,
+        showfliers=False,
+        showmeans=True,
+        meanprops={
+            "marker": "^",
+            "markerfacecolor": "white",
+            "markeredgecolor": "black",
+            "markersize": "12",
+            "zorder": 999,
+        },
+        showcaps=False,
+        palette=pal,
+        ax=ax_d,
+    )
+    sns.stripplot(
+        x="condition",
+        y="ratings",
+        hue="condition",
+        data=all_eval_frame_placeb,
+        alpha=0.5,
+        size=10,
+        jitter=False,
+        edgecolor="black",
+        linewidth=1,
+        palette=pal,
+        ax=ax_d,
+    )
+    eval_placeb_active = all_eval_frame_placeb[all_eval_frame_placeb["condition"] == "active"].set_index("participant")
+    eval_placeb_inactive = all_eval_frame_placeb[all_eval_frame_placeb["condition"] == "inactive"].set_index("participant")
+    for p in all_eval_frame_placeb["participant"].unique():
+        ax_d.plot(
+            [0, 1],
+            [eval_placeb_active.loc[p, "ratings"], eval_placeb_inactive.loc[p, "ratings"]],
+            color="gray",
+            alpha=0.5,
+        )
+    ax_d.set_xticks([0, 1])
+    ax_d.set_xticklabels(["TENS on", "TENS off"], fontsize=11)
+    ax_d.set_ylabel("Pain rating", fontsize=14)
+    ax_d.set_xlabel("")
+    ax_d.tick_params(labelsize=11)
+    if ax_d.get_legend():
+        ax_d.get_legend().remove()
+
+    # Add panel labels
+    for ax, label in zip([ax_a, ax_b, ax_c, ax_d], ["a", "b", "c", "d"]):
+        ax.text(
+            -0.12, 1.05, label, transform=ax.transAxes, fontsize=16, fontweight="bold", va="top"
+        )
+
+    plt.savefig(
+        opj(output_dir, "figures", "main_figure_combined.png"),
+        dpi=800,
+        bbox_inches="tight",
+    )
+    plt.savefig(
+        opj(output_dir, "figures", "main_figure_combined.svg"),
+        transparent=True,
+        bbox_inches="tight",
+    )
 
     # =========================================================================
     # DESCRIPTIVE STATISTICS
