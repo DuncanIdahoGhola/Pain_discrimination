@@ -1545,6 +1545,7 @@ def main():
     correlation_1 = pg.corr(
         x=correlation_df["placebo_effect"],
         y=correlation_df["accuracy_all"],
+        #BF10 is included in this test
     )
     correlation_1.to_csv(opj(output_dir, "stats", "corr_placebo_accuracy.csv"))
 
