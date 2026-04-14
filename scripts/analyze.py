@@ -1713,14 +1713,15 @@ def main():
         [1, 1],
         linewidth=2,
     )
-    plt.axvline(-0.5, color="k", linestyle="--")
-    plt.axvline(0.5, color="k", linestyle="--")
+    plt.axvline(-0.45, color="k", linestyle="--")
+    plt.axvline(0.45, color="k", linestyle="--")
     plt.yticks([])
     plt.tick_params(labelsize=14)
-    plt.xticks([-0.5, 0, 0.5], ["-0.5", "0", "0.5"])
+    plt.xticks([-0.45, 0, 0.45], ["-0.45", "0", "0.45"])
     plt.xlabel("Cohen's dz", fontsize=18)
+    plt.title("TOST equivalence test", fontdict={"fontsize": 18})
     plt.savefig(
-        opj(output_dir, "figures", transparent=True, "tost_discrim.svg"),
+        opj(output_dir, "figures", "tost_discrim.svg"),
         transparent=True,
         bbox_inches="tight",
     )
@@ -2142,7 +2143,8 @@ def main():
     ax.legend().remove()
     plt.tight_layout()
     plt.savefig(
-        opj(output_dir, "figures", transparent=True, "discrim_c_cond.png"), dpi=800, bbox_inches="tight"
+        opj(output_dir, "figures", "discrim_c_cond.png"), dpi=800, bbox_inches="tight",
+        transparent=True,
     )
 
     # Plot extinction placebo effect
