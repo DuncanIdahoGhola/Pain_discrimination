@@ -1095,7 +1095,7 @@ def main():
     plt.setp(ax.lines, alpha=0.6)
     plt.tight_layout()
     plt.savefig(
-        opj(output_dir, "figures", "group_eval_task.png"), dpi=800, bbox_inches="tight"
+        opj(output_dir, "figures", "group_eval_task.png"), transparent=True, dpi=800, bbox_inches="tight"
     )
 
     # Same but with discrimination interspersed
@@ -1720,7 +1720,7 @@ def main():
     plt.xticks([-0.5, 0, 0.5], ["-0.5", "0", "0.5"])
     plt.xlabel("Cohen's dz", fontsize=18)
     plt.savefig(
-        opj(output_dir, "figures", "tost_discrim.svg"),
+        opj(output_dir, "figures", transparent=True, "tost_discrim.svg"),
         transparent=True,
         bbox_inches="tight",
     )
@@ -1912,6 +1912,7 @@ def main():
     plt.ylabel("Proportion correct", fontsize=18)
     plt.xlabel("", fontsize=18)
     plt.tick_params(labelsize=14)
+    plt.title('Accuracy differences during the placebo phase', fontdict={"fontsize": 18})
     ax.legend().remove()
     fig.subplots_adjust(left=0.22, right=0.98, bottom=0.18, top=0.98)
     plt.savefig(
@@ -2141,7 +2142,7 @@ def main():
     ax.legend().remove()
     plt.tight_layout()
     plt.savefig(
-        opj(output_dir, "figures", "discrim_c_cond.png"), dpi=800, bbox_inches="tight"
+        opj(output_dir, "figures", transparent=True, "discrim_c_cond.png"), dpi=800, bbox_inches="tight"
     )
 
     # Plot extinction placebo effect
