@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" ?>
+<PsychoPy2experiment encoding="utf-8" version="2023.2.3">
+  <Settings>
+    <Param val="3" valType="str" updates="None" name="Audio latency priority"/>
+    <Param val="ptb" valType="str" updates="None" name="Audio lib"/>
+    <Param val="" valType="str" updates="None" name="Completed URL"/>
+    <Param val="auto" valType="str" updates="None" name="Data file delimiter"/>
+    <Param val="u'data/%s_%s/QUEST/%s_%s_%s' % (expInfo['participant'], data.getDateStr(format=&quot;%Y-%m-%d&quot;), expInfo['participant'], expName, expInfo['date'] )" valType="code" updates="None" name="Data filename"/>
+    <Param val="True" valType="bool" updates="None" name="Enable Escape"/>
+    <Param val="" valType="str" updates="None" name="End Message"/>
+    <Param val="{'participant': 'sub-000', 'com_thermode': 'COM3', 'temp_plateau': ''}" valType="code" updates="None" name="Experiment info"/>
+    <Param val="True" valType="bool" updates="None" name="Force stereo"/>
+    <Param val="True" valType="bool" updates="None" name="Full-screen window"/>
+    <Param val="" valType="str" updates="None" name="HTML path"/>
+    <Param val="" valType="str" updates="None" name="Incomplete URL"/>
+    <Param val="testMonitor" valType="str" updates="None" name="Monitor"/>
+    <Param val="[]" valType="list" updates="None" name="Resources"/>
+    <Param val="False" valType="bool" updates="None" name="Save csv file"/>
+    <Param val="False" valType="bool" updates="None" name="Save excel file"/>
+    <Param val="False" valType="bool" updates="None" name="Save hdf5 file"/>
+    <Param val="True" valType="bool" updates="None" name="Save log file"/>
+    <Param val="True" valType="bool" updates="None" name="Save psydat file"/>
+    <Param val="True" valType="bool" updates="None" name="Save wide csv file"/>
+    <Param val="1" valType="num" updates="None" name="Screen"/>
+    <Param val="True" valType="bool" updates="None" name="Show info dlg"/>
+    <Param val="False" valType="bool" updates="None" name="Show mouse"/>
+    <Param val="height" valType="str" updates="None" name="Units"/>
+    <Param val="2023.2.3" valType="str" updates="None" name="Use version"/>
+    <Param val="[1920, 1080]" valType="list" updates="None" name="Window size (pixels)"/>
+    <Param val="none" valType="str" updates="None" name="backgroundFit"/>
+    <Param val="" valType="str" updates="None" name="backgroundImg"/>
+    <Param val="avg" valType="str" updates="None" name="blendMode"/>
+    <Param val="float" valType="str" updates="None" name="clockFormat"/>
+    <Param val="{'thisRow.t': 'priority.CRITICAL', 'expName': 'priority.LOW'}" valType="dict" updates="None" name="colPriority"/>
+    <Param val="[0,0,0]" valType="color" updates="None" name="color"/>
+    <Param val="named" valType="str" updates="None" name="colorSpace"/>
+    <Param val="warning" valType="code" updates="None" name="consoleLoggingLevel"/>
+    <Param val="default" valType="str" updates="None" name="ecSampleRate"/>
+    <Param val="100.1.1.1" valType="str" updates="None" name="elAddress"/>
+    <Param val="FILTER_LEVEL_2" valType="str" updates="None" name="elDataFiltering"/>
+    <Param val="FILTER_LEVEL_OFF" valType="str" updates="None" name="elLiveFiltering"/>
+    <Param val="EYELINK 1000 DESKTOP" valType="str" updates="None" name="elModel"/>
+    <Param val="ELLIPSE_FIT" valType="str" updates="None" name="elPupilAlgorithm"/>
+    <Param val="PUPIL_AREA" valType="str" updates="None" name="elPupilMeasure"/>
+    <Param val="1000" valType="num" updates="None" name="elSampleRate"/>
+    <Param val="False" valType="bool" updates="None" name="elSimMode"/>
+    <Param val="RIGHT_EYE" valType="str" updates="None" name="elTrackEyes"/>
+    <Param val="PUPIL_CR_TRACKING" valType="str" updates="None" name="elTrackingMode"/>
+    <Param val="2024_RDpaindiscrimination_QUEST" valType="str" updates="None" name="expName"/>
+    <Param val="" valType="str" updates="None" name="expVersion"/>
+    <Param val="on Sync" valType="str" updates="None" name="exportHTML"/>
+    <Param val="None" valType="str" updates="None" name="eyetracker"/>
+    <Param val="" valType="code" updates="None" name="frameRate"/>
+    <Param val="Attempting to measure frame rate of screen, please wait..." valType="str" updates="None" name="frameRateMsg"/>
+    <Param val="127.0.0.1" valType="str" updates="None" name="gpAddress"/>
+    <Param val="4242" valType="num" updates="None" name="gpPort"/>
+    <Param val="PsychToolbox" valType="str" updates="None" name="keyboardBackend"/>
+    <Param val="exp" valType="code" updates="None" name="logging level"/>
+    <Param val="True" valType="bool" updates="None" name="measureFrameRate"/>
+    <Param val="('MIDDLE_BUTTON',)" valType="list" updates="None" name="mgBlink"/>
+    <Param val="CONTINUOUS" valType="str" updates="None" name="mgMove"/>
+    <Param val="0.5" valType="num" updates="None" name="mgSaccade"/>
+    <Param val="neon.local" valType="str" updates="None" name="plCompanionAddress"/>
+    <Param val="scene_camera.json" valType="file" updates="None" name="plCompanionCameraCalibration"/>
+    <Param val="8080" valType="num" updates="None" name="plCompanionPort"/>
+    <Param val="True" valType="bool" updates="None" name="plCompanionRecordingEnabled"/>
+    <Param val="0.6" valType="num" updates="None" name="plConfidenceThreshold"/>
+    <Param val="True" valType="bool" updates="None" name="plPupilCaptureRecordingEnabled"/>
+    <Param val="" valType="str" updates="None" name="plPupilCaptureRecordingLocation"/>
+    <Param val="127.0.0.1" valType="str" updates="None" name="plPupilRemoteAddress"/>
+    <Param val="50020" valType="num" updates="None" name="plPupilRemotePort"/>
+    <Param val="1000" valType="num" updates="None" name="plPupilRemoteTimeoutMs"/>
+    <Param val="False" valType="bool" updates="None" name="plPupillometryOnly"/>
+    <Param val="psychopy_iohub_surface" valType="str" updates="None" name="plSurfaceName"/>
+    <Param val="0" valType="code" updates="None" name="runMode"/>
+    <Param val="False" valType="bool" updates="None" name="rush"/>
+    <Param val="time" valType="str" updates="None" name="sortColumns"/>
+    <Param val="" valType="str" updates="None" name="tbLicenseFile"/>
+    <Param val="" valType="str" updates="None" name="tbModel"/>
+    <Param val="60" valType="num" updates="None" name="tbSampleRate"/>
+    <Param val="" valType="str" updates="None" name="tbSerialNo"/>
+    <Param val="pyglet" valType="str" updates="None" name="winBackend"/>
+  </Settings>
+  <Routines>
+    <Routine name="trial">
+      <RoutineSettingsComponent name="trial" plugin="None">
+        <Param val="none" valType="str" updates="None" name="backgroundFit"/>
+        <Param val="" valType="str" updates="None" name="backgroundImg"/>
+        <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
+        <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
+        <Param val="" valType="str" updates="constant" name="desc"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
+        <Param val="trial" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="constant" name="skipIf"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
+      </RoutineSettingsComponent>
+      <CodeComponent name="init_thermode" plugin="None">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="&amp;#10;&amp;#10;import pandas as pd&amp;#10;# Initialize QUEST&amp;#10;import numpy as np&amp;#10;import random&amp;#10;import threading&amp;#10;from psychopy import data&amp;#10;from questplus.psychometric_function import weibull&amp;#10;&amp;#10;# Thermode&amp;#10;from pytcsii import tcsii_serial&amp;#10;port_thermode = tcsii_serial(str(expInfo['com_thermode']), beep=False)&amp;#10;port_thermode.set_baseline(38)&amp;#10;port_thermode.port.write('Ue11111'.encode()) # Enable temp profile&amp;#10;&amp;#10;# Get the plateau temp from the calibration&amp;#10;temp_plateau = float(expInfo['temp_plateau'])&amp;#10;&amp;#10;# Stimulus domain.&amp;#10;intensities = np.arange(0.2, 1.2, 0.1) # Difference from plateau&amp;#10;thresholds = intensities.copy()&amp;#10;slopes = np.linspace(0.1, 15, 100)&amp;#10;lapses = np.arange(0., 0.02, 0.01)&amp;#10;&amp;#10;# Experiment parameters&amp;#10;num_trials_max = 40&amp;#10;&amp;#10;# create  &quot;staircase&quot;&amp;#10;staircase = data.StairHandler(startVal=0.8,&amp;#10;                              stepType='lin',&amp;#10;                              stepSizes = [0.4, 0.3, 0.2, 0.1],&amp;#10;                              nUp=1,&amp;#10;                              minVal=0.3,&amp;#10;                              maxVal=1,&amp;#10;                              nDown=2,&amp;#10;                              nTrials=num_trials_max)&amp;#10;&amp;#10;baseline = 38&amp;#10;rise_time = .75&amp;#10;&amp;#10;rise_plateau = np.round((temp_plateau - baseline)/rise_time, 1)&amp;#10;&amp;#10;part = int(expInfo['participant'][4:])-1&amp;#10;&amp;#10;# Part pair ou impair : Sélection couleur&amp;#10;col1 = [1, 0.5059, -1]&amp;#10;col2 = [-1, 0.38, 0.88]&amp;#10;col3 = [-0.5, -0.5, -0.5]&amp;#10;if part % 2 == 0:&amp;#10;    #Triangle bleu, carré jaune&amp;#10;    color_inactif_trig = col1&amp;#10;    color_actif_carre = col2&amp;#10;    #texte oui-non&amp;#10;    loca_textl = 'OUI              '&amp;#10;    loca_textr = '              NON'&amp;#10;    detectl = 1&amp;#10;    detectr = 0&amp;#10;&amp;#10;    print('impair')&amp;#10;else:&amp;#10;    #Triangle jaune, carrée bleu&amp;#10;    color_inactif_trig = col2&amp;#10;    color_actif_carre = col1&amp;#10;    print('pair')&amp;#10;    #texte oui-non&amp;#10;    loca_textl = 'NON              '&amp;#10;    loca_textr = '              OUI'&amp;#10;    detectl = 0&amp;#10;    detectr = 1&amp;#10;&amp;#10;&amp;#10;#Polygon color&amp;#10;polygon_1 = visual.Circle(&amp;#10;    win=win, name='polygon',&amp;#10;    size=(0.5, 0.5), &amp;#10;    ori=0.0, pos=(0, 0), anchor='center',&amp;#10;    lineWidth=1.0,     colorSpace='rgb',  lineColor= 'white', fillColor= 'white',&amp;#10;    opacity=1.0, depth=-1.0, interpolate=True)&amp;#10;&amp;#10;#Black polygon&amp;#10;&amp;#10;polygon_1_black = visual.Circle(&amp;#10;    win=win, name='polygon_1_black',&amp;#10;    size=(0.4, 0.4),&amp;#10;    ori=0.0, pos=(0, 0), anchor='center',&amp;#10;    lineWidth=1.0,     colorSpace='rgb',  lineColor= col3, fillColor= col3,&amp;#10;    opacity=1.0, depth=-1.0, interpolate=True)&amp;#10;&amp;#10;&amp;#10;# Font size&amp;#10;cross_size = 0.2&amp;#10;loctherm_size = 0.02&amp;#10;&amp;#10;curr_item = -1&amp;#10;count_trials = -1" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="import * as pd from 'pandas';&amp;#10;import * as np from 'numpy';&amp;#10;import * as random from 'random';&amp;#10;import * as threading from 'threading';&amp;#10;import {data} from 'psychopy';&amp;#10;import {weibull} from 'questplus/psychometric_function';&amp;#10;import {tcsii_serial} from 'pytcsii';&amp;#10;port_thermode = tcsii_serial(expInfo[&quot;com_thermode&quot;].toString(), {&quot;beep&quot;: false});&amp;#10;port_thermode.set_baseline(38);&amp;#10;port_thermode.port.write(&quot;Ue11111&quot;.encode());&amp;#10;temp_plateau = Number.parseFloat(expInfo[&quot;temp_plateau&quot;]);&amp;#10;intensities = np.arange(0.2, 1.2, 0.1);&amp;#10;thresholds = intensities.copy();&amp;#10;slopes = np.linspace(0.1, 15, 100);&amp;#10;lapses = np.arange(0.0, 0.02, 0.01);&amp;#10;num_trials_max = 40;&amp;#10;staircase = new data.StairHandler({&quot;startVal&quot;: 0.8, &quot;stepType&quot;: &quot;lin&quot;, &quot;stepSizes&quot;: [0.4, 0.3, 0.2, 0.1], &quot;nUp&quot;: 1, &quot;minVal&quot;: 0.3, &quot;maxVal&quot;: 1, &quot;nDown&quot;: 2, &quot;nTrials&quot;: num_trials_max});&amp;#10;baseline = 38;&amp;#10;rise_time = 0.75;&amp;#10;rise_plateau = np.round(((temp_plateau - baseline) / rise_time), 1);&amp;#10;part = (Number.parseInt(expInfo[&quot;participant&quot;].slice(4)) - 1);&amp;#10;col1 = [1, 0.5059, (- 1)];&amp;#10;col2 = [(- 1), 0.38, 0.88];&amp;#10;col3 = [(- 0.5), (- 0.5), (- 0.5)];&amp;#10;if (((part % 2) === 0)) {&amp;#10;    color_inactif_trig = col1;&amp;#10;    color_actif_carre = col2;&amp;#10;    loca_textl = &quot;OUI              &quot;;&amp;#10;    loca_textr = &quot;              NON&quot;;&amp;#10;    detectl = 1;&amp;#10;    detectr = 0;&amp;#10;    console.log(&quot;impair&quot;);&amp;#10;} else {&amp;#10;    color_inactif_trig = col2;&amp;#10;    color_actif_carre = col1;&amp;#10;    console.log(&quot;pair&quot;);&amp;#10;    loca_textl = &quot;NON              &quot;;&amp;#10;    loca_textr = &quot;              OUI&quot;;&amp;#10;    detectl = 0;&amp;#10;    detectr = 1;&amp;#10;}&amp;#10;polygon_1 = new visual.Circle({&quot;win&quot;: psychoJS.window, &quot;name&quot;: &quot;polygon&quot;, &quot;size&quot;: [0.5, 0.5], &quot;ori&quot;: 0.0, &quot;pos&quot;: [0, 0], &quot;anchor&quot;: &quot;center&quot;, &quot;lineWidth&quot;: 1.0, &quot;colorSpace&quot;: &quot;rgb&quot;, &quot;lineColor&quot;: &quot;white&quot;, &quot;fillColor&quot;: &quot;white&quot;, &quot;opacity&quot;: 1.0, &quot;depth&quot;: (- 1.0), &quot;interpolate&quot;: true});&amp;#10;polygon_1_black = new visual.Circle({&quot;win&quot;: psychoJS.window, &quot;name&quot;: &quot;polygon_1_black&quot;, &quot;size&quot;: [0.4, 0.4], &quot;ori&quot;: 0.0, &quot;pos&quot;: [0, 0], &quot;anchor&quot;: &quot;center&quot;, &quot;lineWidth&quot;: 1.0, &quot;colorSpace&quot;: &quot;rgb&quot;, &quot;lineColor&quot;: col3, &quot;fillColor&quot;: col3, &quot;opacity&quot;: 1.0, &quot;depth&quot;: (- 1.0), &quot;interpolate&quot;: true});&amp;#10;cross_size = 0.2;&amp;#10;loctherm_size = 0.02;&amp;#10;curr_item = (- 1);&amp;#10;count_trials = (- 1);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="psychoJS.window.mouseVisible = false;&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="win.mouseVisible = False" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="init_thermode" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <TextComponent name="text_bonjour" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="text_bonjour" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="Bienvenue dans le programme de calibration de discrimination.&amp;#10;&amp;#10;Si vous ressentez une différence de chaleur pendant la stimulation, &amp;#10;veuillez sélectionner OUI ou NON à l'aide de la boîte de commande.&amp;#10;&amp;#10;Expérimentateur.trice, appuyer sur 'p' démarrer l'expérience&amp;#10;&amp;#10;Bonne expérience.&amp;#10;" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <KeyboardComponent name="initialisation" plugin="None">
+        <Param val="'p'" valType="list" updates="constant" name="allowedKeys"/>
+        <Param val="" valType="str" updates="constant" name="correctAns"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="True" valType="bool" updates="constant" name="discard previous"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="True" valType="bool" updates="constant" name="forceEndRoutine"/>
+        <Param val="initialisation" valType="code" updates="None" name="name"/>
+        <Param val="press" valType="str" updates="constant" name="registerOn"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="nothing" valType="str" updates="constant" name="store"/>
+        <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
+        <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
+      </KeyboardComponent>
+    </Routine>
+    <Routine name="triggerrrs">
+      <RoutineSettingsComponent name="triggerrrs" plugin="None">
+        <Param val="none" valType="str" updates="None" name="backgroundFit"/>
+        <Param val="" valType="str" updates="None" name="backgroundImg"/>
+        <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
+        <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
+        <Param val="" valType="str" updates="constant" name="desc"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
+        <Param val="triggerrrs" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="constant" name="skipIf"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
+      </RoutineSettingsComponent>
+      <CodeComponent name="trigger_pic_2" plugin="None">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="intensities_all = []&amp;#10;responses_all = []&amp;#10;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="intensities_all = [];&amp;#10;responses_all = [];&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="response_pic = 0;&amp;#10;questpic = staircase.next();&amp;#10;pic = (temp_plateau + questpic);&amp;#10;pic_str = Number.parseInt((np.round(pic, 1) * 10)).toString();&amp;#10;temp_plateau_str = Number.parseInt((np.round(temp_plateau, 1) * 10)).toString();&amp;#10;response_pic = null;&amp;#10;dur_plateau_1 = util.round(Math.random.uniform(3.25, 4.75), 2);&amp;#10;dur_plateau_2 = util.round((10 - (dur_plateau_1 + 1.2)), 2);&amp;#10;start1 = 3;&amp;#10;start2 = 8;&amp;#10;dur_send = Number.parseInt((dur_plateau_1 * 100)).toString();&amp;#10;dur_send2 = Number.parseInt((dur_plateau_2 * 100)).toString();&amp;#10;port_thermode.set_rd_plateau({&quot;temp_plateau&quot;: temp_plateau_str, &quot;temp_pic&quot;: pic_str, &quot;dur_plateau_1_10ms&quot;: dur_send, &quot;dur_plateau_2_10ms&quot;: dur_send2});&amp;#10;out_file = `data/${expInfo[&quot;participant&quot;]}_${data.getDateStr({&quot;format&quot;: &quot;%Y-%m-%d&quot;})}/QUEST/${expInfo[&quot;participant&quot;]}_${expName}_${expInfo[&quot;date&quot;]}${(((expInfo[&quot;participant&quot;] + &quot;_temp_trial_&quot;) + trials.thisN.toString().zfill(2)) + &quot;.csv&quot;)}`;&amp;#10;stim_thread = new threading.Thread({&quot;target&quot;: port_thermode.trigger_and_save_temp_rd, &quot;args&quot;: [out_file, 11500]});&amp;#10;stim_thread.start();&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="response_pic = 0&amp;#10;&amp;#10;# Get pic stim&amp;#10;questpic = staircase.next()&amp;#10;pic = temp_plateau + questpic&amp;#10;&amp;#10;# Convert to str to send to thermode&amp;#10;pic_str = str(int(np.round(pic, 1)*10)) &amp;#10;temp_plateau_str = str(int(np.round(temp_plateau, 1)*10))&amp;#10;&amp;#10;&amp;#10;response_pic = None&amp;#10;# Jitter duration&amp;#10;dur_plateau_1 = round(random.uniform(3.25, 4.75), 2)&amp;#10;&amp;#10;# Plateau 2 is difference 10 - others&amp;#10;dur_plateau_2 = round(10 - (dur_plateau_1 + 1.2), 2)&amp;#10;&amp;#10;# Detection cue always start at 3.5&amp;#10;start1 = 3&amp;#10;# Responses start after rise to plateau + plateau + pic (1.2)&amp;#10;start2 = 8&amp;#10;&amp;#10;# Convert to string&amp;#10;dur_send = str(int(dur_plateau_1*100))&amp;#10;dur_send2 = str(int(dur_plateau_2*100))&amp;#10;&amp;#10;#Pic or not?&amp;#10;    # Set thermode&amp;#10;port_thermode.set_rd_plateau(temp_plateau=temp_plateau_str,&amp;#10;                  temp_pic=pic_str,&amp;#10;                  dur_plateau_1_10ms=dur_send,&amp;#10;                  dur_plateau_2_10ms=dur_send2)&amp;#10;&amp;#10;## Trigger thermode in other thread&amp;#10;out_file = u'data/%s_%s/QUEST/%s_%s_%s%s' % (expInfo['participant'], data.getDateStr(format=&quot;%Y-%m-%d&quot;), expInfo['participant'], expName, expInfo['date'], expInfo['participant'] + '_temp_trial_' + str(trials.thisN).zfill(2) + '.csv')&amp;#10;stim_thread = threading.Thread(target=port_thermode.trigger_and_save_temp_rd,&amp;#10;                     args=(out_file, 11500,))&amp;#10;stim_thread.start()&amp;#10;&amp;#10;&amp;#10;&amp;#10;&amp;#10;&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
+        <Param val="#Polygon normal avant signal&amp;#10;if (t &lt;= start1): &amp;#10;    polygon_1.draw()&amp;#10;&amp;#10;#Remplir en noir pour signal&amp;#10;if(t &gt;= start1) and (t &lt;= start2): &amp;#10;    polygon_1.draw()&amp;#10;    polygon_1_black.draw()&amp;#10;&amp;#10;# Check response and change color answer&amp;#10;if discrimin_resp.status == STARTED and len(discrimin_resp.keys) != 0:&amp;#10;    if discrimin_resp.keys[-1] == 'm':&amp;#10;        responsel.color = (0, 0, 0)&amp;#10;        response_pic = detectr&amp;#10;    elif discrimin_resp.keys[-1] == 'n':&amp;#10;        responser.color = (0, 0, 0)&amp;#10;        response_pic = detectl&amp;#10;&amp;#10;#if (t &gt;= 7.90) :&amp;#10;    #win.flip()" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="if ((t &lt;= start1)) {&amp;#10;    polygon_1.draw();&amp;#10;}&amp;#10;if (((t &gt;= start1) &amp;&amp; (t &lt;= start2))) {&amp;#10;    polygon_1.draw();&amp;#10;    polygon_1_black.draw();&amp;#10;}&amp;#10;if (((discrimin_resp.status === PsychoJS.Status.STARTED) &amp;&amp; (discrimin_resp.keys.length !== 0))) {&amp;#10;    if ((discrimin_resp.keys.slice((- 1))[0] === &quot;m&quot;)) {&amp;#10;        responsel.color = [0, 0, 0];&amp;#10;        response_pic = detectr;&amp;#10;    } else {&amp;#10;        if ((discrimin_resp.keys.slice((- 1))[0] === &quot;n&quot;)) {&amp;#10;            responser.color = [0, 0, 0];&amp;#10;            response_pic = detectl;&amp;#10;        }&amp;#10;    }&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="#print(f'\nParameter estimates:\n')&amp;#10;#for param_name, value in staircase.paramEstimate.items():&amp;#10;#    print(f'    {param_name}: {value:.3f}')&amp;#10;#    thisExp.addData(param_name, value)&amp;#10;#&amp;#10;#pic_a_utiliser = staircase.paramEstimate['threshold'] + temp_plateau&amp;#10;#thisExp.addData('pic_a_utiliser', pic_a_utiliser)&amp;#10;&amp;#10;&amp;#10;print('mean of final 6 reversals = %.3f' %(np.average(staircase.reversalIntensities[-6:])))&amp;#10;thresh = np.average(staircase.reversalIntensities[-6:])&amp;#10;thisExp.addData('mean_6_reversals', thresh)&amp;#10;thisExp.addData('pic_a_utiliser', temp_plateau + thresh)&amp;#10;&amp;#10;&amp;#10;try: &amp;#10;    import matplotlib.pyplot as plt&amp;#10;    quest_intensities = intensities_all&amp;#10;    quest_detections = responses_all&amp;#10;&amp;#10;    fit = data.FitWeibull(quest_intensities, quest_detections, expectedMin=0,&amp;#10;                            guess=[0.1, 0.5])&amp;#10;    smoothInt = np.arange(min(quest_intensities), max(quest_detections), 0.001)&amp;#10;    smoothResp = fit.eval(smoothInt)&amp;#10;    # thresh = staircase.paramEstimate['threshold']&amp;#10;    thresh_final = fit.inverse(0.75)&amp;#10;    print(thresh_final)&amp;#10;    thisExp.addData('threshold', thresh_final)&amp;#10;&amp;#10;&amp;#10;    plt.figure(figsize=(10,5))&amp;#10;    plt.subplot(122)&amp;#10;    plt.plot(smoothInt, smoothResp, '-')&amp;#10;    # plt.title('threshold = %0.3f' %(thresh))&amp;#10;    plt.axvline(x=thresh_final, color='k', linestyle='--')&amp;#10;    #plot points&amp;#10;    plt.plot(quest_intensities, quest_detections, 'o')&amp;#10;    plt.ylim([-0.5,1.5])&amp;#10;    out_file = u'data/%s_%s/QUEST/%s_%s_%s%s' % (expInfo['participant'], data.getDateStr(format=&quot;%Y-%m-%d&quot;), expInfo['participant'], expName, expInfo['date'], expInfo['participant'] + '_staircase.png')&amp;#10;    plt.savefig(out_file)&amp;#10;except:&amp;#10;    thisExp.addData('threshold', 'failed')&amp;#10;    print('Fitting weibull failed')&amp;#10;" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="console.log(`mean of final 6 reversals = ${np.average(staircase.reversalIntensities.slice((- 6)))}`);&amp;#10;thresh = np.average(staircase.reversalIntensities.slice((- 6)));&amp;#10;psychoJS.experiment.addData(&quot;mean_6_reversals&quot;, thresh);&amp;#10;psychoJS.experiment.addData(&quot;pic_a_utiliser&quot;, (temp_plateau + thresh));&amp;#10;try {&amp;#10;    import * as plt from 'matplotlib/pyplot';&amp;#10;    quest_intensities = intensities_all;&amp;#10;    quest_detections = responses_all;&amp;#10;    fit = new data.FitWeibull(quest_intensities, quest_detections, {&quot;expectedMin&quot;: 0, &quot;guess&quot;: [0.1, 0.5]});&amp;#10;    smoothInt = np.arange(Math.min(quest_intensities), Math.max(quest_detections), 0.001);&amp;#10;    smoothResp = fit.eval(smoothInt);&amp;#10;    thresh_final = fit.inverse(0.75);&amp;#10;    console.log(thresh_final);&amp;#10;    psychoJS.experiment.addData(&quot;threshold&quot;, thresh_final);&amp;#10;    plt.figure({&quot;figsize&quot;: [10, 5]});&amp;#10;    plt.subplot(122);&amp;#10;    plt.plot(smoothInt, smoothResp, &quot;-&quot;);&amp;#10;    plt.axvline({&quot;x&quot;: thresh_final, &quot;color&quot;: &quot;k&quot;, &quot;linestyle&quot;: &quot;--&quot;});&amp;#10;    plt.plot(quest_intensities, quest_detections, &quot;o&quot;);&amp;#10;    plt.ylim([(- 0.5), 1.5]);&amp;#10;    out_file = `data/${expInfo[&quot;participant&quot;]}_${data.getDateStr({&quot;format&quot;: &quot;%Y-%m-%d&quot;})}/QUEST/${expInfo[&quot;participant&quot;]}_${expName}_${expInfo[&quot;date&quot;]}${(expInfo[&quot;participant&quot;] + &quot;_staircase.png&quot;)}`;&amp;#10;    plt.savefig(out_file);&amp;#10;} catch(e) {&amp;#10;    psychoJS.experiment.addData(&quot;threshold&quot;, &quot;failed&quot;);&amp;#10;    console.log(&quot;Fitting weibull failed&quot;);&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="trials.addData(&quot;dur_plateau1&quot;, dur_plateau_1);&amp;#10;trials.addData(&quot;dur_plateau2&quot;, dur_plateau_2);&amp;#10;trials.addData(&quot;dur_plateau1_sent&quot;, dur_send);&amp;#10;trials.addData(&quot;dur_plateau2_sent&quot;, dur_send2);&amp;#10;trials.addData(&quot;start_plateau_2_resp&quot;, start2);&amp;#10;trials.addData(&quot;start_detect_cue&quot;, start1);&amp;#10;trials.addData(&quot;dur_pic&quot;, 1.2);&amp;#10;trials.addData(&quot;dur_rise&quot;, 0.75);&amp;#10;trials.addData(&quot;temp_plateau_sent&quot;, temp_plateau_str);&amp;#10;trials.addData(&quot;loca_thermode&quot;, thermode_loca[curr_item]);&amp;#10;trials.addData(&quot;pic_sent&quot;, pic_str);&amp;#10;trials.addData(&quot;quest_intens&quot;, questpic);&amp;#10;trials.addData(&quot;pic_response&quot;, response_pic);&amp;#10;responsel.color = &quot;white&quot;;&amp;#10;responser.color = &quot;white&quot;;&amp;#10;if ((response_pic === 1)) {&amp;#10;    outcome = 1;&amp;#10;    staircase.addResponse(outcome, questpic);&amp;#10;    count_trials += 1;&amp;#10;    intensities_all.push(questpic);&amp;#10;    responses_all.push(outcome);&amp;#10;} else {&amp;#10;    if ((response_pic === 0)) {&amp;#10;        outcome = 0;&amp;#10;        staircase.addResponse(outcome, questpic);&amp;#10;        count_trials += 1;&amp;#10;        intensities_all.push(questpic);&amp;#10;        responses_all.push(outcome);&amp;#10;    } else {&amp;#10;    }&amp;#10;}&amp;#10;if ((count_trials === 31)) {&amp;#10;    trials.finished = 1;&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="trials.addData('dur_plateau1', dur_plateau_1)&amp;#10;trials.addData('dur_plateau2', dur_plateau_2)&amp;#10;trials.addData('dur_plateau1_sent', dur_send)&amp;#10;trials.addData('dur_plateau2_sent', dur_send2)&amp;#10;trials.addData('start_plateau_2_resp', start2)&amp;#10;trials.addData('start_detect_cue', start1)&amp;#10;trials.addData('dur_pic', 1.2)&amp;#10;trials.addData('dur_rise', 0.75)&amp;#10;trials.addData('temp_plateau_sent', temp_plateau_str)&amp;#10;&amp;#10;trials.addData('loca_thermode', thermode_loca[curr_item])&amp;#10;trials.addData('pic_sent', pic_str)&amp;#10;trials.addData('quest_intens', questpic)&amp;#10;trials.addData('pic_response', response_pic)&amp;#10;# Reset color&amp;#10;responsel.color = 'white'&amp;#10;responser.color = 'white'&amp;#10;&amp;#10;&amp;#10;&amp;#10;if response_pic == 1:&amp;#10;    outcome = 1&amp;#10;    staircase.addResponse(outcome, questpic)&amp;#10;    count_trials +=1&amp;#10;    intensities_all.append(questpic)&amp;#10;    responses_all.append(outcome)&amp;#10;elif response_pic == 0:&amp;#10;    outcome = 0&amp;#10;    staircase.addResponse(outcome, questpic)&amp;#10;    count_trials +=1&amp;#10;    intensities_all.append(questpic)&amp;#10;    responses_all.append(outcome)&amp;#10;else:&amp;#10;    pass&amp;#10;&amp;#10;&amp;#10;if count_trials == 31:&amp;#10;    trials.finished = 1&amp;#10;" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="trigger_pic_2" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <TextComponent name="thermode_locali_pic" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="loctherm_size" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="thermode_locali_pic" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(-.70, -.45)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="10.2" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="$thermode_localisation" valType="str" updates="set every repeat" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <KeyboardComponent name="discrimin_resp" plugin="None">
+        <Param val="'n', 'm'" valType="list" updates="constant" name="allowedKeys"/>
+        <Param val="" valType="str" updates="constant" name="correctAns"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="True" valType="bool" updates="constant" name="discard previous"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="False" valType="bool" updates="constant" name="forceEndRoutine"/>
+        <Param val="discrimin_resp" valType="code" updates="None" name="name"/>
+        <Param val="press" valType="str" updates="constant" name="registerOn"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="$start2" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="3" valType="code" updates="constant" name="stopVal"/>
+        <Param val="first key" valType="str" updates="constant" name="store"/>
+        <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
+        <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
+      </KeyboardComponent>
+      <TextComponent name="responsel" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.08" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="responsel" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="$start2" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="3" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="$loca_textl" valType="str" updates="set every repeat" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <TextComponent name="percu_or" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="percu_or" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0.3)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="$start2" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="3" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="Avez-vous perçu un changement?" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <TextComponent name="responser" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.08" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="responser" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="$start2" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="3" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="$loca_textr" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+    </Routine>
+    <Routine name="wait">
+      <RoutineSettingsComponent name="wait" plugin="None">
+        <Param val="none" valType="str" updates="None" name="backgroundFit"/>
+        <Param val="" valType="str" updates="None" name="backgroundImg"/>
+        <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
+        <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
+        <Param val="" valType="str" updates="constant" name="desc"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
+        <Param val="wait" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="constant" name="skipIf"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
+      </RoutineSettingsComponent>
+      <CodeComponent name="get_list_discri_2" plugin="None">
+        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="curr_item += 1;&amp;#10;thermode_loca = ([0, 1, 2, 3] * 12);&amp;#10;thermode_localisation = (&quot;T : &quot; + thermode_loca[curr_item].toString());&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="&amp;#10;# Counter for thermode loc&amp;#10;curr_item += 1&amp;#10;thermode_loca = [0, 1, 2, 3]*12&amp;#10;thermode_localisation = 'T : ' + str(thermode_loca[curr_item]) &amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="get_list_discri_2" valType="code" updates="None" name="name"/>
+      </CodeComponent>
+      <TextComponent name="text_pic" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="loctherm_size" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="text_pic" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(-.70, -.45)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="5" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="$thermode_localisation" valType="str" updates="set every frame" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+      <TextComponent name="croix_3" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="cross_size" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="croix_3" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="5.0" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="+" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+    </Routine>
+    <Routine name="Cali_fin">
+      <RoutineSettingsComponent name="Cali_fin" plugin="None">
+        <Param val="none" valType="str" updates="None" name="backgroundFit"/>
+        <Param val="" valType="str" updates="None" name="backgroundImg"/>
+        <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
+        <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
+        <Param val="" valType="str" updates="constant" name="desc"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="False" valType="code" updates="None" name="forceNonSlip"/>
+        <Param val="Cali_fin" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="constant" name="skipIf"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
+      </RoutineSettingsComponent>
+      <TextComponent name="text" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="code" updates="constant" name="draggable"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="text" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="6.0" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="Calibration terminée." valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
+    </Routine>
+  </Routines>
+  <Flow>
+    <Routine name="trial"/>
+    <LoopInitiator loopType="TrialHandler" name="trials">
+      <Param name="Selected rows" updates="None" val="" valType="str"/>
+      <Param name="conditions" updates="None" val="None" valType="str"/>
+      <Param name="conditionsFile" updates="None" val="" valType="file"/>
+      <Param name="endPoints" updates="None" val="[0,1]" valType="num"/>
+      <Param name="isTrials" updates="None" val="True" valType="bool"/>
+      <Param name="loopType" updates="None" val="sequential" valType="str"/>
+      <Param name="nReps" updates="None" val="num_trials_max" valType="num"/>
+      <Param name="name" updates="None" val="trials" valType="code"/>
+      <Param name="random seed" updates="None" val="" valType="code"/>
+    </LoopInitiator>
+    <Routine name="wait"/>
+    <Routine name="triggerrrs"/>
+    <LoopTerminator name="trials"/>
+    <Routine name="Cali_fin"/>
+  </Flow>
+</PsychoPy2experiment>
