@@ -23,7 +23,7 @@ run_analysis() {
     echo "Output directory: ${output_dir}"
     echo "=========================================="
 
-    /c/Users/cbant/anaconda3/python.exe "${SCRIPT_DIR}/scripts/analyze.py" \
+    C:/Users/ANCYB2/AppData/Local/Python/bin/python.exe "${SCRIPT_DIR}/scripts/analyze.py" \
         --exclude-placebo "${threshold}" \
         --output-dir "${output_dir}" \
         ${extra_args}
@@ -39,7 +39,7 @@ run_no_exclusions() {
     echo "Output directory: ${output_dir}"
     echo "=========================================="
 
-    /c/Users/cbant/anaconda3/python.exe "${SCRIPT_DIR}/scripts/analyze.py" \
+    C:/Users/ANCYB2/AppData/Local/Python/bin/python.exe "${SCRIPT_DIR}/scripts/analyze.py" \
         --no-exclusions \
         --output-dir "${output_dir}"
 
@@ -50,7 +50,7 @@ collate_results() {
     echo "=========================================="
     echo "Collating manuscript results"
     echo "=========================================="
-    /c/Users/cbant/anaconda3/python.exe "${SCRIPT_DIR}/scripts/collate_results.py"
+    C:/Users/ANCYB2/AppData/Local/Python/bin/python.exe "${SCRIPT_DIR}/scripts/collate_results.py"
     echo ""
 }
 

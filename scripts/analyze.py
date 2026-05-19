@@ -102,81 +102,6 @@ def setup_fonts(output_dir):
     plt.rcParams["font.family"] = "sans-serif"
     plt.rcParams["font.sans-serif"] = prop.get_name()
 
-
-def compute_questionnaire_scores(bidsroot):
-    """
-    Load questionnaire data from sourcedata and compute total scores.
-
-    Returns a DataFrame with computed totals (iastay1_total, iastay2_total, pcs_total)
-    without modifying the original sourcedata files.
-    """
-    iastay1 = pd.read_csv(opj(bidsroot, "iasta_y1.csv"))
-    iastay2 = pd.read_csv(opj(bidsroot, "iasta_y2.csv"))
-    pcs = pd.read_csv(opj(bidsroot, "pcs.csv"))
-
-    results_df = pd.DataFrame(index=iastay1.index)
-
-    for p in iastay1.index:
-        # IASTA Y2
-        all_iasta2 = []
-        for c in range(2, len(iastay2.columns)):
-            try:
-                results_df.loc[p, "qiastay2_" + list(iastay2.columns)[c]] = int(
-                    str(iastay2.loc[p, list(iastay2.columns)[c]])[0]
-                )
-            except:
-                results_df.loc[p, "qiastay2_" + list(iastay2.columns)[c]] = np.nan
-            try:
-                all_iasta2.append(int(str(iastay2.loc[p, list(iastay2.columns)[c]])[0]))
-            except:
-                all_iasta2.append(np.nan)
-        assert len(all_iasta2) == 20
-        # Invert scores for some columns [0, 2, 5, 6, 9, 12, 13, 15, 18]
-        all_iasta2 = np.asarray(all_iasta2)
-        all_iasta2[[0, 2, 5, 6, 9, 12, 13, 15, 18]] = (
-            5 - all_iasta2[[0, 2, 5, 6, 9, 12, 13, 15, 18]]
-        )
-        results_df.loc[p, "iastay2_total"] = np.nansum(all_iasta2)
-
-        # IASTA Y1
-        all_iasta1 = []
-        for c in range(2, len(iastay1.columns)):
-            try:
-                results_df.loc[p, "qiastay1_" + list(iastay1.columns)[c]] = int(
-                    str(iastay1.loc[p, list(iastay1.columns)[c]])[0]
-                )
-            except:
-                results_df.loc[p, "qiastay1_" + list(iastay1.columns)[c]] = "nan"
-            try:
-                all_iasta1.append(int(str(iastay1.loc[p, list(iastay1.columns)[c]])[0]))
-            except:
-                all_iasta1.append(np.nan)
-        assert len(all_iasta1) == 20
-        # Invert scores for some columns [0, 1, 4, 7, 9, 10, 14, 15, 18, 19]
-        all_iasta1 = np.asarray(all_iasta1)
-        all_iasta1[[0, 1, 4, 7, 9, 10, 14, 15, 18, 19]] = (
-            5 - all_iasta1[[0, 1, 4, 7, 9, 10, 14, 15, 18, 19]]
-        )
-        results_df.loc[p, "iastay1_total"] = np.nansum(all_iasta1)
-
-        # PCS
-        all_pcs = []
-        for c in range(2, len(pcs.columns)):
-            try:
-                results_df.loc[p, "qpcs_" + list(pcs.columns)[c]] = int(
-                    str(pcs.loc[p, list(pcs.columns)[c]])[0]
-                )
-                all_pcs.append(int(str(pcs.loc[p, list(pcs.columns)[c]])[0]))
-            except:
-                results_df.loc[p, "qpcs_" + list(pcs.columns)[c]] = "nan"
-        if len(all_pcs) == 13:
-            results_df.loc[p, "pcs_total"] = np.nansum(all_pcs)
-        else:
-            results_df.loc[p, "pcs_total"] = "nan"
-
-    return results_df
-
-
 def SDT(hits, misses, fas, crs):
     """
     Calculate signal detection theory measures.
@@ -863,38 +788,13 @@ def main():
     # Compute STAI-Y1, STAI-Y2, and PCS scores (in memory only)
     # Note: Scores are computed fresh each run; sourcedata is never modified
     # -------------------------------------------------------------------------
-    questionnaire_scores = compute_questionnaire_scores(bidsroot)
-
-    # Load sociodemographic data and merge with questionnaire scores
-    socio = pd.read_csv(opj(bidsroot, "sociodemo.csv"))
-    socio["pcs_total"] = questionnaire_scores["pcs_total"].reset_index(drop=True)
-    socio["iastay1_total"] = questionnaire_scores["iastay1_total"].reset_index(drop=True)
-    socio["iastay2_total"] = questionnaire_scores["iastay2_total"].reset_index(drop=True)
-    # Note: We do NOT save back to sourcedata - scores are computed fresh each run
-
-    # Add sociodemo to wide_dat
-    socio.index = socio[socio.columns[1]]
-
-    wide_dat["age"] = np.nan
-    for row in socio.iterrows():
-        if row[0] in wide_dat.index:
-            wide_dat.loc[row[0], "age"] = int(row[1]["2. Quel est votre âge en années? "])
-            wide_dat.loc[row[0], "ismale"] = (
-                row[1]["4. Quel est votre genre? "] == "Masculin"
-            )
-            wide_dat.loc[row[0], "isfemale"] = (
-                row[1]["4. Quel est votre genre? "] == "Féminin"
-            )
-            wide_dat.loc[row[0], "Autres"] = (
-                row[1]["4. Quel est votre genre? "] == "Autres"
-            )
-            wide_dat.loc[row[0], "pcs_total"] = row[1]["pcs_total"]
-            wide_dat.loc[row[0], "iastay1_total"] = row[1]["iastay1_total"]
-            wide_dat.loc[row[0], "iastay2_total"] = row[1]["iastay2_total"]
-
-    wide_dat["ismale"] = wide_dat["ismale"].astype(int)
-    wide_dat["isfemale"] = wide_dat["isfemale"].astype(int)
-    wide_dat["Autres"] = wide_dat["Autres"].astype(int)
+    
+    
+    #load the results questionnaire df 
+    questionnaire_df = pd.read_csv(opj(bidsroot, "results_df.csv"))
+    
+    #add the questionnaire_df scores to wide_dat
+    wide_dat = wide_dat.merge(questionnaire_df, on="participant", how="left")
 
     # =========================================================================
     # EXCLUSION CRITERIA
@@ -2704,10 +2604,11 @@ def main():
         subject="participant",
         correction=False,
     )
+
     # Extract condition effect
     cond_row = anova_eval[anova_eval["Source"] == "condition"].iloc[0]
     manuscript_results["anova_condition_F"] = round(cond_row["F"], 2)
-    manuscript_results["anova_condition_p"] = cond_row["p-unc"]
+    manuscript_results["anova_condition_p"] = cond_row["p_unc"]
     manuscript_results["anova_condition_df1"] = int(cond_row["ddof1"])
     manuscript_results["anova_condition_df2"] = int(cond_row["ddof2"])
     manuscript_results["anova_condition_eta2"] = round(cond_row["ng2"], 3)
@@ -2715,7 +2616,7 @@ def main():
     # Extract block effect
     block_row = anova_eval[anova_eval["Source"] == "block"].iloc[0]
     manuscript_results["anova_block_F"] = round(block_row["F"], 2)
-    manuscript_results["anova_block_p"] = round(block_row["p-unc"], 4)
+    manuscript_results["anova_block_p"] = round(block_row["p_unc"], 4)
     manuscript_results["anova_block_df1"] = int(block_row["ddof1"])
     manuscript_results["anova_block_df2"] = int(block_row["ddof2"])
     manuscript_results["anova_block_eta2"] = round(block_row["ng2"], 3)
@@ -2723,7 +2624,7 @@ def main():
     # Extract interaction
     inter_row = anova_eval[anova_eval["Source"] == "condition * block"].iloc[0]
     manuscript_results["anova_interaction_F"] = round(inter_row["F"], 2)
-    manuscript_results["anova_interaction_p"] = round(inter_row["p-unc"], 4)
+    manuscript_results["anova_interaction_p"] = round(inter_row["p_unc"], 4)
     manuscript_results["anova_interaction_df1"] = int(inter_row["ddof1"])
     manuscript_results["anova_interaction_df2"] = int(inter_row["ddof2"])
     manuscript_results["anova_interaction_eta2"] = round(inter_row["ng2"], 3)
@@ -2745,10 +2646,12 @@ def main():
     ]["ratings"].values
 
     pain_ttest = pg.ttest(active_ratings, inactive_ratings, paired=True)
+    print(pain_ttest)
+    print(pain_ttest.columns)
     manuscript_results["pain_ttest_t"] = round(pain_ttest["T"].values[0], 2)
-    manuscript_results["pain_ttest_p"] = pain_ttest["p-val"].values[0]
+    manuscript_results["pain_ttest_p"] = pain_ttest["p_val"].values[0]
     manuscript_results["pain_ttest_df"] = int(pain_ttest["dof"].values[0])
-    manuscript_results["pain_ttest_d"] = round(pain_ttest["cohen-d"].values[0], 2)
+    manuscript_results["pain_ttest_d"] = round(pain_ttest["cohen_d"].values[0], 2)
 
     # --- Discrimination accuracy descriptives ---
     manuscript_results["acc_overall_mean"] = round(accuracy_all_mean * 100, 2)
@@ -2779,9 +2682,9 @@ def main():
         paired=True,
     )
     manuscript_results["discrim_ttest_t"] = round(discrim_ttest["T"].values[0], 2)
-    manuscript_results["discrim_ttest_p"] = round(discrim_ttest["p-val"].values[0], 4)
+    manuscript_results["discrim_ttest_p"] = round(discrim_ttest["p_val"].values[0], 4)
     manuscript_results["discrim_ttest_df"] = int(discrim_ttest["dof"].values[0])
-    manuscript_results["discrim_ttest_dz"] = round(discrim_ttest["cohen-d"].values[0], 2)
+    manuscript_results["discrim_ttest_dz"] = round(discrim_ttest["cohen_d"].values[0], 2)
 
     # --- Bayes Factor for discrimination t-test ---
     bf_result = pg.ttest(
@@ -2829,7 +2732,7 @@ def main():
         x=correlation_df["placebo_effect"], y=correlation_df["accuracy_all"]
     )
     manuscript_results["corr_placebo_acc_r"] = round(corr_placebo_acc["r"].values[0], 2)
-    manuscript_results["corr_placebo_acc_p"] = round(corr_placebo_acc["p-val"].values[0], 4)
+    manuscript_results["corr_placebo_acc_p"] = round(corr_placebo_acc["p_val"].values[0], 4)
     manuscript_results["corr_placebo_acc_n"] = int(corr_placebo_acc["n"].values[0])
     # Extract Bayes Factor (BF10 < 1/3 = evidence for null, BF10 > 3 = evidence for alternative)
     bf_corr = corr_placebo_acc["BF10"].values[0]
@@ -2847,7 +2750,7 @@ def main():
         corr_stai1_placebo["r"].values[0], 2
     )
     manuscript_results["corr_staiy1_placebo_p"] = round(
-        corr_stai1_placebo["p-val"].values[0], 4
+        corr_stai1_placebo["p_val"].values[0], 4
     )
 
     # STAI-Y1 vs accuracy
@@ -2855,7 +2758,7 @@ def main():
         x=correlation_2["accuracy_all"], y=correlation_2["iastay1_total"]
     )
     manuscript_results["corr_staiy1_acc_r"] = round(corr_stai1_acc["r"].values[0], 2)
-    manuscript_results["corr_staiy1_acc_p"] = round(corr_stai1_acc["p-val"].values[0], 4)
+    manuscript_results["corr_staiy1_acc_p"] = round(corr_stai1_acc["p_val"].values[0], 4)
 
     # STAI-Y2 vs placebo effect
     corr_stai2_placebo = pg.corr(
@@ -2865,7 +2768,7 @@ def main():
         corr_stai2_placebo["r"].values[0], 2
     )
     manuscript_results["corr_staiy2_placebo_p"] = round(
-        corr_stai2_placebo["p-val"].values[0], 4
+        corr_stai2_placebo["p_val"].values[0], 4
     )
 
     # STAI-Y2 vs accuracy
@@ -2873,7 +2776,7 @@ def main():
         x=correlation_2["accuracy_all"], y=correlation_2["iastay2_total"]
     )
     manuscript_results["corr_staiy2_acc_r"] = round(corr_stai2_acc["r"].values[0], 2)
-    manuscript_results["corr_staiy2_acc_p"] = round(corr_stai2_acc["p-val"].values[0], 4)
+    manuscript_results["corr_staiy2_acc_p"] = round(corr_stai2_acc["p_val"].values[0], 4)
 
     # PCS vs placebo effect
     corr_pcs_placebo = pg.corr(
@@ -2881,13 +2784,13 @@ def main():
     )
     manuscript_results["corr_pcs_placebo_r"] = round(corr_pcs_placebo["r"].values[0], 2)
     manuscript_results["corr_pcs_placebo_p"] = round(
-        corr_pcs_placebo["p-val"].values[0], 4
+        corr_pcs_placebo["p_val"].values[0], 4
     )
 
     # PCS vs accuracy
     corr_pcs_acc = pg.corr(x=correlation_2["accuracy_all"], y=correlation_2["pcs_total"])
     manuscript_results["corr_pcs_acc_r"] = round(corr_pcs_acc["r"].values[0], 2)
-    manuscript_results["corr_pcs_acc_p"] = round(corr_pcs_acc["p-val"].values[0], 4)
+    manuscript_results["corr_pcs_acc_p"] = round(corr_pcs_acc["p_val"].values[0], 4)
 
     # --- Temperature calibration values ---
     manuscript_results["temp_plateau_mean"] = round(temp_plateau_mean, 2)
