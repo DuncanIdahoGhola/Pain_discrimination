@@ -106,8 +106,9 @@ def SDT(hits, misses, fas, crs):
     """
     Calculate signal detection theory measures.
 
-    Returns a dict with d-prime measures given hits, misses, false alarms,
-    and correct rejections.
+    Returns a dict with d-prime (sensitivity) and c (criterion) given hits,
+    misses, false alarms, and correct rejections. Beta is deliberately not
+    computed: it is skewed and depends on d', so c is the bias measure used.
     """
     Z = norm.ppf
     # Floors and ceilings are replaced by half hits and half FA's
@@ -128,14 +129,147 @@ def SDT(hits, misses, fas, crs):
     if fa_rate == 0:
         fa_rate = half_fa
 
-    # Return d', beta, c and Ad'
+    # Return d', c and Ad'
     out = {}
     out["d"] = Z(hit_rate) - Z(fa_rate)
-    out["beta"] = math.exp((Z(fa_rate) ** 2 - Z(hit_rate) ** 2) / 2)
     out["c"] = -(Z(hit_rate) + Z(fa_rate)) / 2
     out["Ad"] = norm.cdf(out["d"] / math.sqrt(2))
 
     return out
+
+
+def paired_ttest(x, y):
+    """
+    Paired t-test on x - y (pingouin), with Cohen's dz added.
+
+    pingouin's `cohen_d` for paired data is d_av (mean difference over the
+    average SD of the two conditions) and is reported as an absolute value.
+    dz (mean difference / SD of the differences, signed like T) is the effect
+    size that matches the paired t-test (dz = T / sqrt(n)) and the unit of the
+    TOST bounds, so both are returned, explicitly labelled.
+    """
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    out = pg.ttest(x, y, paired=True)
+    out = out.rename(columns={"cohen_d": "cohen_d_av", "cohen-d": "cohen_d_av"})
+    diff = (x - y)[~np.isnan(x) & ~np.isnan(y)]
+    out["cohen_dz"] = np.mean(diff) / np.std(diff, ddof=1)
+    return out
+
+
+# Equivalence bounds (Cohen's dz) shown in the TOST bound curve
+TOST_CURVE_BOUNDS = np.round(np.arange(0.20, 0.5001, 0.01), 2)
+TOST_CURVE_MARKED = [0.2, 0.3, 0.4, 0.5]
+TOST_ALPHA = 0.05
+
+
+def tost_bound_curve(x, y, bounds=TOST_CURVE_BOUNDS, alpha=TOST_ALPHA):
+    """
+    Paired TOST (x - y) across a range of equivalence bounds.
+
+    Each bound is in dz units and converted to raw units with the SD of the
+    differences (as in the main TOST). Instead of committing to one bound, this
+    shows every bound at which equivalence is (or is not) supported.
+
+    `smallest_equiv_bound_dz` is the smallest bound giving p < alpha: the
+    largest absolute limit of the (1 - 2*alpha) CI of the mean difference,
+    divided by the SD of the differences.
+    """
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    keep = ~np.isnan(x) & ~np.isnan(y)
+    x, y = x[keep], y[keep]
+    diff = x - y
+    n = len(diff)
+    sd = np.std(diff, ddof=1)
+    half_width = stats.t.ppf(1 - alpha, n - 1) * sd / np.sqrt(n)
+    ci = (np.mean(diff) - half_width, np.mean(diff) + half_width)
+    smallest = max(abs(ci[0]), abs(ci[1])) / sd
+
+    rows = []
+    for b in bounds:
+        p_tost, low, upp = ttost_paired(x, y, low=-b * sd, upp=b * sd)
+        rows.append(
+            {
+                "bound_dz": b,
+                "bound_raw": b * sd,
+                "t_lower": low[0],
+                "p_lower": low[1],
+                "t_upper": upp[0],
+                "p_upper": upp[1],
+                "p_tost": p_tost,
+            }
+        )
+    curve = pd.DataFrame(rows)
+    curve["n"] = n
+    curve["mean_diff"] = np.mean(diff)
+    curve["sd_diff"] = sd
+    curve["ci90_lower"] = ci[0]
+    curve["ci90_upper"] = ci[1]
+    curve["smallest_equiv_bound_dz"] = smallest
+    return curve
+
+
+def plot_tost_bound_curves(curves, out_path, title=None, alpha=TOST_ALPHA):
+    """
+    Plot TOST p-value against the equivalence bound for one or more samples.
+
+    curves: list of (label, curve DataFrame from tost_bound_curve, color).
+    With several samples the legend carries each sample's n and the smallest
+    bound at which equivalence is supported.
+    """
+    text_primary, text_muted, rule = "#222222", "#6b6b6b", "#d9d9d9"
+    fig, ax = plt.subplots(figsize=(5.5, 4.2))
+
+    p_min = min(c["p_tost"].min() for _, c, _ in curves)
+    y_low = 10 ** np.floor(np.log10(max(p_min, 1e-6)))
+    ax.set_yscale("log")
+    ax.set_ylim(y_low, 1)
+
+    ax.axhline(alpha, color=text_muted, linestyle="--", linewidth=1, zorder=1)
+    # Label at the left, under the line: curves start above alpha at small bounds
+    ax.text(0.203, alpha * 0.88, f"α = {alpha:.2f}".replace("0.", "."),
+            ha="left", va="top", fontsize=10, color=text_muted)
+
+    for label, curve, color in curves:
+        smallest = curve["smallest_equiv_bound_dz"].iloc[0]
+        n = int(curve["n"].iloc[0])
+        legend_label = f"{label} (n = {n}): equivalent for dz ≥ {smallest:.2f}"
+        ax.plot(curve["bound_dz"], curve["p_tost"], color=color, linewidth=2,
+                label=legend_label, zorder=3)
+        marked = curve[np.isclose(curve["bound_dz"].values[:, None],
+                                  TOST_CURVE_MARKED).any(axis=1)]
+        ax.plot(marked["bound_dz"], marked["p_tost"], linestyle="none", marker="o",
+                markersize=8, markerfacecolor=color, markeredgecolor="white",
+                markeredgewidth=2, zorder=4)
+
+    ax.set_xlim(0.19, 0.51)
+    ax.set_xticks(TOST_CURVE_MARKED)
+    yticks = [t for t in [0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1] if t >= y_low]
+    ax.set_yticks(yticks)
+    ax.set_yticklabels([f"{t:g}" for t in yticks])
+    ax.minorticks_off()
+    ax.set_xlabel("Equivalence bound (Cohen's dz)", fontsize=14, color=text_primary)
+    ax.set_ylabel("TOST p-value", fontsize=14, color=text_primary)
+    ax.tick_params(labelsize=12, colors=text_primary)
+    ax.grid(axis="y", color=rule, linewidth=0.8, zorder=0)
+    for side in ["top", "right"]:
+        ax.spines[side].set_visible(False)
+    for side in ["left", "bottom"]:
+        ax.spines[side].set_color(text_muted)
+
+    if len(curves) > 1:
+        ax.legend(loc="lower left", fontsize=9, frameon=False)
+    else:
+        smallest = curves[0][1]["smallest_equiv_bound_dz"].iloc[0]
+        ax.text(0.205, y_low * 1.6, f"Equivalent for dz ≥ {smallest:.2f}",
+                fontsize=11, color=text_primary, va="bottom")
+    if title:
+        ax.set_title(title, fontsize=14, color=text_primary)
+
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=300, bbox_inches="tight", transparent=True)
+    plt.close(fig)
 
 
 # =============================================================================
@@ -607,7 +741,14 @@ def main():
                 "discrimin_resp.rt",
             ]
         ]
-        discrim_task = discrim_task[discrim_task["loop_discri.thisRepN"].isna() == False]
+        discrim_task = discrim_task[
+            discrim_task["loop_discri.thisRepN"].isna() == False
+        ].copy()
+        # Use the folder-derived ID, not the one typed into PsychoPy: typed IDs
+        # are unreliable (sub-015 was entered as "sub-0015" and sub-052 as
+        # "sub-051"), which made exclusions miss these rows and merged
+        # sub-052's trials into sub-051's in the long-format data.
+        discrim_task["participant"] = p
 
         discrim_task["actual_trial"] = (
             [9] * 4
@@ -658,7 +799,6 @@ def main():
 
         out = SDT(hits, misses, fas, crs)
         wide_dat.loc[p, "d_prime_all"] = out["d"]
-        wide_dat.loc[p, "beta_all"] = out["beta"]
         wide_dat.loc[p, "c_all"] = out["c"]
 
         # Signal detection in active and inactive conditions
@@ -696,8 +836,6 @@ def main():
 
         wide_dat.loc[p, "d_prime_active"] = out_active["d"]
         wide_dat.loc[p, "d_prime_inactive"] = out_inactive["d"]
-        wide_dat.loc[p, "beta_active"] = out_active["beta"]
-        wide_dat.loc[p, "beta_inactive"] = out_inactive["beta"]
         wide_dat.loc[p, "c_active"] = out_active["c"]
         wide_dat.loc[p, "c_inactive"] = out_inactive["c"]
 
@@ -1303,10 +1441,9 @@ def main():
 
     # Evaluation
     # T-test for placebo effect eval across all participants
-    out = pg.ttest(
+    out = paired_ttest(
         all_eval_frame_placeb[all_eval_frame_placeb["condition"] == "active"]["ratings"],
         all_eval_frame_placeb[all_eval_frame_placeb["condition"] == "inactive"]["ratings"],
-        paired=True,
     )
     out.to_csv(opj(output_dir, "stats", "t_test_placebo_eval.csv"))
 
@@ -1341,35 +1478,20 @@ def main():
     # Paired t-tests comparing TENS-active vs TENS-inactive conditions
     # -------------------------------------------------------------------------
     # T-test for placebo effect across all participants on accuracy
-    t_test_paired = pg.ttest(
-        wide_dat["inactive_acc_all"].astype(float),
-        wide_dat["active_acc_all"].astype(float),
-        paired=True,
+    t_test_paired = paired_ttest(
+        wide_dat["inactive_acc_all"], wide_dat["active_acc_all"]
     )
     t_test_paired.to_csv(opj(output_dir, "stats", "t_test_accuracy.csv"))
 
     # T-test for placebo effect across all participants on d prime
-    t_test_paired_d = pg.ttest(
-        wide_dat["d_prime_inactive"].astype(float),
-        wide_dat["d_prime_active"].astype(float),
-        paired=True,
+    t_test_paired_d = paired_ttest(
+        wide_dat["d_prime_inactive"], wide_dat["d_prime_active"]
     )
     t_test_paired_d.to_csv(opj(output_dir, "stats", "t_test_dprime.csv"))
 
-    # T-test for placebo effect across all participants on beta
-    t_test_paired_beta = pg.ttest(
-        wide_dat["beta_inactive"].astype(float),
-        wide_dat["beta_active"].astype(float),
-        paired=True,
-    )
-    t_test_paired_beta.to_csv(opj(output_dir, "stats", "t_test_beta.csv"))
-
-    # T-test for placebo effect across all participants on c
-    t_test_paired_c = pg.ttest(
-        wide_dat["c_inactive"].astype(float),
-        wide_dat["c_active"].astype(float),
-        paired=True,
-    )
+    # T-test for placebo effect across all participants on c (criterion).
+    # c is the only bias measure tested: beta is skewed and depends on d'.
+    t_test_paired_c = paired_ttest(wide_dat["c_inactive"], wide_dat["c_active"])
     t_test_paired_c.to_csv(opj(output_dir, "stats", "t_test_c.csv"))
 
     # -------------------------------------------------------------------------
@@ -1409,6 +1531,18 @@ def main():
         }
     )
     tost_df.to_csv(opj(output_dir, "stats", "tost_accuracy.csv"))
+
+    # TOST across all bounds from dz = 0.20 to 0.50 (no single bound chosen)
+    tost_curve = tost_bound_curve(
+        wide_dat["inactive_acc_all"], wide_dat["active_acc_all"]
+    )
+    tost_curve.to_csv(opj(output_dir, "stats", "tost_bound_curve.csv"), index=False)
+    for ext in ["png", "svg"]:
+        plot_tost_bound_curves(
+            [("Accuracy", tost_curve, "#2a78d6")],
+            opj(output_dir, "figures", f"tost_bound_curve.{ext}"),
+            title=f"Accuracy, TENS off vs on (n = {len(wide_dat)})",
+        )
 
     # -------------------------------------------------------------------------
     # CORRELATION ANALYSES
@@ -1894,80 +2028,6 @@ def main():
     plt.tight_layout()
     plt.savefig(
         opj(output_dir, "figures", "discrim_dprime_cond.png"), dpi=800, bbox_inches="tight"
-    )
-
-    # Plot bias by condition
-    anova_dat = wide_dat.melt(
-        id_vars="participant", value_vars=["beta_active", "beta_inactive"]
-    )
-    color = sns.color_palette("Set2")[2:]
-    fig, ax = plt.subplots(figsize=(4, 4))
-    sns.boxplot(
-        x="variable",
-        y="value",
-        hue="variable",
-        data=anova_dat,
-        showfliers=False,
-        showmeans=True,
-        meanprops={
-            "marker": "^",
-            "markerfacecolor": "white",
-            "markeredgecolor": "black",
-            "markersize": "15",
-            "zorder": 999,
-        },
-        showcaps=False,
-        palette=pal,
-    )
-
-    anova_dat["jitter"] = np.random.normal(0, 0.05, size=len(anova_dat))
-    anova_dat["condition_jitter"] = np.where(
-        anova_dat["variable"] == "beta_active",
-        0 + anova_dat["jitter"],
-        1 + anova_dat["jitter"],
-    )
-
-    sns.stripplot(
-        x="condition_jitter",
-        y="value",
-        data=anova_dat,
-        alpha=0.5,
-        size=12,
-        jitter=False,
-        edgecolor="black",
-        linewidth=1,
-        palette=pal,
-        native_scale=True,
-        hue="variable",
-    )
-    anova_dat.index = anova_dat["participant"]
-    ax.set_xlim([-1, 2])
-
-    anova_jitter_active = anova_dat[anova_dat["variable"] == "beta_active"]
-    anova_jitter_inactive = anova_dat[anova_dat["variable"] == "beta_inactive"]
-
-    for p in list(anova_dat.index):
-        plt.plot(
-            [
-                0 + anova_jitter_active.loc[p, "jitter"],
-                1 + anova_jitter_inactive.loc[p, "jitter"],
-            ],
-            [
-                anova_dat[anova_dat["variable"] == "beta_active"].loc[p, "value"],
-                anova_dat[anova_dat["variable"] == "beta_inactive"].loc[p, "value"],
-            ],
-            color="gray",
-            alpha=0.5,
-        )
-    plt.xticks([0, 1], ["Placebo on", "Placebo off"], fontsize=12)
-    plt.ylabel("Bias", fontsize=18)
-    plt.xlabel("", fontsize=18)
-    plt.tick_params(labelsize=14)
-    plt.title("Bias\nduring the placebo phase", fontdict={"fontsize": 18})
-    ax.legend().remove()
-    plt.tight_layout()
-    plt.savefig(
-        opj(output_dir, "figures", "discrim_beta_cond.png"), dpi=800, bbox_inches="tight"
     )
 
     # Plot c by condition
@@ -2645,13 +2705,12 @@ def main():
         all_eval_frame_placeb_ttest["condition"] == "inactive"
     ]["ratings"].values
 
-    pain_ttest = pg.ttest(active_ratings, inactive_ratings, paired=True)
-    print(pain_ttest)
-    print(pain_ttest.columns)
+    pain_ttest = paired_ttest(active_ratings, inactive_ratings)
     manuscript_results["pain_ttest_t"] = round(pain_ttest["T"].values[0], 2)
     manuscript_results["pain_ttest_p"] = pain_ttest["p_val"].values[0]
     manuscript_results["pain_ttest_df"] = int(pain_ttest["dof"].values[0])
-    manuscript_results["pain_ttest_d"] = round(pain_ttest["cohen_d"].values[0], 2)
+    manuscript_results["pain_ttest_dz"] = round(pain_ttest["cohen_dz"].values[0], 2)
+    manuscript_results["pain_ttest_dav"] = round(pain_ttest["cohen_d_av"].values[0], 2)
 
     # --- Discrimination accuracy descriptives ---
     manuscript_results["acc_overall_mean"] = round(accuracy_all_mean * 100, 2)
@@ -2676,28 +2735,46 @@ def main():
     manuscript_results["acc_inactive_ci_upper"] = round(ci_inactive[1] * 100, 2)
 
     # --- Discrimination t-test (TENS active vs inactive) ---
-    discrim_ttest = pg.ttest(
-        last_values["inactive_acc_all"].astype(float),
-        last_values["active_acc_all"].astype(float),
-        paired=True,
+    discrim_ttest = paired_ttest(
+        last_values["inactive_acc_all"], last_values["active_acc_all"]
     )
     manuscript_results["discrim_ttest_t"] = round(discrim_ttest["T"].values[0], 2)
     manuscript_results["discrim_ttest_p"] = round(discrim_ttest["p_val"].values[0], 4)
     manuscript_results["discrim_ttest_df"] = int(discrim_ttest["dof"].values[0])
-    manuscript_results["discrim_ttest_dz"] = round(discrim_ttest["cohen_d"].values[0], 2)
+    manuscript_results["discrim_ttest_dz"] = round(discrim_ttest["cohen_dz"].values[0], 2)
+    manuscript_results["discrim_ttest_dav"] = round(
+        discrim_ttest["cohen_d_av"].values[0], 2
+    )
 
     # --- Bayes Factor for discrimination t-test ---
-    bf_result = pg.ttest(
-        last_values["inactive_acc_all"].astype(float),
-        last_values["active_acc_all"].astype(float),
-        paired=True,
-    )
-    bf_value = bf_result["BF10"].values[0]
+    bf_value = discrim_ttest["BF10"].values[0]
     # BF10 can be a string like 'inf' or a float
     try:
         manuscript_results["discrim_BF10"] = round(float(bf_value), 3)
     except (ValueError, TypeError):
         manuscript_results["discrim_BF10"] = str(bf_value)
+
+    # --- Signal detection t-tests (TENS inactive - active) ---
+    # Sensitivity (d') and criterion (c); beta is not reported (see SDT()).
+    for measure, inactive_col, active_col in [
+        ("dprime", "d_prime_inactive", "d_prime_active"),
+        ("c", "c_inactive", "c_active"),
+    ]:
+        sdt_ttest = paired_ttest(last_values[inactive_col], last_values[active_col])
+        manuscript_results[f"{measure}_inactive_mean"] = round(
+            last_values[inactive_col].mean(), 3
+        )
+        manuscript_results[f"{measure}_active_mean"] = round(
+            last_values[active_col].mean(), 3
+        )
+        manuscript_results[f"{measure}_ttest_t"] = round(sdt_ttest["T"].values[0], 2)
+        manuscript_results[f"{measure}_ttest_p"] = round(
+            sdt_ttest["p_val"].values[0], 4
+        )
+        manuscript_results[f"{measure}_ttest_df"] = int(sdt_ttest["dof"].values[0])
+        manuscript_results[f"{measure}_ttest_dz"] = round(
+            sdt_ttest["cohen_dz"].values[0], 2
+        )
 
     # --- TOST equivalence test ---
     tost_mean_diff_val = np.mean(
@@ -2725,6 +2802,23 @@ def main():
     manuscript_results["tost_upper_p"] = round(t_high[1], 4)
     manuscript_results["tost_upper_df"] = int(t_high[2])
     manuscript_results["tost_p"] = p_tost
+
+    # --- TOST across bounds (see figures/tost_bound_curve) ---
+    manuscript_results["tost_ci90_lower_pp"] = round(
+        tost_curve["ci90_lower"].iloc[0] * 100, 2
+    )
+    manuscript_results["tost_ci90_upper_pp"] = round(
+        tost_curve["ci90_upper"].iloc[0] * 100, 2
+    )
+    manuscript_results["tost_smallest_equiv_bound_dz"] = round(
+        tost_curve["smallest_equiv_bound_dz"].iloc[0], 3
+    )
+    for b in TOST_CURVE_MARKED:
+        row = tost_curve[np.isclose(tost_curve["bound_dz"], b)].iloc[0]
+        manuscript_results[f"tost_p_dz{int(round(b * 100)):03d}"] = round(row["p_tost"], 4)
+        manuscript_results[f"tost_bound_pp_dz{int(round(b * 100)):03d}"] = round(
+            row["bound_raw"] * 100, 2
+        )
 
     # --- Correlation: Placebo effect vs Discrimination accuracy ---
     # Includes Bayesian correlation (BF10) to quantify evidence for/against relationship

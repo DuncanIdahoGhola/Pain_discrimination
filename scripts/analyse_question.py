@@ -2,8 +2,24 @@
 import pandas as pd
 import numpy as np 
 import os
+import re
 
-file_path = r'C:\Users\ANCYB2\Documents\GitHub\Pain_discrimination\sourcedata'
+# sourcedata/ sits next to the scripts/ folder
+file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'sourcedata')
+
+
+def normalize_participant_id(raw_id):
+    """Map hand-typed IDs ('sub_044', 'sub-0015', ' sub-7 ') to 'sub-XXX'.
+
+    IDs are typed by hand in the online forms, so typos would otherwise
+    silently drop a participant's questionnaire scores at the merge with the
+    task data (e.g. sub-044's STAI was entered as 'sub_044').
+    """
+    match = re.search(r'sub[-_ ]?0*(\d+)', str(raw_id).strip(), re.IGNORECASE)
+    if match is None:
+        return str(raw_id).strip()
+    return f'sub-{int(match.group(1)):03d}'
+
 
 # Load files
 iasta_y1 = pd.read_csv(os.path.join(file_path, 'iasta_y1.csv'))
@@ -11,11 +27,16 @@ iasta_y2 = pd.read_csv(os.path.join(file_path, 'iasta_y2.csv'))
 pcs = pd.read_csv(os.path.join(file_path, 'pcs.csv'))
 sociodemo = pd.read_csv(os.path.join(file_path, 'sociodemo.csv'))
 
-# Set participant columns as index
-iasta_y1.set_index('#Participant', inplace=True)
-iasta_y2.set_index('Numéro participant', inplace=True)
-pcs.set_index('# du participant:', inplace=True)
-sociodemo.set_index('  # Participant  ', inplace=True)
+# Set normalized participant IDs as index
+for frame, id_col in [
+    (iasta_y1, '#Participant'),
+    (iasta_y2, 'Numéro participant'),
+    (pcs, '# du participant:'),
+    (sociodemo, '  # Participant  '),
+]:
+    frame[id_col] = frame[id_col].map(normalize_participant_id)
+    assert not frame[id_col].duplicated().any(), f'Duplicate IDs in {id_col}'
+    frame.set_index(id_col, inplace=True)
 
 # Merge all dataframes
 df = pd.concat([iasta_y1, iasta_y2, pcs, sociodemo], axis=1)
