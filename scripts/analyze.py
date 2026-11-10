@@ -1552,10 +1552,18 @@ def main():
     placebo = pd.read_csv(opj(output_dir, "data_wide_dat_full.csv"))
     placebo_effect_exclude = []
     accuracy_all = []
+    # Dose-response: accuracy difference TENS off - on (percentage points), from
+    # the same rows as the placebo effect so participants are always aligned.
+    # Positive = worse discrimination with TENS on, the predicted direction if
+    # placebo analgesia impairs discrimination.
+    accuracy_diff = []
     for _, row in placebo.iterrows():
         if row["exclude"] == 0:
             placebo_effect_exclude.append(row["perc_placebo_all"])
             accuracy_all.append(row["acc_all"])
+            accuracy_diff.append(
+                (row["inactive_acc_all"] - row["active_acc_all"]) * 100
+            )
 
     accuracy = pd.read_csv(opj(output_dir, "data_all_discrim_task_full.csv"))
     accuracy = accuracy[accuracy["exclude"] != 1]
@@ -1573,32 +1581,35 @@ def main():
             "accuracy_active": accuracy_active,
             "accuracy_inactive": accuracy_inactive,
             "accuracy_all": accuracy_all,
+            "accuracy_diff": accuracy_diff,
         }
     )
 
+    # Dose-response: placebo effect vs accuracy difference (TENS off - on)
     correlation_1 = pg.corr(
         x=correlation_df["placebo_effect"],
-        y=correlation_df["accuracy_all"],
+        y=correlation_df["accuracy_diff"],
         #BF10 is included in this test
     )
-    correlation_1.to_csv(opj(output_dir, "stats", "corr_placebo_accuracy.csv"))
+    correlation_1.to_csv(opj(output_dir, "stats", "corr_placebo_accuracy_diff.csv"))
 
     plt.figure(figsize=(6, 6))
+    plt.axhline(0, color="gray", linestyle="--", linewidth=1)
     plt.scatter(
         correlation_df["placebo_effect"],
-        correlation_df["accuracy_all"],
+        correlation_df["accuracy_diff"],
         s=90,
         color="mediumblue",
     )
     plt.tick_params(labelsize=14)
     plt.title(
-        "Correlation between placebo effect and discrimination accuracy",
+        "Placebo effect and change in\ndiscrimination accuracy",
         fontdict={"fontsize": 18},
     )
 
     sns.regplot(
         x=correlation_df["placebo_effect"],
-        y=correlation_df["accuracy_all"],
+        y=correlation_df["accuracy_diff"],
         scatter=False,
         color="black",
         line_kws={"color": "black", "alpha": 1, "lw": 2},
@@ -1606,8 +1617,9 @@ def main():
         marker="o",
     )
     plt.xlabel("Placebo effect (%)", fontsize=18)
-    plt.ylabel("Discrimination accuracy", fontsize=18)
-    plt.savefig(opj(output_dir, "figures", "correlation_placebo_accuracy.png"))
+    plt.ylabel("Accuracy, TENS off − on\n(percentage points)", fontsize=18)
+    plt.tight_layout()
+    plt.savefig(opj(output_dir, "figures", "correlation_placebo_accuracy_diff.png"))
 
     # Get scores for questionnaires, placebo effect and discrim performance
     score_pcs = []
@@ -2820,20 +2832,29 @@ def main():
             row["bound_raw"] * 100, 2
         )
 
-    # --- Correlation: Placebo effect vs Discrimination accuracy ---
-    # Includes Bayesian correlation (BF10) to quantify evidence for/against relationship
+    # --- Dose-response: Placebo effect vs accuracy difference (TENS off - on) ---
+    # Includes Bayesian correlation (BF10, and BF01 = 1 / BF10 for the null)
     corr_placebo_acc = pg.corr(
-        x=correlation_df["placebo_effect"], y=correlation_df["accuracy_all"]
+        x=correlation_df["placebo_effect"], y=correlation_df["accuracy_diff"]
     )
-    manuscript_results["corr_placebo_acc_r"] = round(corr_placebo_acc["r"].values[0], 2)
-    manuscript_results["corr_placebo_acc_p"] = round(corr_placebo_acc["p_val"].values[0], 4)
-    manuscript_results["corr_placebo_acc_n"] = int(corr_placebo_acc["n"].values[0])
+    manuscript_results["corr_placebo_accdiff_r"] = round(corr_placebo_acc["r"].values[0], 2)
+    manuscript_results["corr_placebo_accdiff_ci95_lower"] = round(
+        corr_placebo_acc["CI95"].values[0][0], 2
+    )
+    manuscript_results["corr_placebo_accdiff_ci95_upper"] = round(
+        corr_placebo_acc["CI95"].values[0][1], 2
+    )
+    manuscript_results["corr_placebo_accdiff_p"] = round(
+        corr_placebo_acc["p_val"].values[0], 4
+    )
+    manuscript_results["corr_placebo_accdiff_n"] = int(corr_placebo_acc["n"].values[0])
     # Extract Bayes Factor (BF10 < 1/3 = evidence for null, BF10 > 3 = evidence for alternative)
     bf_corr = corr_placebo_acc["BF10"].values[0]
     try:
-        manuscript_results["corr_placebo_acc_BF10"] = round(float(bf_corr), 3)
+        manuscript_results["corr_placebo_accdiff_BF10"] = round(float(bf_corr), 3)
+        manuscript_results["corr_placebo_accdiff_BF01"] = round(1 / float(bf_corr), 2)
     except (ValueError, TypeError):
-        manuscript_results["corr_placebo_acc_BF10"] = str(bf_corr)
+        manuscript_results["corr_placebo_accdiff_BF10"] = str(bf_corr)
 
     # --- Questionnaire correlations ---
     # STAI-Y1 vs placebo effect
