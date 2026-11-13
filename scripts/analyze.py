@@ -321,6 +321,7 @@ def main():
         exclude_placebo = args.exclude_placebo
         exclude_low_acc = True
     exclude_custom = ["sub-052", "sub-057", "sub-070"]
+    #the exclude custom particiants had problems with either flipped on / off intensity and plateau higher than placbo
     low_acc_threshold = args.low_acc_threshold
 
     print(f"Running analysis with exclude_placebo = {exclude_placebo}")
