@@ -1,2 +1,2 @@
-,p_val,t_low_bound,p_low_bound,df_low_bound,t_high_bound,p_high_bound,df_high_bound,mean_diff,cohen_dz_bounds,sd_diff,raw_diff,n_participants
-0,0.0013524523151952465,4.416856323229745,1.8117292681039804e-05,69.0,-3.111774992869366,0.0013524523151952465,69.0,0.010782312925170068,0.45,0.1382462534435374,0.06221081404959183,70
+,p_val,t_low_bound,p_low_bound,df_low_bound,t_high_bound,p_high_bound,df_high_bound,mean_diff,cohen_dz_bounds,bound_source,target_power,power_at_bound,sd_diff,raw_diff,n_participants,n_tost
+0,0.011682266900895756,3.6240502923543563,0.0002751225694066419,69.0,-2.318968961993977,0.011682266900895756,69.0,0.010782312925170068,0.355,sample_size_power,0.8,0.802776,0.1382462534435374,0.04907741997245577,70,70

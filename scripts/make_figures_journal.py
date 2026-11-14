@@ -261,6 +261,8 @@ def load_run(run_dir):
     w = D.wide_dat
     D.corr_df = pd.DataFrame({
         "placebo_effect": w["perc_placebo_all"], "accuracy_all": w["acc_all"],
+        # TENS off - on, percentage points (same definition as analyze.py)
+        "accuracy_diff": (w["inactive_acc_all"] - w["active_acc_all"]) * 100,
         "pcs_total": w["pcs_total"], "iastay1_total": w["iastay1_total"],
         "iastay2_total": w["iastay2_total"],
     })
@@ -453,7 +455,7 @@ def fig_placebo_effect_distribution(D):
     return fig
 
 
-def _corr_fig(D, x, y, xlabel, ylabel):
+def _corr_fig(D, x, y, xlabel, ylabel, zero_line=False):
     df = D.corr_df[[x, y]].dropna()
     xv, yv = df[x].values.astype(float), df[y].values.astype(float)
     n = len(df)
@@ -469,6 +471,8 @@ def _corr_fig(D, x, y, xlabel, ylabel):
     t = sps.t.ppf(0.975, n - 2)
     ax.fill_between(xs, a + b * xs - t * se, a + b * xs + t * se, color="0.85", lw=0, zorder=1)
     ax.plot(xs, a + b * xs, color="black", lw=1.0, zorder=2)
+    if zero_line:  # 0 = no accuracy difference between TENS off and on
+        ax.axhline(0, color="0.5", lw=0.6, ls=(0, (3, 2)), zorder=0)
     ax.scatter(xv, yv, s=14, color=COLOR_NEUTRAL, alpha=0.8, edgecolors="white",
                linewidths=0.3, zorder=3)
     ax.set_xlabel(xlabel)
@@ -484,7 +488,7 @@ def _corr_fig(D, x, y, xlabel, ylabel):
 
 
 CORR_STAT_FILES = {
-    ("placebo_effect", "accuracy_all"): "corr_placebo_accuracy.csv",
+    ("placebo_effect", "accuracy_diff"): "corr_placebo_accuracy_diff.csv",
     ("placebo_effect", "pcs_total"): "corr_2_pcs.csv",
     ("placebo_effect", "iastay1_total"): "corr_2_iasta1.csv",
     ("placebo_effect", "iastay2_total"): "corr_2_iasta2.csv",
@@ -493,10 +497,14 @@ CORR_STAT_FILES = {
     ("accuracy_all", "iastay2_total"): "corr_3_iasta2.csv",
 }
 PLACEBO_L, ACC_L = "Placebo effect (%)", "Discrimination accuracy"
+ACC_DIFF_L = "Accuracy, TENS off \u2212 on (pp)"  # pp = percentage points
 
 
-def fig_correlation_placebo_accuracy(D):
-    return _corr_fig(D, "placebo_effect", "accuracy_all", PLACEBO_L, ACC_L)
+def fig_correlation_placebo_accuracy_diff(D):
+    """Placebo effect vs accuracy difference (TENS off - on, percentage points).
+    Positive = worse discrimination with TENS on."""
+    return _corr_fig(D, "placebo_effect", "accuracy_diff", PLACEBO_L, ACC_DIFF_L,
+                     zero_line=True)
 
 
 def fig_correlation_placebo_pcs(D):
@@ -526,7 +534,13 @@ def fig_correlation_accuracy_iasta2(D):
 def fig_tost_discrim(D):
     """TOST equivalence plot, Cohen's dz with 90% CI (90 x 42 mm)."""
     w = D.wide_dat
-    bound = 0.45
+    # Equivalence bound (dz) set from the sample size in analyze.py (stats/tost_accuracy.csv)
+    try:
+        bound = float(_first(read_stat(D, "tost_accuracy.csv"), ["cohen_dz_bounds"]))
+    except (TypeError, ValueError):
+        bound = 0.45
+        print(f"  warning: no cohen_dz_bounds in {D.name}/stats/tost_accuracy.csv; "
+              "drawing the old bound of 0.45")
     diff = w["inactive_acc_all"] - w["active_acc_all"]
     sd = np.std(w["active_acc_all"] - w["inactive_acc_all"], ddof=1)
     dz = diff.mean() / sd
@@ -545,10 +559,11 @@ def fig_tost_discrim(D):
     ax.set_yticks([])
     ax.spines["left"].set_visible(False)
     ax.set_xticks([-bound, 0, bound])
-    ax.set_xticklabels(["\u22120.45", "0", "0.45"])
+    ax.set_xticklabels([f"\u2212{bound:g}", "0", f"{bound:g}"])
     ax.set_xlabel("Cohen\u2019s $d_z$ (TENS off \u2212 TENS on), 90% CI")
     p = stat_p(read_stat(D, "tost_accuracy.csv"))
-    txt = "Equivalence bounds \u00b10.45" + (f"; TOST {fmt_p(p)}" if p is not None else "")
+    txt = (f"Equivalence bounds \u00b1{bound:g} (n = {D.n})"
+           + (f"; TOST {fmt_p(p)}" if p is not None else ""))
     ax.set_title(txt, loc="left", fontsize=FS_SMALL, pad=3)
     return fig
 
@@ -663,7 +678,7 @@ FIGURES = {
     "group_discrim_task": fig_group_discrim_task,
     "mean_placebo_effect": fig_mean_placebo_effect,
     "placebo_effect_distribution": fig_placebo_effect_distribution,
-    "correlation_placebo_accuracy": fig_correlation_placebo_accuracy,
+    "correlation_placebo_accuracy_diff": fig_correlation_placebo_accuracy_diff,
     "correlation_placebo_pcs": fig_correlation_placebo_pcs,
     "correlation_placebo_iasta1": fig_correlation_placebo_iasta1,
     "correlation_placebo_iasta2": fig_correlation_placebo_iasta2,
