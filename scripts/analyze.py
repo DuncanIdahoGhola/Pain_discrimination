@@ -158,6 +158,44 @@ def SDT(hits, misses, fas, crs):
     return out
 
 
+def bf01_from_bf10(bf10):
+    """
+    BF01 = 1 / BF10: evidence FOR the null relative to the alternative.
+
+    pingouin returns BF10 as a string ('0.215', '3.2e+03', 'inf'), so it is
+    parsed first. Rule of thumb: BF01 > 3 moderate, > 10 strong evidence for H0.
+    """
+    try:
+        v = float(bf10)
+    except (TypeError, ValueError):
+        return np.nan
+    if v == 0:
+        return np.inf
+    return 1.0 / v
+
+
+def add_bf01(df):
+    """Add a BF01 column right after BF10 in a pingouin result (ttest / corr)."""
+    if "BF10" in df.columns and "BF01" not in df.columns:
+        df.insert(
+            df.columns.get_loc("BF10") + 1,
+            "BF01",
+            [bf01_from_bf10(v) for v in df["BF10"]],
+        )
+    return df
+
+
+def add_bf_results(results, prefix, bf10):
+    """Store BF10 and BF01 (= 1 / BF10) of one test in the manuscript results."""
+    try:
+        v = float(bf10)
+    except (TypeError, ValueError):
+        results[f"{prefix}_BF10"] = str(bf10)
+        return
+    results[f"{prefix}_BF10"] = round(v, 3)
+    results[f"{prefix}_BF01"] = round(bf01_from_bf10(v), 3)
+
+
 def paired_ttest(x, y):
     """
     Paired t-test on x - y (pingouin), with Cohen's dz added.
@@ -174,6 +212,8 @@ def paired_ttest(x, y):
     out = out.rename(columns={"cohen_d": "cohen_d_av", "cohen-d": "cohen_d_av"})
     diff = (x - y)[~np.isnan(x) & ~np.isnan(y)]
     out["cohen_dz"] = np.mean(diff) / np.std(diff, ddof=1)
+    # BF10 (pingouin) plus BF01 = 1 / BF10 for evidence in favour of the null
+    out = add_bf01(out)
     return out
 
 
@@ -1742,6 +1782,7 @@ def main():
         y=correlation_df["accuracy_diff"],
         #BF10 is included in this test
     )
+    correlation_1 = add_bf01(correlation_1)  # BF01 = evidence for the null
     correlation_1.to_csv(opj(output_dir, "stats", "corr_placebo_accuracy_diff.csv"))
 
     plt.figure(figsize=(6, 6))
@@ -2877,6 +2918,7 @@ def main():
     manuscript_results["pain_ttest_df"] = int(pain_ttest["dof"].values[0])
     manuscript_results["pain_ttest_dz"] = round(pain_ttest["cohen_dz"].values[0], 2)
     manuscript_results["pain_ttest_dav"] = round(pain_ttest["cohen_d_av"].values[0], 2)
+    add_bf_results(manuscript_results, "pain", pain_ttest["BF10"].values[0])
 
     # --- Discrimination accuracy descriptives ---
     manuscript_results["acc_overall_mean"] = round(accuracy_all_mean * 100, 2)
@@ -2912,13 +2954,8 @@ def main():
         discrim_ttest["cohen_d_av"].values[0], 2
     )
 
-    # --- Bayes Factor for discrimination t-test ---
-    bf_value = discrim_ttest["BF10"].values[0]
-    # BF10 can be a string like 'inf' or a float
-    try:
-        manuscript_results["discrim_BF10"] = round(float(bf_value), 3)
-    except (ValueError, TypeError):
-        manuscript_results["discrim_BF10"] = str(bf_value)
+    # --- Bayes Factors for discrimination t-test (BF10 and BF01 = null) ---
+    add_bf_results(manuscript_results, "discrim", discrim_ttest["BF10"].values[0])
 
     # --- Signal detection t-tests (TENS inactive - active) ---
     # Sensitivity (d') and criterion (c); beta is not reported (see SDT()).
@@ -2941,6 +2978,7 @@ def main():
         manuscript_results[f"{measure}_ttest_dz"] = round(
             sdt_ttest["cohen_dz"].values[0], 2
         )
+        add_bf_results(manuscript_results, measure, sdt_ttest["BF10"].values[0])
 
     # --- TOST equivalence test ---
     tost_mean_diff_val = np.mean(
@@ -3007,13 +3045,10 @@ def main():
         corr_placebo_acc["p_val"].values[0], 4
     )
     manuscript_results["corr_placebo_accdiff_n"] = int(corr_placebo_acc["n"].values[0])
-    # Extract Bayes Factor (BF10 < 1/3 = evidence for null, BF10 > 3 = evidence for alternative)
-    bf_corr = corr_placebo_acc["BF10"].values[0]
-    try:
-        manuscript_results["corr_placebo_accdiff_BF10"] = round(float(bf_corr), 3)
-        manuscript_results["corr_placebo_accdiff_BF01"] = round(1 / float(bf_corr), 2)
-    except (ValueError, TypeError):
-        manuscript_results["corr_placebo_accdiff_BF10"] = str(bf_corr)
+    # Bayes Factors (BF01 > 3 = evidence for the null, BF10 > 3 = for the alternative)
+    add_bf_results(
+        manuscript_results, "corr_placebo_accdiff", corr_placebo_acc["BF10"].values[0]
+    )
 
     # --- Questionnaire correlations ---
     # STAI-Y1 vs placebo effect

@@ -17,7 +17,9 @@ Usage (from the project root, or call main([...]) in an interactive window)
 Inputs  (per run folder, written by analyze.py)
     data_wide_dat_withexcl.csv, data_all_eval_frame_withexcl.csv,
     data_all_discrim_task_long_withexcl.csv
-    stats/*.csv   (optional: used only to print p-values / BF10 on the figures)
+    stats/*.csv   (optional: used only to print p-values / Bayes factors on the figures;
+                  BF01 = evidence for the null on the discrimination results,
+                  BF10 on the questionnaire correlations)
 Outputs -> <run>/figures_journal/   (originals in figures/ are never touched)
 
 Style summary (edit the CONFIG block below to change it everywhere at once)
@@ -216,6 +218,34 @@ def stat_bf(row):
         return None if v is None else str(v)
 
 
+def stat_bf01(row):
+    """BF01 (evidence for the null) from a stats row; 1 / BF10 if the column is absent
+    (e.g. CSVs written before analyze.py added BF01)."""
+    v = _first(row, ["BF01"])
+    if v is None:
+        try:
+            v = 1.0 / float(_first(row, ["BF10"]))
+        except (TypeError, ValueError, ZeroDivisionError):
+            return None
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def bf_label(sub, v):
+    """Mathtext label such as 'BF$_{01}$ = 4.17' (Arial has no Unicode subscripts)."""
+    if v is None or np.isnan(v):
+        return None
+    if v < 0.01:
+        return f"BF$_{{{sub}}}$ < 0.01"
+    if v >= 100:
+        return f"BF$_{{{sub}}}$ = {v:.0f}"
+    if v >= 10:
+        return f"BF$_{{{sub}}}$ = {v:.1f}"
+    return f"BF$_{{{sub}}}$ = {v:.2f}"
+
+
 # =============================================================================
 # DATA LOADING
 # =============================================================================
@@ -330,9 +360,10 @@ def _nice_ticks(lo, hi, n=5):
 
 
 def draw_paired(ax, on, off, ylabel, lo, hi, yticks=None, chance=None, p=None,
-                jitter=0.0, show_xlabels=True, headroom=HEADROOM):
+                jitter=0.0, show_xlabels=True, headroom=HEADROOM, bf01=None):
     """TENS on vs off, one dot per participant, thin paired lines, narrow box
-    (median + IQR), white diamond = mean. Bracket on top gives the p-value."""
+    (median + IQR), white diamond = mean. Bracket on top gives the p-value
+    (and BF01, evidence for the null, when `bf01` is given)."""
     on, off = on.dropna(), off.dropna()
     common = on.index.intersection(off.index)
     on, off = on.loc[common], off.loc[common]
@@ -370,6 +401,9 @@ def draw_paired(ax, on, off, ylabel, lo, hi, yticks=None, chance=None, p=None,
         ax.text(1.58, chance, "chance", ha="right", va="bottom", fontsize=FS_SMALL,
                 color="0.35")
     txt = fmt_p(p)
+    bf_txt = bf_label("01", bf01)
+    if txt and bf_txt:
+        txt += ", " + bf_txt
     if txt:
         y0 = hi + 0.035 * (hi - lo)
         d = 0.02 * (hi - lo)
@@ -455,7 +489,7 @@ def fig_placebo_effect_distribution(D):
     return fig
 
 
-def _corr_fig(D, x, y, xlabel, ylabel, zero_line=False):
+def _corr_fig(D, x, y, xlabel, ylabel, zero_line=False, bf="BF10"):
     df = D.corr_df[[x, y]].dropna()
     xv, yv = df[x].values.astype(float), df[y].values.astype(float)
     n = len(df)
@@ -480,9 +514,14 @@ def _corr_fig(D, x, y, xlabel, ylabel, zero_line=False):
 
     r, p = sps.pearsonr(xv, yv)
     txt = f"r = {r:.2f}, {fmt_p(p)}"
-    bf = stat_bf(read_stat(D, CORR_STAT_FILES.get((x, y), "")))
-    if bf:
-        txt += f", BF$_{{10}}$ = {bf}"  # mathtext subscript: Arial has no \u2081\u2080 glyphs
+    row = read_stat(D, CORR_STAT_FILES.get((x, y), ""))
+    if bf == "BF01":  # evidence for the null (placebo effect vs accuracy difference)
+        label = bf_label("01", stat_bf01(row))
+    else:  # questionnaire correlations keep BF10
+        v = stat_bf(row)
+        label = f"BF$_{{10}}$ = {v}" if v else None  # mathtext: Arial lacks \u2081\u2080
+    if label:
+        txt += ", " + label
     ax.set_title(txt, loc="left", fontsize=FS_TEXT, pad=3)
     return fig
 
@@ -504,7 +543,7 @@ def fig_correlation_placebo_accuracy_diff(D):
     """Placebo effect vs accuracy difference (TENS off - on, percentage points).
     Positive = worse discrimination with TENS on."""
     return _corr_fig(D, "placebo_effect", "accuracy_diff", PLACEBO_L, ACC_DIFF_L,
-                     zero_line=True)
+                     zero_line=True, bf="BF01")
 
 
 def fig_correlation_placebo_pcs(D):
@@ -578,8 +617,9 @@ def _paired_wide_fig(D, col_on, col_off, ylabel, stat_file, chance=None, acc=Fal
         lo, hi = m - pad, M + pad
     fig = new_fig(W_SINGLE, 75)
     ax = add_ax(fig, 15, 12, 72, 56)
+    row = read_stat(D, stat_file)
     draw_paired(ax, on, off, ylabel, lo, hi, chance=chance,
-                p=stat_p(read_stat(D, stat_file)), jitter=0.04 if acc else 0.0,
+                p=stat_p(row), bf01=stat_bf01(row), jitter=0.04 if acc else 0.0,
                 yticks=ACC_YTICKS if (acc and lo == ACC_YLIM[0]) else None)
     n_note(ax, D)
     return fig
@@ -651,6 +691,7 @@ def fig_main_figure_combined(D):
                    p=stat_p(read_stat(D, "t_test_placebo_eval.csv")))
     acc_kw = dict(ylabel=ACC_LABEL, lo=lo_a, hi=hi_a, chance=0.5, jitter=0.04,
                   p=stat_p(read_stat(D, "t_test_accuracy.csv")),
+                  bf01=stat_bf01(read_stat(D, "t_test_accuracy.csv")),
                   yticks=ACC_YTICKS if lo_a == ACC_YLIM[0] else None)
     if MAIN_PAIN_ON_TOP_RIGHT:
         draw_paired(ax_c, D.pain_on, D.pain_off, show_xlabels=False, **pain_kw)
