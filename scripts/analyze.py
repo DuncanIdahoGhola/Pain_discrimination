@@ -79,6 +79,26 @@ def parse_args():
         action="store_true",
         help="Disable all exclusions (include all participants)",
     )
+    parser.add_argument(
+        "--tost-power",
+        type=float,
+        default=0.80,
+        help="Target power used to derive the TOST equivalence bound from the "
+        "sample size (default: 0.80)",
+    )
+    parser.add_argument(
+        "--tost-simulations",
+        type=int,
+        default=500_000,
+        help="Monte Carlo simulations for the TOST power analysis (default: 500000)",
+    )
+    parser.add_argument(
+        "--tost-bound",
+        type=float,
+        default=None,
+        help="Fixed equivalence bound in Cohen's dz. If given, it overrides the "
+        "sample-size-based bound (default: None = derive from n)",
+    )
     return parser.parse_args()
 
 
@@ -161,6 +181,98 @@ def paired_ttest(x, y):
 TOST_CURVE_BOUNDS = np.round(np.arange(0.20, 0.5001, 0.01), 2)
 TOST_CURVE_MARKED = [0.2, 0.3, 0.4, 0.5]
 TOST_ALPHA = 0.05
+TOST_SEED = 42
+
+
+def paired_tost_power(
+    n,
+    equivalence_bound,
+    true_effect=0.0,
+    alpha=TOST_ALPHA,
+    simulations=500_000,
+    seed=TOST_SEED,
+    draws=None,
+):
+    """
+    Monte Carlo power of a paired-samples TOST.
+
+    Effect sizes and equivalence bounds are in Cohen's dz units. `draws` lets
+    callers reuse the (z, sd) simulations across several bounds.
+    """
+    df = n - 1
+    critical_t = stats.t.ppf(1 - alpha, df)
+
+    if draws is None:
+        draws = _tost_draws(n, simulations, seed)
+    z, sample_sd = draws
+
+    # Sample mean and SD of the differences (population SD = 1)
+    sample_mean = true_effect + z / np.sqrt(n)
+
+    t_lower = ((sample_mean / sample_sd) + equivalence_bound) * np.sqrt(n)
+    t_upper = ((sample_mean / sample_sd) - equivalence_bound) * np.sqrt(n)
+
+    # Both one-sided tests must be significant
+    return np.mean((t_lower > critical_t) & (t_upper < -critical_t))
+
+
+def _tost_draws(n, simulations, seed):
+    """Standardised sampling distributions of the mean (z) and the SD."""
+    rng = np.random.default_rng(seed)
+    df = n - 1
+    z = rng.standard_normal(simulations)
+    chi = rng.chisquare(df, simulations)
+    return z, np.sqrt(chi / df)
+
+
+def find_required_bound(
+    n,
+    target_power=0.80,
+    true_effect=0.0,
+    alpha=TOST_ALPHA,
+    simulations=500_000,
+    seed=TOST_SEED,
+):
+    """Smallest dz equivalence bound reaching `target_power` for `n` pairs."""
+    draws = _tost_draws(n, simulations, seed)
+
+    def power(b):
+        return paired_tost_power(n, b, true_effect, alpha, draws=draws)
+
+    low, high = 0.0, 2.0
+    while power(high) < target_power:
+        high *= 2
+
+    for _ in range(40):
+        mid = (low + high) / 2
+        if power(mid) >= target_power:
+            high = mid
+        else:
+            low = mid
+
+    return high
+
+
+def sample_size_equivalence_bound(
+    n,
+    target_power=0.80,
+    true_effect=0.0,
+    alpha=TOST_ALPHA,
+    simulations=500_000,
+    seed=TOST_SEED,
+):
+    """
+    Equivalence bound (dz) set from the sample size of the test.
+
+    The bound is rounded UP to 3 decimals so the stated bound always reaches
+    the target power. Returns (bound_dz, power_at_bound).
+    """
+    raw = find_required_bound(n, target_power, true_effect, alpha, simulations, seed)
+    bound = math.ceil(raw * 1000) / 1000
+    power = paired_tost_power(
+        n, bound, true_effect, alpha, simulations=simulations, seed=seed
+    )
+    return bound, power
 
 
 def tost_bound_curve(x, y, bounds=TOST_CURVE_BOUNDS, alpha=TOST_ALPHA):
@@ -210,13 +322,16 @@ def tost_bound_curve(x, y, bounds=TOST_CURVE_BOUNDS, alpha=TOST_ALPHA):
     return curve
 
 
-def plot_tost_bound_curves(curves, out_path, title=None, alpha=TOST_ALPHA):
+def plot_tost_bound_curves(
+    curves, out_path, title=None, alpha=TOST_ALPHA, used_bounds=None
+):
     """
     Plot TOST p-value against the equivalence bound for one or more samples.
 
     curves: list of (label, curve DataFrame from tost_bound_curve, color).
     With several samples the legend carries each sample's n and the smallest
-    bound at which equivalence is supported.
+    bound at which equivalence is supported. `used_bounds` (optional, one dz per
+    curve) draws the equivalence bound actually used in the TOST as a dotted line.
     """
     text_primary, text_muted, rule = "#222222", "#6b6b6b", "#d9d9d9"
     fig, ax = plt.subplots(figsize=(5.5, 4.2))
@@ -243,7 +358,13 @@ def plot_tost_bound_curves(curves, out_path, title=None, alpha=TOST_ALPHA):
                 markersize=8, markerfacecolor=color, markeredgecolor="white",
                 markeredgewidth=2, zorder=4)
 
-    ax.set_xlim(0.19, 0.51)
+    x_max = 0.51
+    for i, (_, curve, color) in enumerate(curves):
+        if used_bounds is not None and used_bounds[i] is not None:
+            ax.axvline(used_bounds[i], color=color, linestyle=":", linewidth=1.5,
+                       zorder=2)
+            x_max = max(x_max, used_bounds[i] + 0.01)
+    ax.set_xlim(0.19, x_max)
     ax.set_xticks(TOST_CURVE_MARKED)
     yticks = [t for t in [0.0001, 0.001, 0.01, 0.05, 0.1, 0.5, 1] if t >= y_low]
     ax.set_yticks(yticks)
@@ -1500,7 +1621,27 @@ def main():
     # Two One-Sided Tests to establish equivalence between conditions
     # Tests whether the difference is practically equivalent to zero
     # -------------------------------------------------------------------------
-    cohen_dz_bounds = 0.45  # Equivalence bounds in Cohen's dz units
+    # Equivalence bound (Cohen's dz) set from the sample size of this test: the
+    # smallest bound giving `--tost-power` power (paired TOST, true dz = 0).
+    # Each run (placebo_0, placebo_10, placebo_all) therefore gets its own bound.
+    n_tost = int(wide_dat[["inactive_acc_all", "active_acc_all"]].dropna().shape[0])
+    if args.tost_bound is not None:
+        cohen_dz_bounds = args.tost_bound
+        tost_bound_source = "fixed"
+    else:
+        cohen_dz_bounds, _ = sample_size_equivalence_bound(
+            n_tost,
+            target_power=args.tost_power,
+            simulations=args.tost_simulations,
+        )
+        tost_bound_source = "sample_size_power"
+    tost_power_at_bound = paired_tost_power(
+        n_tost, cohen_dz_bounds, simulations=args.tost_simulations
+    )
+    print(
+        f"TOST accuracy: n = {n_tost}, equivalence bound = +/-{cohen_dz_bounds} dz "
+        f"({tost_bound_source}; power at bound = {tost_power_at_bound * 100:.1f}%)"
+    )
     sd_diff_acc = np.std(
         wide_dat["active_acc_all"] - wide_dat["inactive_acc_all"], ddof=1
     )
@@ -1526,23 +1667,32 @@ def main():
             "df_high_bound": [thighbound[2]],
             "mean_diff": [mean_diff],
             "cohen_dz_bounds": [cohen_dz_bounds],
+            "bound_source": [tost_bound_source],
+            "target_power": [args.tost_power],
+            "power_at_bound": [tost_power_at_bound],
             "sd_diff": [sd_diff_acc],
             "raw_diff": [raw_diff],
             "n_participants": [len(wide_dat)],
+            "n_tost": [n_tost],
         }
     )
     tost_df.to_csv(opj(output_dir, "stats", "tost_accuracy.csv"))
 
     # TOST across all bounds from dz = 0.20 to 0.50 (no single bound chosen)
-    tost_curve = tost_bound_curve(
-        wide_dat["inactive_acc_all"], wide_dat["active_acc_all"]
+    curve_bounds = np.unique(
+        np.round(np.append(TOST_CURVE_BOUNDS, cohen_dz_bounds), 3)
     )
+    tost_curve = tost_bound_curve(
+        wide_dat["inactive_acc_all"], wide_dat["active_acc_all"], bounds=curve_bounds
+    )
+    tost_curve["is_used_bound"] = np.isclose(tost_curve["bound_dz"], cohen_dz_bounds)
     tost_curve.to_csv(opj(output_dir, "stats", "tost_bound_curve.csv"), index=False)
     for ext in ["png", "svg"]:
         plot_tost_bound_curves(
             [("Accuracy", tost_curve, "#2a78d6")],
             opj(output_dir, "figures", f"tost_bound_curve.{ext}"),
             title=f"Accuracy, TENS off vs on (n = {len(wide_dat)})",
+            used_bounds=[cohen_dz_bounds],
         )
 
     # -------------------------------------------------------------------------
@@ -1760,11 +1910,14 @@ def main():
         [1, 1],
         linewidth=2,
     )
-    plt.axvline(-0.45, color="k", linestyle="--")
-    plt.axvline(0.45, color="k", linestyle="--")
+    plt.axvline(-cohen_dz_bounds, color="k", linestyle="--")
+    plt.axvline(cohen_dz_bounds, color="k", linestyle="--")
     plt.yticks([])
     plt.tick_params(labelsize=14)
-    plt.xticks([-0.45, 0, 0.45], ["-0.45", "0", "0.45"])
+    plt.xticks(
+        [-cohen_dz_bounds, 0, cohen_dz_bounds],
+        [f"-{cohen_dz_bounds:g}", "0", f"{cohen_dz_bounds:g}"],
+    )
     plt.xlabel("Cohen's dz", fontsize=18)
     plt.title("TOST equivalence test", fontdict={"fontsize": 18})
     plt.savefig(
@@ -2796,7 +2949,8 @@ def main():
     tost_sd_diff_val = np.std(
         last_values["inactive_acc_all"] - last_values["active_acc_all"], ddof=1
     )
-    tost_bounds_cohen = 0.45
+    # Same sample-size-based bound as the main TOST above (one per run/group)
+    tost_bounds_cohen = cohen_dz_bounds
     tost_bounds_raw = tost_bounds_cohen * tost_sd_diff_val
 
     p_tost, t_low, t_high = ttost_paired(
@@ -2807,7 +2961,11 @@ def main():
     )
     manuscript_results["tost_mean_diff"] = round(tost_mean_diff_val, 3)
     manuscript_results["tost_sd_diff"] = round(tost_sd_diff_val, 3)
+    manuscript_results["tost_n"] = n_tost
     manuscript_results["tost_bounds_cohen_d"] = tost_bounds_cohen
+    manuscript_results["tost_bounds_source"] = tost_bound_source
+    manuscript_results["tost_target_power"] = args.tost_power
+    manuscript_results["tost_power_at_bound"] = round(tost_power_at_bound, 4)
     manuscript_results["tost_lower_t"] = round(t_low[0], 2)
     manuscript_results["tost_lower_p"] = t_low[1]
     manuscript_results["tost_lower_df"] = int(t_low[2])
