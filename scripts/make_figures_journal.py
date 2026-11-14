@@ -221,7 +221,7 @@ def stat_bf(row):
 # =============================================================================
 WIDE_NUMERIC = [
     "perc_placebo_all", "acc_all", "active_acc_all", "inactive_acc_all",
-    "d_prime_active", "d_prime_inactive", "beta_active", "beta_inactive",
+    "d_prime_active", "d_prime_inactive",
     "c_active", "c_inactive", "pcs_total", "iastay1_total", "iastay2_total",
 ] + [f"placebo_b{b}_{t}" for b in (1, 2) for t in (1, 2, 3, 4)]
 
@@ -482,7 +482,7 @@ def _corr_fig(D, x, y, xlabel, ylabel, zero_line=False):
     txt = f"r = {r:.2f}, {fmt_p(p)}"
     bf = stat_bf(read_stat(D, CORR_STAT_FILES.get((x, y), "")))
     if bf:
-        txt += f", BF\u2081\u2080 = {bf}"
+        txt += f", BF$_{{10}}$ = {bf}"  # mathtext subscript: Arial has no \u2081\u2080 glyphs
     ax.set_title(txt, loc="left", fontsize=FS_TEXT, pad=3)
     return fig
 
@@ -595,11 +595,6 @@ def fig_discrim_dprime_cond(D):
                             "t_test_dprime.csv")
 
 
-def fig_discrim_beta_cond(D):
-    return _paired_wide_fig(D, "beta_active", "beta_inactive", "\u03b2 (bias)",
-                            "t_test_beta.csv")
-
-
 def fig_discrim_c_cond(D):
     return _paired_wide_fig(D, "c_active", "c_inactive", "Criterion (c)", "t_test_c.csv")
 
@@ -688,7 +683,6 @@ FIGURES = {
     "tost_discrim": fig_tost_discrim,
     "discrim_acc_cond": fig_discrim_acc_cond,
     "discrim_dprime_cond": fig_discrim_dprime_cond,
-    "discrim_beta_cond": fig_discrim_beta_cond,
     "discrim_c_cond": fig_discrim_c_cond,
     "extinction_placebo": fig_extinction_placebo,
     "main_figure_combined": fig_main_figure_combined,
