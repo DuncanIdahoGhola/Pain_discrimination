@@ -101,7 +101,7 @@ HEADROOM = 0.16  # extra room above paired panels for the p-value bracket
 MAIN_PAIN_ON_TOP_RIGHT = True
 
 PLACEBO_TRIALS = [8, 9, 10, 11, 20, 21, 22, 23]  # 0-indexed placebo-test rating trials
-PLACEBO_THRESHOLD_LINE = 10  # dashed line on placebo_effect_distribution (%)
+PLACEBO_THRESHOLD_LINE = 0  # dashed line on placebo_effect_distribution (%)
 SHOW_N = False  # True: print "n = ..." in the paired panels (handy while drafting)
 
 # x-ranges of the four experimental phases (trial index units)
