@@ -93,6 +93,14 @@ def parse_args():
         help="Monte Carlo simulations for the TOST power analysis (default: 500000)",
     )
     parser.add_argument(
+        "--tost-ladder",
+        type=float,
+        nargs="+",
+        default=None,
+        help="Extra equivalence bounds (Cohen's dz) tested besides the primary "
+        "sample-size-based one (default: 0.2 0.3 0.4 0.5)",
+    )
+    parser.add_argument(
         "--tost-bound",
         type=float,
         default=None,
@@ -220,6 +228,9 @@ def paired_ttest(x, y):
 # Equivalence bounds (Cohen's dz) shown in the TOST bound curve
 TOST_CURVE_BOUNDS = np.round(np.arange(0.20, 0.5001, 0.01), 2)
 TOST_CURVE_MARKED = [0.2, 0.3, 0.4, 0.5]
+# Fixed benchmark bounds tested in addition to the primary (sample-size-based) bound:
+# small (0.2) to medium (0.5) in steps of 0.1.
+TOST_LADDER_BOUNDS = (0.2, 0.3, 0.4, 0.5)
 TOST_ALPHA = 0.05
 TOST_SEED = 42
 
@@ -360,6 +371,41 @@ def tost_bound_curve(x, y, bounds=TOST_CURVE_BOUNDS, alpha=TOST_ALPHA):
     curve["ci90_upper"] = ci[1]
     curve["smallest_equiv_bound_dz"] = smallest
     return curve
+
+
+def tost_bound_ladder(
+    x,
+    y,
+    primary_bound,
+    ladder_bounds=TOST_LADDER_BOUNDS,
+    simulations=500_000,
+    alpha=TOST_ALPHA,
+):
+    """
+    Paired TOST (x - y) at the primary bound plus a short ladder of benchmark bounds.
+
+    The tests are nested (equivalence at a bound implies equivalence at every
+    larger bound), so they are one p-curve read at several points and need no
+    multiplicity correction. Per bound this returns p, whether equivalence is
+    supported, the a-priori power (true dz = 0) and whether the bound is reachable
+    at all with this n (best-case bound = t_crit / sqrt(n), obtained when the
+    observed dz is exactly 0).
+    """
+    bounds = sorted({round(float(b), 3) for b in list(ladder_bounds) + [primary_bound]})
+    ladder = tost_bound_curve(x, y, bounds=bounds, alpha=alpha)
+    n = int(ladder["n"].iloc[0])
+    draws = _tost_draws(n, simulations, TOST_SEED)
+    is_primary = np.isclose(ladder["bound_dz"], round(float(primary_bound), 3))
+    ladder.insert(1, "role", np.where(is_primary, "primary", "benchmark"))
+    ladder["bound_pp"] = ladder["bound_raw"] * 100
+    ladder["equivalent"] = ladder["p_tost"] < alpha
+    ladder["power_at_bound"] = [
+        paired_tost_power(n, b, alpha=alpha, draws=draws) for b in ladder["bound_dz"]
+    ]
+    best_case = stats.t.ppf(1 - alpha, n - 1) / np.sqrt(n)
+    ladder["best_case_bound_dz"] = best_case
+    ladder["reachable"] = ladder["bound_dz"] > best_case
+    return ladder
 
 
 def plot_tost_bound_curves(
@@ -1719,14 +1765,41 @@ def main():
     tost_df.to_csv(opj(output_dir, "stats", "tost_accuracy.csv"))
 
     # TOST across all bounds from dz = 0.20 to 0.50 (no single bound chosen)
+    tost_ladder_bounds = (
+        tuple(args.tost_ladder) if args.tost_ladder else TOST_LADDER_BOUNDS
+    )
     curve_bounds = np.unique(
-        np.round(np.append(TOST_CURVE_BOUNDS, cohen_dz_bounds), 3)
+        np.round(
+            np.append(TOST_CURVE_BOUNDS, [cohen_dz_bounds, *tost_ladder_bounds]), 3
+        )
     )
     tost_curve = tost_bound_curve(
         wide_dat["inactive_acc_all"], wide_dat["active_acc_all"], bounds=curve_bounds
     )
     tost_curve["is_used_bound"] = np.isclose(tost_curve["bound_dz"], cohen_dz_bounds)
     tost_curve.to_csv(opj(output_dir, "stats", "tost_bound_curve.csv"), index=False)
+
+    # TOST at the primary bound + a short ladder of benchmark bounds (one row each)
+    tost_ladder = tost_bound_ladder(
+        wide_dat["inactive_acc_all"],
+        wide_dat["active_acc_all"],
+        primary_bound=cohen_dz_bounds,
+        ladder_bounds=tost_ladder_bounds,
+        simulations=args.tost_simulations,
+    )
+    tost_ladder.to_csv(opj(output_dir, "stats", "tost_ladder.csv"), index=False)
+    print("TOST ladder (accuracy):")
+    for _, r in tost_ladder.iterrows():
+        print(
+            f"  dz = +/-{r['bound_dz']:.3f} ({r['role']:9s}) p = {r['p_tost']:.4f}  "
+            f"equivalent: {'yes' if r['equivalent'] else 'no ':3s}  "
+            f"power = {r['power_at_bound'] * 100:5.1f}%  "
+            f"{'' if r['reachable'] else '[not reachable with this n]'}"
+        )
+    print(
+        f"  smallest supported bound (exact) = {tost_ladder['smallest_equiv_bound_dz'].iloc[0]:.3f} dz; "
+        f"best case with n = {n_tost}: {tost_ladder['best_case_bound_dz'].iloc[0]:.3f} dz"
+    )
     for ext in ["png", "svg"]:
         plot_tost_bound_curves(
             [("Accuracy", tost_curve, "#2a78d6")],
@@ -3022,12 +3095,21 @@ def main():
     manuscript_results["tost_smallest_equiv_bound_dz"] = round(
         tost_curve["smallest_equiv_bound_dz"].iloc[0], 3
     )
-    for b in TOST_CURVE_MARKED:
-        row = tost_curve[np.isclose(tost_curve["bound_dz"], b)].iloc[0]
-        manuscript_results[f"tost_p_dz{int(round(b * 100)):03d}"] = round(row["p_tost"], 4)
-        manuscript_results[f"tost_bound_pp_dz{int(round(b * 100)):03d}"] = round(
-            row["bound_raw"] * 100, 2
-        )
+    # Benchmark ladder (the primary bound is reported above as tost_p etc.)
+    for _, row in tost_ladder[tost_ladder["role"] == "benchmark"].iterrows():
+        tag = f"dz{int(round(row['bound_dz'] * 100)):03d}"
+        manuscript_results[f"tost_p_{tag}"] = round(row["p_tost"], 4)
+        manuscript_results[f"tost_bound_pp_{tag}"] = round(row["bound_pp"], 2)
+        manuscript_results[f"tost_equivalent_{tag}"] = bool(row["equivalent"])
+        manuscript_results[f"tost_power_{tag}"] = round(row["power_at_bound"], 4)
+    # Tightest bound for which equivalence is supported among all tested bounds
+    supported = tost_ladder[tost_ladder["equivalent"]]
+    manuscript_results["tost_smallest_supported_bound_dz"] = (
+        round(supported["bound_dz"].min(), 3) if len(supported) else "none"
+    )
+    manuscript_results["tost_best_case_bound_dz"] = round(
+        tost_ladder["best_case_bound_dz"].iloc[0], 3
+    )
 
     # --- Dose-response: Placebo effect vs accuracy difference (TENS off - on) ---
     # Includes Bayesian correlation (BF10, and BF01 = 1 / BF10 for the null)

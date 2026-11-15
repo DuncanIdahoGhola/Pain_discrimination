@@ -536,7 +536,7 @@ CORR_STAT_FILES = {
     ("accuracy_all", "iastay2_total"): "corr_3_iasta2.csv",
 }
 PLACEBO_L, ACC_L = "Placebo effect (%)", "Discrimination accuracy"
-ACC_DIFF_L = "Accuracy, TENS off \u2212 on (pp)"  # pp = percentage points
+ACC_DIFF_L = "Accuracy, TENS off \u2212 on"  # unit: percentage points (say so in the caption)
 
 
 def fig_correlation_placebo_accuracy_diff(D):
