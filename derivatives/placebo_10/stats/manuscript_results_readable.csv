@@ -7,6 +7,18 @@ age_mean,27.13
 age_sd,8.68
 age_min,19
 age_max,52
+edu_highschool_vocational_n,2
+edu_highschool_vocational_pct,6.5
+edu_cegep_college_n,11
+edu_cegep_college_pct,35.5
+edu_bachelor_n,10
+edu_bachelor_pct,32.3
+edu_master_n,8
+edu_master_pct,25.8
+edu_professional_doctorate_n,0
+edu_professional_doctorate_pct,0.0
+edu_phd_n,0
+edu_phd_pct,0.0
 n_excluded_custom,3
 excluded_custom,sub-052; sub-057; sub-070
 n_excluded_perfect_belowchance,7

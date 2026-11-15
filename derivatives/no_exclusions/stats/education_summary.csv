@@ -1,0 +1,7 @@
+level,label,n,percent,n_group
+highschool_vocational,High school / vocational,4,5.7,70
+cegep_college,CEGEP / college / technical,20,28.6,70
+bachelor,Bachelor's degree,20,28.6,70
+master,Master's degree,24,34.3,70
+professional_doctorate,"Professional doctorate (MD, DDS, DMD, DVM, OD, DPsy)",1,1.4,70
+phd,Doctorate (PhD),1,1.4,70

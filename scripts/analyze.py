@@ -26,8 +26,10 @@ Authors: Antoine Cyr-Bouchard, MP Coll - Pain Learning Lab, Laval University
 # IMPORTS
 # =============================================================================
 import argparse
+import glob
 import math
 import os
+import unicodedata
 from os.path import join as opj
 
 import matplotlib.font_manager as fm
@@ -91,6 +93,13 @@ def parse_args():
         type=int,
         default=500_000,
         help="Monte Carlo simulations for the TOST power analysis (default: 500000)",
+    )
+    parser.add_argument(
+        "--sociodemo-file",
+        type=str,
+        default=None,
+        help="Sociodemographic questionnaire CSV (default: sociodemo.csv, or any "
+        "*sociodemo*.csv, in the source directory)",
     )
     parser.add_argument(
         "--tost-ladder",
@@ -482,6 +491,105 @@ def plot_tost_bound_curves(
 # =============================================================================
 # MAIN ANALYSIS FUNCTION
 # =============================================================================
+# Highest diploma (sociodemographic question 8), from lowest to highest level:
+# (accent-free lower-case start of the French answer, column slug, English label)
+EDUCATION_LEVELS = [
+    ("secondaire", "highschool_vocational", "High school / vocational"),
+    ("cegep", "cegep_college", "CEGEP / college / technical"),
+    ("baccalaureat", "bachelor", "Bachelor's degree"),
+    ("maitrise", "master", "Master's degree"),
+    (
+        "doctorat professionnel",
+        "professional_doctorate",
+        "Professional doctorate (MD, DDS, DMD, DVM, OD, DPsy)",
+    ),
+    ("doctorat", "phd", "Doctorate (PhD)"),
+]
+
+
+def _plain(text):
+    """Lower-case, accent-free, trimmed text, used to match form answers."""
+    t = unicodedata.normalize("NFKD", str(text))
+    return "".join(c for c in t if not unicodedata.combining(c)).strip().casefold()
+
+
+def find_sociodemo_file(bidsroot, path=None):
+    """Path of the sociodemographic CSV, or None if it cannot be found."""
+    if path:
+        return path if os.path.exists(path) else None
+    exact = opj(bidsroot, "sociodemo.csv")
+    if os.path.exists(exact):
+        return exact
+    hits = sorted(glob.glob(opj(bidsroot, "*sociodemo*.csv")))
+    return hits[0] if hits else None
+
+
+def load_education(path):
+    """
+    Highest diploma per participant from the sociodemographic form (question 8).
+
+    Returns participant, education_raw (answer as written) and education_level
+    (slug from EDUCATION_LEVELS, 'other' for an unrecognised answer, or
+    'not_reported' for an empty one).
+    """
+    raw = pd.read_csv(path, encoding="utf-8-sig")
+    id_col = next(c for c in raw.columns if "participant" in str(c).lower())
+    edu_col = next(c for c in raw.columns if str(c).strip().startswith("8."))
+
+    out = pd.DataFrame(
+        {
+            "participant": raw[id_col].astype(str).str.strip(),
+            "education_raw": raw[edu_col],
+        }
+    )
+
+    def to_slug(v):
+        if pd.isna(v) or str(v).strip() in ("", "-"):
+            return "not_reported"
+        plain = _plain(v)
+        for start, slug, _ in EDUCATION_LEVELS:
+            if plain.startswith(start):
+                return slug
+        return "other"
+
+    out["education_level"] = out["education_raw"].map(to_slug)
+    unknown = out.loc[out["education_level"] == "other", "education_raw"].unique()
+    if len(unknown):
+        print(f"Warning: unrecognised diploma answers counted as 'other': {list(unknown)}")
+    if out["participant"].duplicated().any():
+        print("Warning: duplicated participants in the sociodemographic file; keeping the last answer")
+    return out.drop_duplicates("participant", keep="last")
+
+
+def education_summary(levels):
+    """
+    Number and percentage of participants per highest diploma.
+
+    Percentages use the size of the group; participants without an answer are
+    listed as 'not_reported' so that they add up to 100%. Every diploma level is
+    always listed (n = 0 if nobody), so groups are directly comparable.
+    """
+    levels = pd.Series(list(levels)).fillna("not_reported")
+    n_group = len(levels)
+    entries = [(slug, label) for _, slug, label in EDUCATION_LEVELS]
+    entries += [("other", "Other / unrecognised answer"), ("not_reported", "Not reported")]
+    rows = []
+    for slug, label in entries:
+        n = int((levels == slug).sum())
+        if n == 0 and slug in ("other", "not_reported"):
+            continue
+        rows.append(
+            {
+                "level": slug,
+                "label": label,
+                "n": n,
+                "percent": round(100 * n / n_group, 1) if n_group else np.nan,
+                "n_group": n_group,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def main():
     """
     Main analysis pipeline for pain discrimination study.
@@ -1142,6 +1250,21 @@ def main():
     #add the questionnaire_df scores to wide_dat
     wide_dat = wide_dat.merge(questionnaire_df, on="participant", how="left")
 
+    # Highest diploma (sociodemographic question 8)
+    sociodemo_path = find_sociodemo_file(bidsroot, args.sociodemo_file)
+    if sociodemo_path is None:
+        print(
+            "Warning: sociodemographic file not found (looked for sociodemo.csv in "
+            f"{bidsroot}); education is not analysed. Use --sociodemo-file to set it."
+        )
+    else:
+        education = load_education(sociodemo_path)
+        wide_dat = wide_dat.merge(
+            education[["participant", "education_level"]], on="participant", how="left"
+        )
+        n_found = int(wide_dat["education_level"].notna().sum())
+        print(f"Education (Q8) found for {n_found}/{len(wide_dat)} participants")
+
     # =========================================================================
     # EXCLUSION CRITERIA
     # Apply exclusion criteria in order of priority:
@@ -1645,6 +1768,18 @@ def main():
     desc_stats = wide_dat[["age", "temp_pic", "temp_plateau", "temp_placebo"]].describe()
     desc_stats["n_male"] = wide_dat["ismale"].sum()
     desc_stats["n_female"] = wide_dat["isfemale"].sum()
+    # Highest diploma: number (n_edu_*) and percentage of the group (pct_edu_*)
+    if "education_level" in wide_dat.columns:
+        edu_summary = education_summary(wide_dat["education_level"])
+        for _, r in edu_summary.iterrows():
+            desc_stats[f"n_edu_{r['level']}"] = r["n"]
+            desc_stats[f"pct_edu_{r['level']}"] = r["percent"]
+        edu_summary.to_csv(
+            opj(output_dir, "stats", "education_summary.csv"), index=False
+        )
+        print("Highest diploma (n, %):")
+        for _, r in edu_summary.iterrows():
+            print(f"  {r['label']}: {r['n']} ({r['percent']}%)")
     desc_stats.to_csv(opj(output_dir, "stats", "descriptives.csv"))
 
     # Evaluation
@@ -2903,6 +3038,12 @@ def main():
     manuscript_results["age_sd"] = round(sd_age, 2)
     manuscript_results["age_min"] = int(min_age)
     manuscript_results["age_max"] = int(max_age)
+
+    # --- Highest diploma (n and % of the final sample) ---
+    if "education_level" in socio_demo_stats.columns:
+        for _, r in education_summary(socio_demo_stats["education_level"]).iterrows():
+            manuscript_results[f"edu_{r['level']}_n"] = int(r["n"])
+            manuscript_results[f"edu_{r['level']}_pct"] = r["percent"]
 
     # --- Exclusion lists (non-overlapping, hierarchy: custom > perfect/below-chance > placebo) ---
     # Custom exclusions (highest priority)
