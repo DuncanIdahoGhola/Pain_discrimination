@@ -96,12 +96,8 @@ ACC_YTICKS = [0.4, 0.6, 0.8, 1.0]
 HEADROOM = 0.16  # extra room above paired panels for the p-value bracket
 
 # ---- main_figure_combined -----------------------------------------------------------
-# True : right column = pain (c, row 1) over accuracy (d, row 2), so each ROW is one
-#        outcome (a+c pain, b+d accuracy).  False: old order (c = accuracy, d = pain).
-MAIN_PAIN_ON_TOP_RIGHT = True
-
 PLACEBO_TRIALS = [8, 9, 10, 11, 20, 21, 22, 23]  # 0-indexed placebo-test rating trials
-PLACEBO_THRESHOLD_LINE = 0  # dashed line on placebo_effect_distribution (%)
+PLACEBO_THRESHOLD_LINE = 10  # dashed line on placebo_effect_distribution (%)
 SHOW_N = False  # True: print "n = ..." in the paired panels (handy while drafting)
 
 # x-ranges of the four experimental phases (trial index units)
@@ -570,8 +566,8 @@ def fig_correlation_accuracy_iasta2(D):
     return _corr_fig(D, "accuracy_all", "iastay2_total", ACC_L, "STAI-Y2 score")
 
 
-def fig_tost_discrim(D):
-    """TOST equivalence plot, Cohen's dz with 90% CI (90 x 42 mm)."""
+def _tost_inputs(D):
+    """dz (TENS off - on), 90% CI half-width, equivalence bound and TOST p-value."""
     w = D.wide_dat
     # Equivalence bound (dz) set from the sample size in analyze.py (stats/tost_accuracy.csv)
     try:
@@ -584,6 +580,47 @@ def fig_tost_discrim(D):
     sd = np.std(w["active_acc_all"] - w["inactive_acc_all"], ddof=1)
     dz = diff.mean() / sd
     h = sps.sem(diff) * sps.t.ppf(0.95, len(w) - 1) / sd  # 90% CI half-width
+    return dz, h, bound, stat_p(read_stat(D, "tost_accuracy.csv"))
+
+
+def draw_tost(ax, dz, h, bound, p, band_top=0.76):
+    """TOST panel in the style of the paired panels: grey equivalence region between
+    the dashed bounds, white diamond = dz with its 90% CI, and a bracket over the
+    bounds carrying the TOST p-value. The region fills the lower `band_top` of the axes
+    and the bracket sits in the room above it (like the p-value brackets of c)."""
+    lim = max(bound, abs(dz) + h) * 1.35
+    ax.set_xlim(-lim, lim)
+    ax.set_ylim(0, 1)
+    ax.axvspan(-bound, bound, ymin=0, ymax=band_top, color=COLOR_PLACEBO_BG, lw=0, zorder=0)
+    for xb in (-bound, bound):
+        ax.plot([xb, xb], [0, band_top], color="0.35", lw=0.7, ls=(0, (3, 2)), zorder=1)
+    ax.plot([0, 0], [0, band_top], color="0.7", lw=0.5, zorder=1)
+    y_mid = band_top / 2
+    ax.errorbar([dz], [y_mid], xerr=[[h], [h]], fmt="none", ecolor="black", elinewidth=1.0,
+                capsize=2.5, capthick=1.0, zorder=3)
+    ax.plot([dz], [y_mid], marker="D", ms=4, mfc="white", mec="black", mew=0.8,
+            ls="none", zorder=5)
+    ax.text(dz, y_mid - 0.07, "90% CI", ha="center", va="top", fontsize=FS_SMALL,
+            color="0.35")
+    ax.set_yticks([])
+    ax.spines["left"].set_visible(False)
+    ax.set_xticks([-bound, 0, bound])
+    ax.set_xticklabels([f"\u2212{bound:g}", "0", f"{bound:g}"])
+    ax.set_xlabel("Cohen\u2019s $d_z$ (TENS off \u2212 on)")
+    txt = f"TOST {fmt_p(p)}" if fmt_p(p) else None
+    if txt:
+        y0, d = band_top + 0.05, 0.025
+        ax.plot([-bound, -bound, bound, bound], [y0 - d, y0, y0, y0 - d], color="black",
+                lw=0.7, clip_on=False, zorder=6)
+        ax.text(0, y0 + 0.012, txt, ha="center", va="bottom", fontsize=FS_SMALL,
+                clip_on=False)
+    return ax
+
+
+def fig_tost_discrim(D):
+    """TOST equivalence plot, Cohen's dz with 90% CI (90 x 42 mm)."""
+    w = D.wide_dat
+    dz, h, bound, _ = _tost_inputs(D)
     fig = new_fig(W_SINGLE, 42)
     ax = add_ax(fig, 6, 13, 78, 20)
     lim = max(bound, abs(dz) + h) * 1.35
@@ -660,17 +697,103 @@ def fig_extinction_placebo(D):
     return fig
 
 
+def fig_tost_bound_curve(D):
+    """TOST p-value as a function of the equivalence bound (90 x 70 mm).
+
+    Reads stats/tost_bound_curve.csv (+ tost_ladder.csv and tost_accuracy.csv for the
+    marked bounds). Equivalence is supported wherever the curve lies in the grey region
+    (p < alpha); the dashed drop line gives the smallest such bound."""
+    stats_dir = opj(D.run_dir, "stats")
+    curve_path = opj(stats_dir, "tost_bound_curve.csv")
+    if not os.path.exists(curve_path):
+        raise FileNotFoundError(f"{curve_path} not found (run analyze.py first)")
+    curve = pd.read_csv(curve_path).sort_values("bound_dz")
+    alpha = 0.05
+    smallest = float(curve["smallest_equiv_bound_dz"].iloc[0])
+
+    # benchmark bounds (dots) and the primary, sample-size-based bound (diamond)
+    ladder_path = opj(stats_dir, "tost_ladder.csv")
+    if os.path.exists(ladder_path):
+        lad = pd.read_csv(ladder_path)
+        rungs = lad.loc[lad["role"] == "benchmark", "bound_dz"].tolist()
+    else:
+        rungs = [0.2, 0.3, 0.4, 0.5]
+    try:
+        primary = float(_first(read_stat(D, "tost_accuracy.csv"), ["cohen_dz_bounds"]))
+    except (TypeError, ValueError):
+        primary = None
+
+    x_min = float(curve["bound_dz"].min())
+    x_max = max(float(curve["bound_dz"].max()), (primary or 0) + 0.01)
+    p_min = max(float(curve["p_tost"].min()), 1e-6)
+    y_low = 10 ** np.floor(np.log10(p_min))
+    y_low = min(y_low, 0.01)  # always leave room for the drop-line label under alpha
+
+    fig = new_fig(W_SINGLE, 70)
+    ax = add_ax(fig, 15, 12, 72, 54)
+    ax.set_yscale("log")
+    ax.set_xlim(x_min - 0.01, x_max + 0.012)  # padding so end markers are not clipped
+    ax.set_ylim(y_low, 1.3)  # a little room above p = 1 for the markers
+
+    # p < alpha region = equivalence supported (same grey as the TOST panel)
+    ax.axhspan(y_low, alpha, color=COLOR_PLACEBO_BG, lw=0, zorder=0)
+    ax.axhline(alpha, color="0.35", lw=0.7, ls=(0, (3, 2)), zorder=1)
+    ax.text(x_min - 0.005, alpha * 0.88, "\u03b1 = .05", ha="left", va="top",
+            fontsize=FS_SMALL, color="0.35")
+
+    ax.plot(curve["bound_dz"], curve["p_tost"], color=COLOR_NEUTRAL, lw=1.2, zorder=3)
+
+    # smallest bound with p < alpha: drop line + label
+    if x_min < smallest < x_max:
+        ax.plot([smallest, smallest], [y_low, alpha], color="0.35", lw=0.7,
+                ls=(0, (3, 2)), zorder=2)
+        left_side = smallest > (x_min + x_max) / 2  # keep the label inside the axes
+        ax.text(smallest + (-0.006 if left_side else 0.006), y_low * 1.5,
+                f"Equivalent for\n$d_z$ \u2265 {smallest:.2f}",
+                ha="right" if left_side else "left", va="bottom", fontsize=FS_SMALL,
+                color=COLOR_NEUTRAL, linespacing=1.15)
+    else:
+        ax.text(x_max - 0.005, y_low * 1.5, f"No equivalence\nup to $d_z$ = {curve['bound_dz'].max():.2f}",
+                ha="right", va="bottom", fontsize=FS_SMALL, color=COLOR_NEUTRAL,
+                linespacing=1.15)
+
+    # marked bounds
+    def p_at(b):
+        return float(np.interp(b, curve["bound_dz"], curve["p_tost"]))
+    rung_x = [b for b in rungs if x_min <= b <= x_max]
+    ax.plot(rung_x, [p_at(b) for b in rung_x], ls="none", marker="o", ms=4.2,
+            mfc=COLOR_NEUTRAL, mec="white", mew=0.5, zorder=5,
+            label="Benchmark bounds")
+    if primary is not None and x_min <= primary <= x_max:
+        ax.plot([primary], [p_at(primary)], ls="none", marker="D", ms=4.2, mfc="white",
+                mec="black", mew=0.8, zorder=6,
+                label=f"Primary bound (\u00b1{primary:g})")
+    ax.legend(frameon=False, loc="upper right", bbox_to_anchor=(1.0, 0.93),
+              handletextpad=0.3, borderaxespad=0.2)
+
+    ax.set_xticks([b for b in (0.2, 0.3, 0.4, 0.5) if x_min - 0.01 <= b <= x_max])
+    yt = [t for t in (1e-4, 1e-3, 1e-2, 0.05, 0.1, 0.5, 1) if t >= y_low]
+    ax.set_yticks(yt)
+    ax.set_yticklabels([f"{t:g}".replace("0.", ".") if t < 1 else "1" for t in yt])
+    ax.minorticks_off()
+    ax.set_xlabel("Equivalence bound (Cohen\u2019s $d_z$)")
+    ax.set_ylabel("TOST p-value")
+    return fig
+
+
 def fig_main_figure_combined(D):
     """Main 4-panel figure, 190 x 118 mm (full page width).
-    Right-hand panels are (1 + HEADROOM) taller than the left ones, so that rows share the
-    same baseline and the same scale (the extra height holds the p-value bracket)."""
+    a: pain ratings over trials; b: discrimination accuracy over trials;
+    c: accuracy with TENS on vs off; d: TOST equivalence test of that difference.
+    c is (1 + HEADROOM) taller than a so that its p-value bracket fits; d has exactly the
+    box of b, so the bottom row shares one baseline."""
     fig = new_fig(W_FULL, 118)
     left, lw_ = 14, 112
     rleft, rw = 142, 45
     b0, hb, gap, ha = 14, 34, 11, 48
     ax_b = add_ax(fig, left, b0, lw_, hb)
     ax_a = add_ax(fig, left, b0 + hb + gap, lw_, ha, sharex=ax_b)
-    ax_d = add_ax(fig, rleft, b0, rw, hb * (1 + HEADROOM))
+    ax_d = add_ax(fig, rleft, b0, rw, hb)
     ax_c = add_ax(fig, rleft, b0 + hb + gap, rw, ha * (1 + HEADROOM))
 
     # left column: time courses
@@ -683,22 +806,15 @@ def fig_main_figure_combined(D):
                     yticks=ACC_YTICKS, chance=0.5)
     ax_b.set_xlabel("Trial")
 
-    # right column: TENS on vs off summaries (x labels only on the lower one)
-    lo_p, hi_p = pain_limits(D)
+    # right column: c = accuracy TENS on vs off, d = TOST on the same difference
     on_a, off_a = wide_pair(D, "active_acc_all", "inactive_acc_all")
     lo_a, hi_a = acc_limits(on_a, off_a)
-    pain_kw = dict(ylabel=PAIN_LABEL, lo=lo_p, hi=hi_p,
-                   p=stat_p(read_stat(D, "t_test_placebo_eval.csv")))
-    acc_kw = dict(ylabel=ACC_LABEL, lo=lo_a, hi=hi_a, chance=0.5, jitter=0.04,
-                  p=stat_p(read_stat(D, "t_test_accuracy.csv")),
-                  bf01=stat_bf01(read_stat(D, "t_test_accuracy.csv")),
-                  yticks=ACC_YTICKS if lo_a == ACC_YLIM[0] else None)
-    if MAIN_PAIN_ON_TOP_RIGHT:
-        draw_paired(ax_c, D.pain_on, D.pain_off, show_xlabels=False, **pain_kw)
-        draw_paired(ax_d, on_a, off_a, show_xlabels=True, **acc_kw)
-    else:  # old order: c = accuracy, d = pain (rows then no longer share a scale)
-        draw_paired(ax_c, on_a, off_a, show_xlabels=False, **acc_kw)
-        draw_paired(ax_d, D.pain_on, D.pain_off, show_xlabels=True, **pain_kw)
+    acc_row = read_stat(D, "t_test_accuracy.csv")
+    draw_paired(ax_c, on_a, off_a, ylabel=ACC_LABEL, lo=lo_a, hi=hi_a, chance=0.5,
+                jitter=0.04, p=stat_p(acc_row), bf01=stat_bf01(acc_row),
+                yticks=ACC_YTICKS if lo_a == ACC_YLIM[0] else None, show_xlabels=True)
+    dz, h, bound, p_tost = _tost_inputs(D)
+    draw_tost(ax_d, dz, h, bound, p_tost)
 
     for ax, letter, row in ((ax_a, "a", ax_a), (ax_b, "b", ax_b),
                             (ax_c, "c", ax_a), (ax_d, "d", ax_b)):
@@ -722,6 +838,7 @@ FIGURES = {
     "correlation_accuracy_iasta1": fig_correlation_accuracy_iasta1,
     "correlation_accuracy_iasta2": fig_correlation_accuracy_iasta2,
     "tost_discrim": fig_tost_discrim,
+    "tost_bound_curve": fig_tost_bound_curve,
     "discrim_acc_cond": fig_discrim_acc_cond,
     "discrim_dprime_cond": fig_discrim_dprime_cond,
     "discrim_c_cond": fig_discrim_c_cond,
